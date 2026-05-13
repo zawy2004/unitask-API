@@ -13,3 +13,4 @@ C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\obj\Debug\ne
 C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\obj\Debug\net8.0\refint\Unitask.Application.dll
 C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\obj\Debug\net8.0\Unitask.Application.pdb
 C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\obj\Debug\net8.0\ref\Unitask.Application.dll
+c:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\obj\Debug\net8.0\Unitask.Application.sourcelink.json

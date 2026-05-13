@@ -17,3 +17,4 @@ C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Infrastructure\obj\Debug
 C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Infrastructure\obj\Debug\net8.0\Unitask.Infrastructure.pdb
 C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Infrastructure\obj\Debug\net8.0\Unitask.Infrastructure.genruntimeconfig.cache
 C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Infrastructure\obj\Debug\net8.0\ref\Unitask.Infrastructure.dll
+c:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Infrastructure\obj\Debug\net8.0\Unitask.Infrastructure.sourcelink.json

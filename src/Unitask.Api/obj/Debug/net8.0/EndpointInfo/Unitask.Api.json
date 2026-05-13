@@ -18,7 +18,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/ActivityLogDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.ActivityLogDto"
                   }
                 }
               },
@@ -26,7 +26,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/ActivityLogDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.ActivityLogDto"
                   }
                 }
               },
@@ -34,7 +34,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/ActivityLogDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.ActivityLogDto"
                   }
                 }
               }
@@ -50,17 +50,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ActivityLogDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.ActivityLogDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/ActivityLogDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.ActivityLogDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/ActivityLogDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.ActivityLogDto"
               }
             }
           }
@@ -71,17 +71,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ActivityLogDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.ActivityLogDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ActivityLogDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.ActivityLogDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ActivityLogDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.ActivityLogDto"
                 }
               }
             }
@@ -111,17 +111,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ActivityLogDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.ActivityLogDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ActivityLogDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.ActivityLogDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ActivityLogDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.ActivityLogDto"
                 }
               }
             }
@@ -147,17 +147,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ActivityLogDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.ActivityLogDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/ActivityLogDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.ActivityLogDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/ActivityLogDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.ActivityLogDto"
               }
             }
           }
@@ -203,7 +203,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/AdminReportDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.AdminReportDto"
                   }
                 }
               },
@@ -211,7 +211,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/AdminReportDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.AdminReportDto"
                   }
                 }
               },
@@ -219,7 +219,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/AdminReportDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.AdminReportDto"
                   }
                 }
               }
@@ -235,17 +235,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AdminReportDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.AdminReportDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/AdminReportDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.AdminReportDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/AdminReportDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.AdminReportDto"
               }
             }
           }
@@ -256,17 +256,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/AdminReportDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.AdminReportDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AdminReportDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.AdminReportDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AdminReportDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.AdminReportDto"
                 }
               }
             }
@@ -296,17 +296,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/AdminReportDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.AdminReportDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AdminReportDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.AdminReportDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AdminReportDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.AdminReportDto"
                 }
               }
             }
@@ -332,17 +332,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AdminReportDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.AdminReportDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/AdminReportDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.AdminReportDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/AdminReportDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.AdminReportDto"
               }
             }
           }
@@ -384,17 +384,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegisterRequest"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Auth.RegisterRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegisterRequest"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Auth.RegisterRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/RegisterRequest"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Auth.RegisterRequest"
               }
             }
           }
@@ -405,17 +405,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthResponse"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Auth.RegisterResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthResponse"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Auth.RegisterResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthResponse"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Auth.RegisterResponse"
                 }
               }
             }
@@ -432,17 +432,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LoginRequest"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Auth.LoginRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/LoginRequest"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Auth.LoginRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/LoginRequest"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Auth.LoginRequest"
               }
             }
           }
@@ -453,17 +453,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthResponse"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Auth.LoginResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthResponse"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Auth.LoginResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthResponse"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Auth.LoginResponse"
                 }
               }
             }
@@ -471,10 +471,95 @@
         }
       }
     },
-    "/api/BlogPosts": {
+    "/api/auth/refresh-token": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Auth.RefreshTokenRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Auth.RefreshTokenRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Auth.RefreshTokenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Auth.RefreshTokenResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Auth.RefreshTokenResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Auth.RefreshTokenResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/blog/posts": {
       "get": {
         "tags": [
           "BlogPosts"
+        ],
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -482,26 +567,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BlogPostDto"
-                  }
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Blog.BlogPostListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BlogPostDto"
-                  }
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Blog.BlogPostListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BlogPostDto"
-                  }
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Blog.BlogPostListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               }
             }
@@ -516,58 +592,40 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BlogPostDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Blog.BlogPostCreateRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/BlogPostDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Blog.BlogPostCreateRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/BlogPostDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Blog.BlogPostCreateRequest"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/BlogPostDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BlogPostDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BlogPostDto"
-                }
-              }
-            }
+            "description": "Success"
           }
         }
       }
     },
-    "/api/BlogPosts/{id}": {
+    "/api/blog/posts/{slug}": {
       "get": {
         "tags": [
           "BlogPosts"
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "slug",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             }
           }
         ],
@@ -577,81 +635,20 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/BlogPostDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Blog.BlogPostResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BlogPostDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Blog.BlogPostResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BlogPostDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Blog.BlogPostResponse"
                 }
               }
             }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "BlogPosts"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BlogPostDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BlogPostDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/BlogPostDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "BlogPosts"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
           }
         }
       }
@@ -669,7 +666,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/BusinessDashboardViewDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.BusinessDashboardViewDto"
                   }
                 }
               },
@@ -677,7 +674,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/BusinessDashboardViewDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.BusinessDashboardViewDto"
                   }
                 }
               },
@@ -685,7 +682,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/BusinessDashboardViewDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.BusinessDashboardViewDto"
                   }
                 }
               }
@@ -694,98 +691,14 @@
         }
       }
     },
-    "/api/BusinessProfiles": {
+    "/api/businesses/{userId}": {
       "get": {
         "tags": [
-          "BusinessProfiles"
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BusinessProfileDto"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BusinessProfileDto"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BusinessProfileDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "BusinessProfiles"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BusinessProfileDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BusinessProfileDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/BusinessProfileDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/BusinessProfileDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BusinessProfileDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BusinessProfileDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/BusinessProfiles/{id}": {
-      "get": {
-        "tags": [
-          "BusinessProfiles"
+          "Businesses"
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
             "in": "path",
             "required": true,
             "schema": {
@@ -800,17 +713,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/BusinessProfileDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Businesses.BusinessProfileResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BusinessProfileDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Businesses.BusinessProfileResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BusinessProfileDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Businesses.BusinessProfileResponse"
                 }
               }
             }
@@ -819,11 +732,11 @@
       },
       "put": {
         "tags": [
-          "BusinessProfiles"
+          "Businesses"
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
             "in": "path",
             "required": true,
             "schema": {
@@ -836,17 +749,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BusinessProfileDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Businesses.BusinessUpdateRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/BusinessProfileDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Businesses.BusinessUpdateRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/BusinessProfileDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Businesses.BusinessUpdateRequest"
               }
             }
           }
@@ -856,14 +769,16 @@
             "description": "Success"
           }
         }
-      },
-      "delete": {
+      }
+    },
+    "/api/businesses/{userId}/dashboard": {
+      "get": {
         "tags": [
-          "BusinessProfiles"
+          "Businesses"
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
             "in": "path",
             "required": true,
             "schema": {
@@ -874,12 +789,29 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Businesses.BusinessDashboardResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Businesses.BusinessDashboardResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Businesses.BusinessDashboardResponse"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/api/Conversations": {
+    "/api/conversations": {
       "get": {
         "tags": [
           "Conversations"
@@ -892,7 +824,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/ConversationDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Conversations.ConversationListItemResponse"
                   }
                 }
               },
@@ -900,7 +832,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/ConversationDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Conversations.ConversationListItemResponse"
                   }
                 }
               },
@@ -908,14 +840,16 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/ConversationDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Conversations.ConversationListItemResponse"
                   }
                 }
               }
             }
           }
         }
-      },
+      }
+    },
+    "/api/conversations/start": {
       "post": {
         "tags": [
           "Conversations"
@@ -924,17 +858,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ConversationDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Conversations.StartConversationRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/ConversationDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Conversations.StartConversationRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/ConversationDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Conversations.StartConversationRequest"
               }
             }
           }
@@ -945,17 +879,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConversationDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Conversations.ConversationListItemResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConversationDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Conversations.ConversationListItemResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConversationDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Conversations.ConversationListItemResponse"
                 }
               }
             }
@@ -963,111 +897,19 @@
         }
       }
     },
-    "/api/Conversations/{id}": {
-      "get": {
-        "tags": [
-          "Conversations"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ConversationDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ConversationDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ConversationDto"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Conversations"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ConversationDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ConversationDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/ConversationDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Conversations"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/Faqs": {
+    "/api/faqs": {
       "get": {
         "tags": [
           "Faqs"
+        ],
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -1077,7 +919,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/FAQDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Faqs.FaqResponse"
                   }
                 }
               },
@@ -1085,7 +927,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/FAQDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Faqs.FaqResponse"
                   }
                 }
               },
@@ -1093,218 +935,102 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/FAQDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Faqs.FaqResponse"
                   }
                 }
               }
             }
           }
         }
-      },
-      "post": {
-        "tags": [
-          "Faqs"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FAQDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FAQDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/FAQDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/FAQDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FAQDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FAQDto"
-                }
-              }
-            }
-          }
-        }
       }
     },
-    "/api/Faqs/{id}": {
-      "get": {
-        "tags": [
-          "Faqs"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/FAQDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FAQDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FAQDto"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Faqs"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FAQDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FAQDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/FAQDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Faqs"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/JobApplications": {
+    "/api/jobs/{jobId}/applications": {
       "get": {
         "tags": [
           "JobApplications"
         ],
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/JobApplicationDto"
-                  }
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Applications.JobApplicationListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/JobApplicationDto"
-                  }
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Applications.JobApplicationListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/JobApplicationDto"
-                  }
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Applications.JobApplicationListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               }
             }
           }
         }
-      },
+      }
+    },
+    "/api/jobs/{jobId}/apply": {
       "post": {
         "tags": [
           "JobApplications"
+        ],
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
         ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/JobApplicationDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.ApplyJobRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/JobApplicationDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.ApplyJobRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/JobApplicationDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.ApplyJobRequest"
               }
             }
           }
@@ -1315,17 +1041,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobApplicationDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.JobApplicationResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobApplicationDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.JobApplicationResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobApplicationDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.JobApplicationResponse"
                 }
               }
             }
@@ -1333,7 +1059,7 @@
         }
       }
     },
-    "/api/JobApplications/{id}": {
+    "/api/applications/{id}": {
       "get": {
         "tags": [
           "JobApplications"
@@ -1355,23 +1081,25 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobApplicationDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.JobApplicationListItemResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobApplicationDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.JobApplicationListItemResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobApplicationDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.JobApplicationListItemResponse"
                 }
               }
             }
           }
         }
-      },
+      }
+    },
+    "/api/applications/{id}/accept": {
       "put": {
         "tags": [
           "JobApplications"
@@ -1391,17 +1119,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/JobApplicationDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.JobApplicationAcceptRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/JobApplicationDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.JobApplicationAcceptRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/JobApplicationDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.JobApplicationAcceptRequest"
               }
             }
           }
@@ -1411,8 +1139,52 @@
             "description": "Success"
           }
         }
-      },
-      "delete": {
+      }
+    },
+    "/api/applications/{id}/reject": {
+      "put": {
+        "tags": [
+          "JobApplications"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.JobApplicationRejectRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.JobApplicationRejectRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.JobApplicationRejectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/applications/{id}/complete": {
+      "put": {
         "tags": [
           "JobApplications"
         ],
@@ -1434,10 +1206,10 @@
         }
       }
     },
-    "/api/JobCategories": {
+    "/api/my-applications": {
       "get": {
         "tags": [
-          "JobCategories"
+          "JobApplications"
         ],
         "responses": {
           "200": {
@@ -1447,7 +1219,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/JobCategoryDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.MyApplicationResponse"
                   }
                 }
               },
@@ -1455,7 +1227,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/JobCategoryDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.MyApplicationResponse"
                   }
                 }
               },
@@ -1463,54 +1235,8 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/JobCategoryDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.MyApplicationResponse"
                   }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "JobCategories"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/JobCategoryDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/JobCategoryDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/JobCategoryDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/JobCategoryDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/JobCategoryDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/JobCategoryDto"
                 }
               }
             }
@@ -1518,21 +1244,10 @@
         }
       }
     },
-    "/api/JobCategories/{id}": {
+    "/api/categories": {
       "get": {
         "tags": [
           "JobCategories"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
         ],
         "responses": {
           "200": {
@@ -1540,81 +1255,29 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobCategoryDto"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobCategoryInfoDto"
+                  }
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobCategoryDto"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobCategoryInfoDto"
+                  }
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobCategoryDto"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobCategoryInfoDto"
+                  }
                 }
               }
             }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "JobCategories"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/JobCategoryDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/JobCategoryDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/JobCategoryDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "JobCategories"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
           }
         }
       }
@@ -1632,7 +1295,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/JobDetailsViewDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.JobDetailsViewDto"
                   }
                 }
               },
@@ -1640,7 +1303,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/JobDetailsViewDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.JobDetailsViewDto"
                   }
                 }
               },
@@ -1648,7 +1311,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/JobDetailsViewDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.JobDetailsViewDto"
                   }
                 }
               }
@@ -1657,10 +1320,59 @@
         }
       }
     },
-    "/api/Jobs": {
+    "/api/jobs": {
       "get": {
         "tags": [
           "Jobs"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "isRemote",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "isFeatured",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -1668,26 +1380,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/JobDto"
-                  }
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Jobs.JobListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/JobDto"
-                  }
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Jobs.JobListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/JobDto"
-                  }
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Jobs.JobListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               }
             }
@@ -1702,17 +1405,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/JobDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobCreateRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/JobDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobCreateRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/JobDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobCreateRequest"
               }
             }
           }
@@ -1723,17 +1426,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobListItemResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobListItemResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobListItemResponse"
                 }
               }
             }
@@ -1741,7 +1444,7 @@
         }
       }
     },
-    "/api/Jobs/{id}": {
+    "/api/jobs/{id}": {
       "get": {
         "tags": [
           "Jobs"
@@ -1763,17 +1466,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobDetailsResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobDetailsResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobDetailsResponse"
                 }
               }
             }
@@ -1799,17 +1502,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/JobDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobUpdateRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/JobDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobUpdateRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/JobDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobUpdateRequest"
               }
             }
           }
@@ -1842,10 +1545,62 @@
         }
       }
     },
-    "/api/Messages": {
+    "/api/jobs/{id}/publish": {
+      "put": {
+        "tags": [
+          "Jobs"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/conversations/{conversationId}/messages": {
       "get": {
         "tags": [
           "Messages"
+        ],
+        "parameters": [
+          {
+            "name": "conversationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -1853,26 +1608,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/MessageDto"
-                  }
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Conversations.MessageListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/MessageDto"
-                  }
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Conversations.MessageListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/MessageDto"
-                  }
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Conversations.MessageListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               }
             }
@@ -1883,57 +1629,9 @@
         "tags": [
           "Messages"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/MessageDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/MessageDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/MessageDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/MessageDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MessageDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MessageDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Messages/{id}": {
-      "get": {
-        "tags": [
-          "Messages"
-        ],
         "parameters": [
           {
-            "name": "id",
+            "name": "conversationId",
             "in": "path",
             "required": true,
             "schema": {
@@ -1942,255 +1640,88 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Conversations.SendMessageRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Conversations.SendMessageRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Conversations.SendMessageRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/notifications": {
+      "get": {
+        "tags": [
+          "Notifications"
+        ],
+        "parameters": [
+          {
+            "name": "isRead",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/MessageDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Notifications.NotificationResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MessageDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Notifications.NotificationResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MessageDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Notifications.NotificationResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               }
             }
           }
         }
-      },
+      }
+    },
+    "/api/notifications/{id}/read": {
       "put": {
-        "tags": [
-          "Messages"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/MessageDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/MessageDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/MessageDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Messages"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/Notifications": {
-      "get": {
-        "tags": [
-          "Notifications"
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NotificationDto"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NotificationDto"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NotificationDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Notifications"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NotificationDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NotificationDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/NotificationDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/NotificationDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NotificationDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NotificationDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Notifications/{id}": {
-      "get": {
-        "tags": [
-          "Notifications"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/NotificationDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NotificationDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NotificationDto"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Notifications"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NotificationDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NotificationDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/NotificationDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "delete": {
         "tags": [
           "Notifications"
         ],
@@ -2212,10 +1743,48 @@
         }
       }
     },
-    "/api/Payments": {
+    "/api/notifications/read-all": {
+      "put": {
+        "tags": [
+          "Notifications"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/payments": {
       "get": {
         "tags": [
           "Payments"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -2223,26 +1792,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PaymentDto"
-                  }
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Payments.PaymentListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PaymentDto"
-                  }
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Payments.PaymentListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PaymentDto"
-                  }
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Payments.PaymentListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               }
             }
@@ -2257,17 +1817,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PaymentDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Payments.PaymentCreateRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/PaymentDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Payments.PaymentCreateRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/PaymentDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Payments.PaymentCreateRequest"
               }
             }
           }
@@ -2278,17 +1838,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Payments.PaymentListItemResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Payments.PaymentListItemResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Payments.PaymentListItemResponse"
                 }
               }
             }
@@ -2296,86 +1856,8 @@
         }
       }
     },
-    "/api/Payments/{id}": {
-      "get": {
-        "tags": [
-          "Payments"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaymentDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaymentDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaymentDto"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Payments"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PaymentDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PaymentDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/PaymentDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "delete": {
+    "/api/payments/{id}/release": {
+      "post": {
         "tags": [
           "Payments"
         ],
@@ -2397,37 +1879,78 @@
         }
       }
     },
-    "/api/Reviews": {
+    "/api/payments/{id}/refund": {
+      "post": {
+        "tags": [
+          "Payments"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/reviews": {
       "get": {
         "tags": [
           "Reviews"
         ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "jobId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ReviewDto"
-                  }
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Reviews.ReviewListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ReviewDto"
-                  }
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Reviews.ReviewListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ReviewDto"
-                  }
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Reviews.ReviewListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               }
             }
@@ -2442,58 +1965,50 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ReviewDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Reviews.ReviewCreateRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/ReviewDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Reviews.ReviewCreateRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/ReviewDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Reviews.ReviewCreateRequest"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ReviewDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ReviewDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ReviewDto"
-                }
-              }
-            }
+            "description": "Success"
           }
         }
       }
     },
-    "/api/Reviews/{id}": {
+    "/api/users/{userId}/reviews": {
       "get": {
         "tags": [
           "Reviews"
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
             }
           }
         ],
@@ -2503,86 +2018,25 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/ReviewDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Reviews.ReviewListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ReviewDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Reviews.ReviewListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ReviewDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Reviews.ReviewListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"
                 }
               }
             }
           }
         }
-      },
-      "put": {
-        "tags": [
-          "Reviews"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ReviewDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ReviewDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/ReviewDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Reviews"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
       }
     },
-    "/api/Skills": {
+    "/api/skills": {
       "get": {
         "tags": [
           "Skills"
@@ -2595,7 +2049,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/SkillDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Skills.SkillResponse"
                   }
                 }
               },
@@ -2603,7 +2057,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/SkillDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Skills.SkillResponse"
                   }
                 }
               },
@@ -2611,14 +2065,65 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/SkillDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Skills.SkillResponse"
                   }
                 }
               }
             }
           }
         }
-      },
+      }
+    },
+    "/api/students/{userId}/skills": {
+      "get": {
+        "tags": [
+          "Skills"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Skills.StudentSkillResponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Skills.StudentSkillResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Skills.StudentSkillResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/students/me/skills": {
       "post": {
         "tags": [
           "Skills"
@@ -2627,53 +2132,36 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SkillDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Skills.AddStudentSkillRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/SkillDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Skills.AddStudentSkillRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/SkillDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Skills.AddStudentSkillRequest"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/SkillDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SkillDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SkillDto"
-                }
-              }
-            }
+            "description": "Success"
           }
         }
       }
     },
-    "/api/Skills/{id}": {
-      "get": {
+    "/api/students/me/skills/{skillId}": {
+      "delete": {
         "tags": [
           "Skills"
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "skillId",
             "in": "path",
             "required": true,
             "schema": {
@@ -2684,34 +2172,19 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/SkillDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SkillDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SkillDto"
-                }
-              }
-            }
+            "description": "Success"
           }
         }
-      },
-      "put": {
+      }
+    },
+    "/api/skills/{skillId}/endorse": {
+      "post": {
         "tags": [
           "Skills"
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "skillId",
             "in": "path",
             "required": true,
             "schema": {
@@ -2724,42 +2197,21 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SkillDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Skills.EndorseSkillRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/SkillDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Skills.EndorseSkillRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/SkillDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Skills.EndorseSkillRequest"
               }
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Skills"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Success"
@@ -2780,7 +2232,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/StudentDashboardViewDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.StudentDashboardViewDto"
                   }
                 }
               },
@@ -2788,7 +2240,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/StudentDashboardViewDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.StudentDashboardViewDto"
                   }
                 }
               },
@@ -2796,7 +2248,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/StudentDashboardViewDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.StudentDashboardViewDto"
                   }
                 }
               }
@@ -2805,98 +2257,14 @@
         }
       }
     },
-    "/api/StudentProfiles": {
+    "/api/students/{userId}": {
       "get": {
         "tags": [
-          "StudentProfiles"
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/StudentProfileDto"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/StudentProfileDto"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/StudentProfileDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "StudentProfiles"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/StudentProfileDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/StudentProfileDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/StudentProfileDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/StudentProfileDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StudentProfileDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StudentProfileDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/StudentProfiles/{id}": {
-      "get": {
-        "tags": [
-          "StudentProfiles"
+          "Students"
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
             "in": "path",
             "required": true,
             "schema": {
@@ -2911,17 +2279,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/StudentProfileDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Students.StudentProfileResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StudentProfileDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Students.StudentProfileResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StudentProfileDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Students.StudentProfileResponse"
                 }
               }
             }
@@ -2930,11 +2298,11 @@
       },
       "put": {
         "tags": [
-          "StudentProfiles"
+          "Students"
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
             "in": "path",
             "required": true,
             "schema": {
@@ -2947,17 +2315,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/StudentProfileDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Students.StudentUpdateRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/StudentProfileDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Students.StudentUpdateRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/StudentProfileDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Students.StudentUpdateRequest"
               }
             }
           }
@@ -2967,14 +2335,101 @@
             "description": "Success"
           }
         }
-      },
-      "delete": {
+      }
+    },
+    "/api/students/{userId}/verify": {
+      "post": {
         "tags": [
-          "StudentProfiles"
+          "Students"
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "studentEmail": {
+                    "type": "string"
+                  },
+                  "ContentType": {
+                    "type": "string"
+                  },
+                  "ContentDisposition": {
+                    "type": "string"
+                  },
+                  "Headers": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "Length": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "Name": {
+                    "type": "string"
+                  },
+                  "FileName": {
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "studentEmail": {
+                  "style": "form"
+                },
+                "ContentType": {
+                  "style": "form"
+                },
+                "ContentDisposition": {
+                  "style": "form"
+                },
+                "Headers": {
+                  "style": "form"
+                },
+                "Length": {
+                  "style": "form"
+                },
+                "Name": {
+                  "style": "form"
+                },
+                "FileName": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/students/{userId}/dashboard": {
+      "get": {
+        "tags": [
+          "Students"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
             "in": "path",
             "required": true,
             "schema": {
@@ -2985,7 +2440,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Students.StudentDashboardResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Students.StudentDashboardResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Students.StudentDashboardResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -3003,7 +2475,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/StudentSkillDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.StudentSkillDto"
                   }
                 }
               },
@@ -3011,7 +2483,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/StudentSkillDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.StudentSkillDto"
                   }
                 }
               },
@@ -3019,7 +2491,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/StudentSkillDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.StudentSkillDto"
                   }
                 }
               }
@@ -3035,17 +2507,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/StudentSkillDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.StudentSkillDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/StudentSkillDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.StudentSkillDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/StudentSkillDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.StudentSkillDto"
               }
             }
           }
@@ -3056,17 +2528,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/StudentSkillDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.StudentSkillDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StudentSkillDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.StudentSkillDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StudentSkillDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.StudentSkillDto"
                 }
               }
             }
@@ -3096,17 +2568,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/StudentSkillDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.StudentSkillDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StudentSkillDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.StudentSkillDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StudentSkillDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.StudentSkillDto"
                 }
               }
             }
@@ -3132,17 +2604,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/StudentSkillDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.StudentSkillDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/StudentSkillDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.StudentSkillDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/StudentSkillDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.StudentSkillDto"
               }
             }
           }
@@ -3175,276 +2647,7 @@
         }
       }
     },
-    "/api/StudentWallets": {
-      "get": {
-        "tags": [
-          "StudentWallets"
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/StudentWalletDto"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/StudentWalletDto"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/StudentWalletDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "StudentWallets"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/StudentWalletDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/StudentWalletDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/StudentWalletDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/StudentWalletDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StudentWalletDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StudentWalletDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/StudentWallets/{id}": {
-      "get": {
-        "tags": [
-          "StudentWallets"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/StudentWalletDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StudentWalletDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StudentWalletDto"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "StudentWallets"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/StudentWalletDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/StudentWalletDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/StudentWalletDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "StudentWallets"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/api/Users": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UserDto"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UserDto"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UserDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Users"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserDto"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserDto"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserDto"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Users/{id}": {
+    "/api/users/{id}": {
       "get": {
         "tags": [
           "Users"
@@ -3466,17 +2669,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Users.UserProfileResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Users.UserProfileResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Users.UserProfileResponse"
                 }
               }
             }
@@ -3502,17 +2705,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Users.UpdateUserRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Users.UpdateUserRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/UserDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Users.UpdateUserRequest"
               }
             }
           }
@@ -3522,8 +2725,10 @@
             "description": "Success"
           }
         }
-      },
-      "delete": {
+      }
+    },
+    "/api/users/{id}/verify-email": {
+      "post": {
         "tags": [
           "Users"
         ],
@@ -3538,9 +2743,143 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Users.VerifyEmailRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Users.VerifyEmailRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Users.VerifyEmailRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/wallets/my-wallet": {
+      "get": {
+        "tags": [
+          "Wallets"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Wallets.WalletResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Wallets.WalletResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Wallets.WalletResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/wallets/withdraw": {
+      "post": {
+        "tags": [
+          "Wallets"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Wallets.WithdrawRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Wallets.WithdrawRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.Wallets.WithdrawRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Wallets.WithdrawalResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Wallets.WithdrawalResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.Wallets.WithdrawalResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/wallets/withdrawal-history": {
+      "get": {
+        "tags": [
+          "Wallets"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Wallets.WithdrawalResponse"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Wallets.WithdrawalResponse"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.Wallets.WithdrawalResponse"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -3558,7 +2897,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/WithdrawalRequestDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.WithdrawalRequestDto"
                   }
                 }
               },
@@ -3566,7 +2905,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/WithdrawalRequestDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.WithdrawalRequestDto"
                   }
                 }
               },
@@ -3574,7 +2913,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/WithdrawalRequestDto"
+                    "$ref": "#/components/schemas/Unitask.Application.DTOs.WithdrawalRequestDto"
                   }
                 }
               }
@@ -3590,17 +2929,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/WithdrawalRequestDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.WithdrawalRequestDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/WithdrawalRequestDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.WithdrawalRequestDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/WithdrawalRequestDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.WithdrawalRequestDto"
               }
             }
           }
@@ -3611,17 +2950,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/WithdrawalRequestDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.WithdrawalRequestDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WithdrawalRequestDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.WithdrawalRequestDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WithdrawalRequestDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.WithdrawalRequestDto"
                 }
               }
             }
@@ -3651,17 +2990,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/WithdrawalRequestDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.WithdrawalRequestDto"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WithdrawalRequestDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.WithdrawalRequestDto"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WithdrawalRequestDto"
+                  "$ref": "#/components/schemas/Unitask.Application.DTOs.WithdrawalRequestDto"
                 }
               }
             }
@@ -3687,17 +3026,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/WithdrawalRequestDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.WithdrawalRequestDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/WithdrawalRequestDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.WithdrawalRequestDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/WithdrawalRequestDto"
+                "$ref": "#/components/schemas/Unitask.Application.DTOs.WithdrawalRequestDto"
               }
             }
           }
@@ -3733,7 +3072,7 @@
   },
   "components": {
     "schemas": {
-      "ActivityLogDto": {
+      "Unitask.Application.DTOs.ActivityLogDto": {
         "type": "object",
         "properties": {
           "id": {
@@ -3778,7 +3117,7 @@
         },
         "additionalProperties": false
       },
-      "AdminReportDto": {
+      "Unitask.Application.DTOs.AdminReportDto": {
         "type": "object",
         "properties": {
           "id": {
@@ -3828,14 +3167,187 @@
         },
         "additionalProperties": false
       },
-      "AuthResponse": {
+      "Unitask.Application.DTOs.Applications.ApplicationStudentDto": {
         "type": "object",
         "properties": {
-          "token": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
             "type": "string",
             "nullable": true
           },
-          "userId": {
+          "university": {
+            "type": "string",
+            "nullable": true
+          },
+          "rating": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "completedJobs": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Applications.ApplyJobRequest": {
+        "type": "object",
+        "properties": {
+          "coverLetter": {
+            "type": "string",
+            "nullable": true
+          },
+          "proposedTimeline": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Applications.JobApplicationAcceptRequest": {
+        "type": "object",
+        "properties": {
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Applications.JobApplicationListItemResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "studentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "student": {
+            "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.ApplicationStudentDto"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "coverLetter": {
+            "type": "string",
+            "nullable": true
+          },
+          "proposedTimeline": {
+            "type": "string",
+            "nullable": true
+          },
+          "appliedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Applications.JobApplicationRejectRequest": {
+        "type": "object",
+        "properties": {
+          "rejectionReason": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Applications.JobApplicationResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "studentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "appliedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Applications.MyApplicationJobDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "company": {
+            "type": "string",
+            "nullable": true
+          },
+          "salary": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Applications.MyApplicationResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "job": {
+            "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.MyApplicationJobDto"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "appliedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "acceptedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Auth.AuthUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
             "type": "string",
             "format": "uuid"
           },
@@ -3854,14 +3366,214 @@
         },
         "additionalProperties": false
       },
-      "BlogPostDto": {
+      "Unitask.Application.DTOs.Auth.LoginRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Auth.LoginResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "nullable": true
+          },
+          "refreshToken": {
+            "type": "string",
+            "nullable": true
+          },
+          "user": {
+            "$ref": "#/components/schemas/Unitask.Application.DTOs.Auth.AuthUserDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Auth.RefreshTokenRequest": {
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Auth.RefreshTokenResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "nullable": true
+          },
+          "refreshToken": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Auth.RegisterRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "userType": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Auth.RegisterResponse": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
             "format": "uuid"
           },
-          "authorId": {
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "userType": {
+            "type": "string",
+            "nullable": true
+          },
+          "token": {
+            "type": "string",
+            "nullable": true
+          },
+          "refreshToken": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Blog.BlogPostCreateRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "slug": {
+            "type": "string",
+            "nullable": true
+          },
+          "content": {
+            "type": "string",
+            "nullable": true
+          },
+          "excerpt": {
+            "type": "string",
+            "nullable": true
+          },
+          "featuredImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Blog.BlogPostListItemResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "slug": {
+            "type": "string",
+            "nullable": true
+          },
+          "excerpt": {
+            "type": "string",
+            "nullable": true
+          },
+          "featuredImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Blog.BlogPostResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
             "type": "string",
             "format": "uuid"
           },
@@ -3889,22 +3601,15 @@
             "type": "string",
             "nullable": true
           },
-          "tagsJson": {
-            "type": "string",
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
             "nullable": true
           },
           "status": {
             "type": "string",
-            "nullable": true
-          },
-          "viewCount": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "likeCount": {
-            "type": "integer",
-            "format": "int32",
             "nullable": true
           },
           "createdAt": {
@@ -3921,11 +3626,15 @@
             "type": "string",
             "format": "date-time",
             "nullable": true
+          },
+          "authorName": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "BusinessDashboardViewDto": {
+      "Unitask.Application.DTOs.BusinessDashboardViewDto": {
         "type": "object",
         "properties": {
           "businessId": {
@@ -3976,7 +3685,99 @@
         },
         "additionalProperties": false
       },
-      "BusinessProfileDto": {
+      "Unitask.Application.DTOs.Businesses.BusinessDashboardApplicationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "jobTitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "studentName": {
+            "type": "string",
+            "nullable": true
+          },
+          "appliedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Businesses.BusinessDashboardJobDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "spotsFilled": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "spotsTotal": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Businesses.BusinessDashboardResponse": {
+        "type": "object",
+        "properties": {
+          "business": {
+            "$ref": "#/components/schemas/Unitask.Application.DTOs.Businesses.BusinessProfileResponse"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/Unitask.Application.DTOs.Businesses.BusinessStatsResponse"
+          },
+          "recentApplications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Unitask.Application.DTOs.Businesses.BusinessDashboardApplicationDto"
+            },
+            "nullable": true
+          },
+          "openJobs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Unitask.Application.DTOs.Businesses.BusinessDashboardJobDto"
+            },
+            "nullable": true
+          },
+          "notifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Unitask.Application.DTOs.Businesses.StudentDashboardNotificationDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Businesses.BusinessProfileResponse": {
         "type": "object",
         "properties": {
           "id": {
@@ -4007,18 +3808,6 @@
             "type": "string",
             "nullable": true
           },
-          "description": {
-            "type": "string",
-            "nullable": true
-          },
-          "logoUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "coverImageUrl": {
-            "type": "string",
-            "nullable": true
-          },
           "isVerified": {
             "type": "boolean",
             "nullable": true
@@ -4026,14 +3815,6 @@
           "verifiedAt": {
             "type": "string",
             "format": "date-time",
-            "nullable": true
-          },
-          "address": {
-            "type": "string",
-            "nullable": true
-          },
-          "phone": {
-            "type": "string",
             "nullable": true
           },
           "completedProjects": {
@@ -4051,45 +3832,113 @@
             "format": "double",
             "nullable": true
           },
-          "createdAt": {
+          "description": {
             "type": "string",
-            "format": "date-time",
             "nullable": true
           },
-          "updatedAt": {
+          "logoUrl": {
             "type": "string",
-            "format": "date-time",
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
             "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "ConversationDto": {
+      "Unitask.Application.DTOs.Businesses.BusinessStatsResponse": {
+        "type": "object",
+        "properties": {
+          "openJobs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalApplications": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pendingApplications": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalSpent": {
+            "type": "number",
+            "format": "double"
+          },
+          "completedProjects": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "averageRating": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Businesses.BusinessUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyWebsite": {
+            "type": "string",
+            "nullable": true
+          },
+          "companySize": {
+            "type": "string",
+            "nullable": true
+          },
+          "industry": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "logoUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Businesses.StudentDashboardNotificationDto": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
             "format": "uuid"
           },
-          "user1Id": {
+          "type": {
             "type": "string",
-            "format": "uuid"
+            "nullable": true
           },
-          "user2Id": {
+          "title": {
             "type": "string",
-            "format": "uuid"
+            "nullable": true
           },
-          "lastMessageAt": {
+          "message": {
             "type": "string",
-            "format": "date-time",
+            "nullable": true
+          },
+          "isRead": {
+            "type": "boolean",
             "nullable": true
           },
           "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "updatedAt": {
             "type": "string",
             "format": "date-time",
             "nullable": true
@@ -4097,7 +3946,284 @@
         },
         "additionalProperties": false
       },
-      "FAQDto": {
+      "Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Applications.JobApplicationListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Unitask.Application.DTOs.Applications.JobApplicationListItemResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Blog.BlogPostListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Unitask.Application.DTOs.Blog.BlogPostListItemResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Conversations.MessageListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Unitask.Application.DTOs.Conversations.MessageListItemResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Jobs.JobListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobListItemResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Notifications.NotificationResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Unitask.Application.DTOs.Notifications.NotificationResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Payments.PaymentListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Unitask.Application.DTOs.Payments.PaymentListItemResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Common.PagedResult`1[[Unitask.Application.DTOs.Reviews.ReviewListItemResponse, Unitask.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Unitask.Application.DTOs.Reviews.ReviewListItemResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Conversations.ConversationListItemResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "otherUser": {
+            "$ref": "#/components/schemas/Unitask.Application.DTOs.Conversations.UserBriefDto"
+          },
+          "lastMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastMessageAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "unreadCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Conversations.MessageListItemResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "conversationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sender": {
+            "$ref": "#/components/schemas/Unitask.Application.DTOs.Conversations.UserBriefDto"
+          },
+          "content": {
+            "type": "string",
+            "nullable": true
+          },
+          "attachmentUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "isRead": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Conversations.SendMessageRequest": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "nullable": true
+          },
+          "attachmentUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Conversations.StartConversationRequest": {
+        "type": "object",
+        "properties": {
+          "recipientId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Conversations.UserBriefDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Faqs.FaqResponse": {
         "type": "object",
         "properties": {
           "id": {
@@ -4120,126 +4246,11 @@
             "type": "integer",
             "format": "int32",
             "nullable": true
-          },
-          "helpfulCount": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "orderIndex": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "JobApplicationDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "jobId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "studentId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "status": {
-            "type": "string",
-            "nullable": true
-          },
-          "appliedAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "coverLetter": {
-            "type": "string",
-            "nullable": true
-          },
-          "proposedTimeline": {
-            "type": "string",
-            "nullable": true
-          },
-          "acceptedAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "rejectedAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "rejectionReason": {
-            "type": "string",
-            "nullable": true
-          },
-          "completedAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "startedAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "JobCategoryDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "slug": {
-            "type": "string",
-            "nullable": true
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          },
-          "iconUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "jobCount": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "JobDetailsViewDto": {
+      "Unitask.Application.DTOs.JobDetailsViewDto": {
         "type": "object",
         "properties": {
           "id": {
@@ -4342,21 +4353,177 @@
         },
         "additionalProperties": false
       },
-      "JobDto": {
+      "Unitask.Application.DTOs.Jobs.JobApplicationStudentDto": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
             "format": "uuid"
           },
-          "businessId": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "rating": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Jobs.JobApplicationSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
             "type": "string",
             "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "student": {
+            "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobApplicationStudentDto"
+          },
+          "appliedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Jobs.JobBusinessInfoDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "rating": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Jobs.JobCategoryInfoDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "slug": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "jobCount": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Jobs.JobCreateRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
           },
           "categoryId": {
             "type": "string",
             "format": "uuid",
             "nullable": true
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "salaryMin": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "salaryMax": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "currency": {
+            "type": "string",
+            "nullable": true
+          },
+          "durationType": {
+            "type": "string",
+            "nullable": true
+          },
+          "durationDays": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "requiredSkills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "experienceLevel": {
+            "type": "string",
+            "nullable": true
+          },
+          "spotsTotal": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "isRemote": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Jobs.JobDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
           },
           "title": {
             "type": "string",
@@ -4366,8 +4533,102 @@
             "type": "string",
             "nullable": true
           },
-          "tagsJson": {
+          "category": {
+            "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobCategoryInfoDto"
+          },
+          "business": {
+            "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobBusinessInfoDto"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "status": {
             "type": "string",
+            "nullable": true
+          },
+          "salaryMin": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "salaryMax": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "requiredSkills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "spotsTotal": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "spotsFilled": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "applications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Unitask.Application.DTOs.Jobs.JobApplicationSummaryDto"
+            },
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Jobs.JobListItemResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "categoryId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "categoryName": {
+            "type": "string",
+            "nullable": true
+          },
+          "businessId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
             "nullable": true
           },
           "status": {
@@ -4397,8 +4658,11 @@
             "format": "int32",
             "nullable": true
           },
-          "requiredSkillsJson": {
-            "type": "string",
+          "requiredSkills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
             "nullable": true
           },
           "experienceLevel": {
@@ -4450,68 +4714,96 @@
         },
         "additionalProperties": false
       },
-      "LoginRequest": {
+      "Unitask.Application.DTOs.Jobs.JobUpdateRequest": {
         "type": "object",
         "properties": {
-          "email": {
+          "title": {
             "type": "string",
             "nullable": true
           },
-          "password": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "MessageDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "conversationId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "senderId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "content": {
+          "description": {
             "type": "string",
             "nullable": true
           },
-          "attachmentUrl": {
+          "categoryId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "salaryMin": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "salaryMax": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "currency": {
             "type": "string",
             "nullable": true
           },
-          "isRead": {
+          "durationType": {
+            "type": "string",
+            "nullable": true
+          },
+          "durationDays": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "requiredSkills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "experienceLevel": {
+            "type": "string",
+            "nullable": true
+          },
+          "spotsTotal": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "isRemote": {
             "type": "boolean",
             "nullable": true
           },
-          "createdAt": {
+          "deadline": {
             "type": "string",
             "format": "date-time",
             "nullable": true
           },
-          "readAt": {
+          "status": {
             "type": "string",
-            "format": "date-time",
+            "nullable": true
+          },
+          "isFeatured": {
+            "type": "boolean",
             "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "NotificationDto": {
+      "Unitask.Application.DTOs.Notifications.NotificationResponse": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "userId": {
             "type": "string",
             "format": "uuid"
           },
@@ -4532,11 +4824,6 @@
             "format": "uuid",
             "nullable": true
           },
-          "relatedUserId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
           "isRead": {
             "type": "boolean",
             "nullable": true
@@ -4545,40 +4832,38 @@
             "type": "string",
             "format": "date-time",
             "nullable": true
-          },
-          "readAt": {
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Payments.PaymentCreateRequest": {
+        "type": "object",
+        "properties": {
+          "jobApplicationId": {
             "type": "string",
-            "format": "date-time",
+            "format": "uuid"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "paymentMethod": {
+            "type": "string",
             "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "PaymentDto": {
+      "Unitask.Application.DTOs.Payments.PaymentListItemResponse": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
             "format": "uuid"
           },
-          "jobId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
           "jobApplicationId": {
             "type": "string",
             "format": "uuid"
-          },
-          "businessId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "studentId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
           },
           "amount": {
             "type": "number",
@@ -4596,16 +4881,7 @@
             "type": "string",
             "nullable": true
           },
-          "description": {
-            "type": "string",
-            "nullable": true
-          },
           "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "updatedAt": {
             "type": "string",
             "format": "date-time",
             "nullable": true
@@ -4618,60 +4894,10 @@
         },
         "additionalProperties": false
       },
-      "RegisterRequest": {
+      "Unitask.Application.DTOs.Reviews.ReviewCreateRequest": {
         "type": "object",
         "properties": {
-          "email": {
-            "type": "string",
-            "nullable": true
-          },
-          "password": {
-            "type": "string",
-            "nullable": true
-          },
-          "fullName": {
-            "type": "string",
-            "nullable": true
-          },
-          "userType": {
-            "type": "string",
-            "nullable": true
-          },
-          "phone": {
-            "type": "string",
-            "nullable": true
-          },
-          "avatarUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "bio": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ReviewDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "jobId": {
-            "type": "string",
-            "format": "uuid"
-          },
           "jobApplicationId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "fromUserId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "toUserId": {
             "type": "string",
             "format": "uuid"
           },
@@ -4683,20 +4909,47 @@
             "type": "string",
             "nullable": true
           },
-          "skillEndorsementsJson": {
+          "skillEndorsements": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Reviews.ReviewListItemResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "applicationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "rating": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "comment": {
             "type": "string",
             "nullable": true
           },
-          "isAnonymous": {
-            "type": "boolean",
+          "skillEndorsements": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
             "nullable": true
           },
           "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "updatedAt": {
             "type": "string",
             "format": "date-time",
             "nullable": true
@@ -4704,7 +4957,31 @@
         },
         "additionalProperties": false
       },
-      "SkillDto": {
+      "Unitask.Application.DTOs.Skills.AddStudentSkillRequest": {
+        "type": "object",
+        "properties": {
+          "skillId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "proficiency": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Skills.EndorseSkillRequest": {
+        "type": "object",
+        "properties": {
+          "studentId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Skills.SkillResponse": {
         "type": "object",
         "properties": {
           "id": {
@@ -4722,8 +4999,35 @@
           "iconUrl": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Skills.StudentSkillResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
           },
-          "createdAt": {
+          "skillId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "skillName": {
+            "type": "string",
+            "nullable": true
+          },
+          "proficiency": {
+            "type": "string",
+            "nullable": true
+          },
+          "endorsementCount": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "addedAt": {
             "type": "string",
             "format": "date-time",
             "nullable": true
@@ -4731,7 +5035,7 @@
         },
         "additionalProperties": false
       },
-      "StudentDashboardViewDto": {
+      "Unitask.Application.DTOs.StudentDashboardViewDto": {
         "type": "object",
         "properties": {
           "studentId": {
@@ -4782,84 +5086,7 @@
         },
         "additionalProperties": false
       },
-      "StudentProfileDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "userId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "studentEmail": {
-            "type": "string",
-            "nullable": true
-          },
-          "university": {
-            "type": "string",
-            "nullable": true
-          },
-          "major": {
-            "type": "string",
-            "nullable": true
-          },
-          "graduationYear": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "cvUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "gradePoint": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "isVerified": {
-            "type": "boolean",
-            "nullable": true
-          },
-          "verifiedAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "bio": {
-            "type": "string",
-            "nullable": true
-          },
-          "portfolioUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "completedJobs": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "totalEarnings": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "StudentSkillDto": {
+      "Unitask.Application.DTOs.StudentSkillDto": {
         "type": "object",
         "properties": {
           "id": {
@@ -4891,7 +5118,217 @@
         },
         "additionalProperties": false
       },
-      "StudentWalletDto": {
+      "Unitask.Application.DTOs.Students.StudentDashboardJobDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Students.StudentDashboardNotificationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "isRead": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Students.StudentDashboardResponse": {
+        "type": "object",
+        "properties": {
+          "student": {
+            "$ref": "#/components/schemas/Unitask.Application.DTOs.Students.StudentProfileResponse"
+          },
+          "wallet": {
+            "$ref": "#/components/schemas/Unitask.Application.DTOs.Students.StudentWalletSummaryDto"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/Unitask.Application.DTOs.Students.StudentStatsResponse"
+          },
+          "recentJobs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Unitask.Application.DTOs.Students.StudentDashboardJobDto"
+            },
+            "nullable": true
+          },
+          "notifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Unitask.Application.DTOs.Students.StudentDashboardNotificationDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Students.StudentProfileResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "studentEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "university": {
+            "type": "string",
+            "nullable": true
+          },
+          "major": {
+            "type": "string",
+            "nullable": true
+          },
+          "graduationYear": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "isVerified": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "verifiedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "completedJobs": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalEarnings": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true
+          },
+          "portfolioUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "cvUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Students.StudentStatsResponse": {
+        "type": "object",
+        "properties": {
+          "completedJobs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activeApplications": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pendingApplications": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalEarnings": {
+            "type": "number",
+            "format": "double"
+          },
+          "averageRating": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Students.StudentUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "studentEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "university": {
+            "type": "string",
+            "nullable": true
+          },
+          "major": {
+            "type": "string",
+            "nullable": true
+          },
+          "graduationYear": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true
+          },
+          "portfolioUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "cvUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Students.StudentWalletSummaryDto": {
         "type": "object",
         "properties": {
           "id": {
@@ -4925,7 +5362,29 @@
         },
         "additionalProperties": false
       },
-      "UserDto": {
+      "Unitask.Application.DTOs.Users.UpdateUserRequest": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Users.UserProfileResponse": {
         "type": "object",
         "properties": {
           "id": {
@@ -4936,15 +5395,7 @@
             "type": "string",
             "nullable": true
           },
-          "passwordHash": {
-            "type": "string",
-            "nullable": true
-          },
           "fullName": {
-            "type": "string",
-            "nullable": true
-          },
-          "avatarUrl": {
             "type": "string",
             "nullable": true
           },
@@ -4973,12 +5424,50 @@
             "format": "date-time",
             "nullable": true
           },
-          "updatedAt": {
+          "avatarUrl": {
             "type": "string",
-            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Users.VerifyEmailRequest": {
+        "type": "object",
+        "properties": {
+          "verificationCode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Wallets.WalletResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "studentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "balance": {
+            "type": "number",
+            "format": "double",
             "nullable": true
           },
-          "lastLogin": {
+          "totalEarned": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalWithdrawn": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "updatedAt": {
             "type": "string",
             "format": "date-time",
             "nullable": true
@@ -4986,7 +5475,57 @@
         },
         "additionalProperties": false
       },
-      "WithdrawalRequestDto": {
+      "Unitask.Application.DTOs.Wallets.WithdrawRequest": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "bankAccountName": {
+            "type": "string",
+            "nullable": true
+          },
+          "bankAccountNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "bankName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.Wallets.WithdrawalResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "requestedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Unitask.Application.DTOs.WithdrawalRequestDto": {
         "type": "object",
         "properties": {
           "id": {

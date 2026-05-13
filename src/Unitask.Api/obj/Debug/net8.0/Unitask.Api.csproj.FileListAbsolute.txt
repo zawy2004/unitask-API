@@ -151,4 +151,5 @@ C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Api\bin\Debug\net8.0\Mic
 C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Api\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
 C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Api\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
 C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Api\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
+c:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Api\obj\Debug\net8.0\Unitask.Api.sourcelink.json
 C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Api\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

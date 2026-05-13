@@ -10,3 +10,4 @@ C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Domain\obj\Debug\net8.0\
 C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Domain\obj\Debug\net8.0\refint\Unitask.Domain.dll
 C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Domain\obj\Debug\net8.0\Unitask.Domain.pdb
 C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Domain\obj\Debug\net8.0\ref\Unitask.Domain.dll
+c:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Domain\obj\Debug\net8.0\Unitask.Domain.sourcelink.json
