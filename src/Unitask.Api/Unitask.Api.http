@@ -1,0 +1,6 @@
+@Unitask.Api_HostAddress = http://localhost:5076
+
+GET {{Unitask.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

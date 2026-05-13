@@ -1,0 +1,418 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Unitask.Api.Extensions;
+using Unitask.Application.DTOs.Common;
+using Unitask.Application.DTOs.Jobs;
+using Unitask.Domain.Entities;
+using Unitask.Infrastructure.Persistence;
+
+namespace Unitask.Api.Controllers;
+
+[ApiController]
+[Route("api/jobs")]
+public class JobsController : ControllerBase
+{
+    private readonly UnitaskDbContext _dbContext;
+
+    public JobsController(UnitaskDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<PagedResult<JobListItemResponse>>> GetJobs(
+        [FromQuery] string? status,
+        [FromQuery] Guid? categoryId,
+        [FromQuery] bool? isRemote,
+        [FromQuery] bool? isFeatured,
+        [FromQuery] int page = 1,
+        [FromQuery] int limit = 10)
+    {
+        var query = _dbContext.Jobs.AsNoTracking()
+            .Include(j => j.Category)
+            .Include(j => j.Business)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(status))
+        {
+            query = query.Where(j => j.Status == status);
+        }
+
+        if (categoryId.HasValue)
+        {
+            query = query.Where(j => j.CategoryId == categoryId.Value);
+        }
+
+        if (isRemote.HasValue)
+        {
+            query = query.Where(j => j.IsRemote == isRemote.Value);
+        }
+
+        if (isFeatured.HasValue)
+        {
+            query = query.Where(j => j.IsFeatured == isFeatured.Value);
+        }
+
+        var total = await query.CountAsync();
+        var items = await query
+            .OrderByDescending(j => j.CreatedAt)
+            .Skip((page - 1) * limit)
+            .Take(limit)
+            .Select(j => new JobListItemResponse
+            {
+                Id = j.Id,
+                Title = j.Title,
+                Description = j.Description,
+                CategoryId = j.CategoryId,
+                CategoryName = j.Category != null ? j.Category.Name : null,
+                BusinessId = j.BusinessId,
+                CompanyName = j.Business.CompanyName,
+                Tags = ParseJsonList(j.TagsJson),
+                Status = j.Status,
+                SalaryMin = j.SalaryMin,
+                SalaryMax = j.SalaryMax,
+                Currency = j.Currency,
+                DurationType = j.DurationType,
+                DurationDays = j.DurationDays,
+                RequiredSkills = ParseJsonList(j.RequiredSkillsJson),
+                ExperienceLevel = j.ExperienceLevel,
+                SpotsTotal = j.SpotsTotal,
+                SpotsFilled = j.SpotsFilled,
+                Location = j.Location,
+                IsRemote = j.IsRemote,
+                IsFeatured = j.IsFeatured,
+                Deadline = j.Deadline,
+                CreatedAt = j.CreatedAt,
+                UpdatedAt = j.UpdatedAt,
+                PublishedAt = j.PublishedAt
+            })
+            .ToListAsync();
+
+        return Ok(new PagedResult<JobListItemResponse>
+        {
+            Total = total,
+            Page = page,
+            Limit = limit,
+            Data = items
+        });
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<ActionResult<JobListItemResponse>> CreateJob([FromBody] JobCreateRequest request)
+    {
+        var userId = User.GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+
+        var business = await _dbContext.BusinessProfiles
+            .FirstOrDefaultAsync(b => b.UserId == userId.Value);
+        if (business is null)
+        {
+            return BadRequest(new { message = "Business profile not found." });
+        }
+
+        var job = new Job
+        {
+            Id = Guid.NewGuid(),
+            BusinessId = business.Id,
+            CategoryId = request.CategoryId,
+            Title = request.Title,
+            Description = request.Description,
+            TagsJson = SerializeJsonList(request.Tags),
+            Status = "draft",
+            SalaryMin = request.SalaryMin,
+            SalaryMax = request.SalaryMax,
+            Currency = request.Currency,
+            DurationType = request.DurationType,
+            DurationDays = request.DurationDays,
+            RequiredSkillsJson = SerializeJsonList(request.RequiredSkills),
+            ExperienceLevel = request.ExperienceLevel,
+            SpotsTotal = request.SpotsTotal,
+            SpotsFilled = 0,
+            Location = request.Location,
+            IsRemote = request.IsRemote,
+            IsFeatured = false,
+            Deadline = request.Deadline,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        _dbContext.Jobs.Add(job);
+        await _dbContext.SaveChangesAsync();
+
+        var response = new JobListItemResponse
+        {
+            Id = job.Id,
+            Title = job.Title,
+            Description = job.Description,
+            CategoryId = job.CategoryId,
+            BusinessId = job.BusinessId,
+            CompanyName = business.CompanyName,
+            Tags = ParseJsonList(job.TagsJson),
+            Status = job.Status,
+            SalaryMin = job.SalaryMin,
+            SalaryMax = job.SalaryMax,
+            Currency = job.Currency,
+            DurationType = job.DurationType,
+            DurationDays = job.DurationDays,
+            RequiredSkills = ParseJsonList(job.RequiredSkillsJson),
+            ExperienceLevel = job.ExperienceLevel,
+            SpotsTotal = job.SpotsTotal,
+            SpotsFilled = job.SpotsFilled,
+            Location = job.Location,
+            IsRemote = job.IsRemote,
+            IsFeatured = job.IsFeatured,
+            Deadline = job.Deadline,
+            CreatedAt = job.CreatedAt,
+            UpdatedAt = job.UpdatedAt,
+            PublishedAt = job.PublishedAt
+        };
+
+        return CreatedAtAction(nameof(GetJobById), new { id = job.Id }, response);
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<JobDetailsResponse>> GetJobById(Guid id)
+    {
+        var job = await _dbContext.Jobs.AsNoTracking()
+            .Include(j => j.Category)
+            .Include(j => j.Business)
+            .Include(j => j.JobApplications)
+            .ThenInclude(a => a.Student)
+            .ThenInclude(s => s.User)
+            .FirstOrDefaultAsync(j => j.Id == id);
+
+        if (job is null)
+        {
+            return NotFound();
+        }
+
+        var studentUserIds = job.JobApplications
+            .Select(a => a.Student.UserId)
+            .Distinct()
+            .ToList();
+
+        var ratings = await _dbContext.Reviews.AsNoTracking()
+            .Where(r => studentUserIds.Contains(r.ToUserId))
+            .GroupBy(r => r.ToUserId)
+            .Select(g => new { UserId = g.Key, Rating = g.Average(r => (decimal?)r.Rating) ?? 0m })
+            .ToDictionaryAsync(x => x.UserId, x => x.Rating);
+
+        var applicationResponses = job.JobApplications.Select(application => new JobApplicationSummaryDto
+        {
+            Id = application.Id,
+            Status = application.Status,
+            AppliedAt = application.AppliedAt,
+            Student = new JobApplicationStudentDto
+            {
+                Id = application.Student.Id,
+                Name = application.Student.User.FullName,
+                Rating = ratings.TryGetValue(application.Student.UserId, out var rating) ? rating : 0m
+            }
+        }).ToList();
+
+        var response = new JobDetailsResponse
+        {
+            Id = job.Id,
+            Title = job.Title,
+            Description = job.Description,
+            Category = job.Category is null ? null : new JobCategoryInfoDto
+            {
+                Id = job.Category.Id,
+                Name = job.Category.Name,
+                Slug = job.Category.Slug,
+                Description = job.Category.Description,
+                JobCount = job.Category.JobCount
+            },
+            Business = new JobBusinessInfoDto
+            {
+                Id = job.Business.Id,
+                CompanyName = job.Business.CompanyName,
+                Rating = job.Business.Rating
+            },
+            Tags = ParseJsonList(job.TagsJson),
+            Status = job.Status,
+            SalaryMin = job.SalaryMin,
+            SalaryMax = job.SalaryMax,
+            RequiredSkills = ParseJsonList(job.RequiredSkillsJson),
+            SpotsTotal = job.SpotsTotal,
+            SpotsFilled = job.SpotsFilled,
+            Applications = applicationResponses,
+            CreatedAt = job.CreatedAt
+        };
+
+        return Ok(response);
+    }
+
+    [Authorize]
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateJob(Guid id, [FromBody] JobUpdateRequest request)
+    {
+        var job = await _dbContext.Jobs.FirstOrDefaultAsync(j => j.Id == id);
+        if (job is null)
+        {
+            return NotFound();
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Title))
+        {
+            job.Title = request.Title;
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Description))
+        {
+            job.Description = request.Description;
+        }
+
+        if (request.CategoryId.HasValue)
+        {
+            job.CategoryId = request.CategoryId;
+        }
+
+        if (request.Tags is not null)
+        {
+            job.TagsJson = SerializeJsonList(request.Tags);
+        }
+
+        if (request.SalaryMin.HasValue)
+        {
+            job.SalaryMin = request.SalaryMin;
+        }
+
+        if (request.SalaryMax.HasValue)
+        {
+            job.SalaryMax = request.SalaryMax;
+        }
+
+        if (request.Currency is not null)
+        {
+            job.Currency = request.Currency;
+        }
+
+        if (request.DurationType is not null)
+        {
+            job.DurationType = request.DurationType;
+        }
+
+        if (request.DurationDays.HasValue)
+        {
+            job.DurationDays = request.DurationDays;
+        }
+
+        if (request.RequiredSkills is not null)
+        {
+            job.RequiredSkillsJson = SerializeJsonList(request.RequiredSkills);
+        }
+
+        if (request.ExperienceLevel is not null)
+        {
+            job.ExperienceLevel = request.ExperienceLevel;
+        }
+
+        if (request.SpotsTotal.HasValue)
+        {
+            job.SpotsTotal = request.SpotsTotal;
+        }
+
+        if (request.Location is not null)
+        {
+            job.Location = request.Location;
+        }
+
+        if (request.IsRemote.HasValue)
+        {
+            job.IsRemote = request.IsRemote;
+        }
+
+        if (request.IsFeatured.HasValue)
+        {
+            job.IsFeatured = request.IsFeatured;
+        }
+
+        if (request.Deadline.HasValue)
+        {
+            job.Deadline = request.Deadline;
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Status))
+        {
+            job.Status = request.Status;
+        }
+
+        job.UpdatedAt = DateTime.UtcNow;
+        await _dbContext.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    [Authorize]
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteJob(Guid id)
+    {
+        var job = await _dbContext.Jobs.FirstOrDefaultAsync(j => j.Id == id);
+        if (job is null)
+        {
+            return NotFound();
+        }
+
+        _dbContext.Jobs.Remove(job);
+        await _dbContext.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    [Authorize]
+    [HttpPut("{id:guid}/publish")]
+    public async Task<IActionResult> PublishJob(Guid id)
+    {
+        var job = await _dbContext.Jobs.FirstOrDefaultAsync(j => j.Id == id);
+        if (job is null)
+        {
+            return NotFound();
+        }
+
+        job.Status = "open";
+        job.PublishedAt = DateTime.UtcNow;
+        job.UpdatedAt = DateTime.UtcNow;
+        await _dbContext.SaveChangesAsync();
+
+        return Ok();
+    }
+
+    private static IReadOnlyList<string> ParseJsonList(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return Array.Empty<string>();
+        }
+
+        try
+        {
+            return JsonSerializer.Deserialize<List<string>>(json) ?? new List<string>();
+        }
+        catch
+        {
+            return Array.Empty<string>();
+        }
+    }
+
+    private static string? SerializeJsonList(IEnumerable<string>? values)
+    {
+        if (values is null)
+        {
+            return null;
+        }
+
+        return JsonSerializer.Serialize(values);
+    }
+}
+

@@ -1,0 +1,12 @@
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Domain\bin\Debug\net8.0\Unitask.Domain.deps.json
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Domain\bin\Debug\net8.0\Unitask.Domain.dll
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Domain\bin\Debug\net8.0\Unitask.Domain.pdb
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Domain\obj\Debug\net8.0\Unitask.Domain.csproj.AssemblyReference.cache
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Domain\obj\Debug\net8.0\Unitask.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Domain\obj\Debug\net8.0\Unitask.Domain.AssemblyInfoInputs.cache
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Domain\obj\Debug\net8.0\Unitask.Domain.AssemblyInfo.cs
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Domain\obj\Debug\net8.0\Unitask.Domain.csproj.CoreCompileInputs.cache
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Domain\obj\Debug\net8.0\Unitask.Domain.dll
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Domain\obj\Debug\net8.0\refint\Unitask.Domain.dll
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Domain\obj\Debug\net8.0\Unitask.Domain.pdb
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Domain\obj\Debug\net8.0\ref\Unitask.Domain.dll

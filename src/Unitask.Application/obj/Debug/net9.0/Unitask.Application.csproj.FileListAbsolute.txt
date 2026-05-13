@@ -1,0 +1,15 @@
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\bin\Debug\net9.0\Unitask.Application.deps.json
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\bin\Debug\net9.0\Unitask.Application.dll
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\bin\Debug\net9.0\Unitask.Application.pdb
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\bin\Debug\net9.0\Unitask.Domain.dll
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\bin\Debug\net9.0\Unitask.Domain.pdb
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\obj\Debug\net9.0\Unitask.Application.csproj.AssemblyReference.cache
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\obj\Debug\net9.0\Unitask.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\obj\Debug\net9.0\Unitask.Application.AssemblyInfoInputs.cache
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\obj\Debug\net9.0\Unitask.Application.AssemblyInfo.cs
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\obj\Debug\net9.0\Unitask.Application.csproj.CoreCompileInputs.cache
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\obj\Debug\net9.0\Unitask..16FFC7FE.Up2Date
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\obj\Debug\net9.0\Unitask.Application.dll
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\obj\Debug\net9.0\refint\Unitask.Application.dll
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\obj\Debug\net9.0\Unitask.Application.pdb
+C:\Users\gia huy\Documents\duan\unitask-API\src\Unitask.Application\obj\Debug\net9.0\ref\Unitask.Application.dll
