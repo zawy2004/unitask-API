@@ -307,3 +307,11 @@ D:\test\exe\unitask-API\src\Unitask.Api\obj\Debug\net8.0\staticwebassets.build.e
 D:\test\exe\unitask-API\src\Unitask.Api\obj\Debug\net8.0\Unitask..9953252C.Up2Date
 D:\test\exe\unitask-API\src\Unitask.Api\obj\Debug\net8.0\Unitask.Api.genruntimeconfig.cache
 D:\test\exe\unitask-API\src\Unitask.Api\obj\Debug\net8.0\ref\Unitask.Api.dll
+d:\test\exe\unitask-API\artifacts\build\appsettings.Development.json
+d:\test\exe\unitask-API\artifacts\build\appsettings.json
+d:\test\exe\unitask-API\artifacts\build\Unitask.Api.staticwebassets.endpoints.json
+d:\test\exe\unitask-API\artifacts\build\Unitask.Api.exe
+d:\test\exe\unitask-API\artifacts\build\Unitask.Api.deps.json
+d:\test\exe\unitask-API\artifacts\build\Unitask.Api.runtimeconfig.json
+d:\test\exe\unitask-API\artifacts\build\Unitask.Api.dll
+d:\test\exe\unitask-API\artifacts\build\Unitask.Api.pdb

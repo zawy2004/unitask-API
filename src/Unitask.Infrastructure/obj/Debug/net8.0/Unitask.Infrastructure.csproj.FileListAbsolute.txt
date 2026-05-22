@@ -38,3 +38,7 @@ D:\test\exe\unitask-API\src\Unitask.Infrastructure\bin\Debug\net8.0\Unitask.Appl
 D:\test\exe\unitask-API\src\Unitask.Infrastructure\obj\Debug\net8.0\Unitask..42F6CB18.Up2Date
 D:\test\exe\unitask-API\src\Unitask.Infrastructure\obj\Debug\net8.0\Unitask.Infrastructure.genruntimeconfig.cache
 D:\test\exe\unitask-API\src\Unitask.Infrastructure\obj\Debug\net8.0\ref\Unitask.Infrastructure.dll
+d:\test\exe\unitask-API\artifacts\build\Unitask.Infrastructure.deps.json
+d:\test\exe\unitask-API\artifacts\build\Unitask.Infrastructure.runtimeconfig.json
+d:\test\exe\unitask-API\artifacts\build\Unitask.Infrastructure.dll
+d:\test\exe\unitask-API\artifacts\build\Unitask.Infrastructure.pdb

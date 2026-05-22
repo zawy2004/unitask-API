@@ -30,3 +30,6 @@ D:\test\exe\unitask-API\src\Unitask.Application\obj\Debug\net8.0\Unitask.Applica
 D:\test\exe\unitask-API\src\Unitask.Application\obj\Debug\net8.0\refint\Unitask.Application.dll
 D:\test\exe\unitask-API\src\Unitask.Application\obj\Debug\net8.0\Unitask.Application.pdb
 D:\test\exe\unitask-API\src\Unitask.Application\obj\Debug\net8.0\ref\Unitask.Application.dll
+d:\test\exe\unitask-API\artifacts\build\Unitask.Application.deps.json
+d:\test\exe\unitask-API\artifacts\build\Unitask.Application.dll
+d:\test\exe\unitask-API\artifacts\build\Unitask.Application.pdb

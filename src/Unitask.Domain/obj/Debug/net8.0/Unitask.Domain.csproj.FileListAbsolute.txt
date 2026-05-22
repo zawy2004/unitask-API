@@ -24,3 +24,6 @@ D:\test\exe\unitask-API\src\Unitask.Domain\obj\Debug\net8.0\Unitask.Domain.dll
 D:\test\exe\unitask-API\src\Unitask.Domain\obj\Debug\net8.0\refint\Unitask.Domain.dll
 D:\test\exe\unitask-API\src\Unitask.Domain\obj\Debug\net8.0\Unitask.Domain.pdb
 D:\test\exe\unitask-API\src\Unitask.Domain\obj\Debug\net8.0\ref\Unitask.Domain.dll
+d:\test\exe\unitask-API\artifacts\build\Unitask.Domain.deps.json
+d:\test\exe\unitask-API\artifacts\build\Unitask.Domain.dll
+d:\test\exe\unitask-API\artifacts\build\Unitask.Domain.pdb
