@@ -3911,23 +3911,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\gia huy\\.nuget\\packages\\": {},
+    "C:\\Users\\ACER\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\gia huy\\Documents\\duan\\unitask-API\\src\\Unitask.Infrastructure\\Unitask.Infrastructure.csproj",
+      "projectUniqueName": "D:\\test\\exe\\unitask-API\\src\\Unitask.Infrastructure\\Unitask.Infrastructure.csproj",
       "projectName": "Unitask.Infrastructure",
-      "projectPath": "C:\\Users\\gia huy\\Documents\\duan\\unitask-API\\src\\Unitask.Infrastructure\\Unitask.Infrastructure.csproj",
-      "packagesPath": "C:\\Users\\gia huy\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\gia huy\\Documents\\duan\\unitask-API\\src\\Unitask.Infrastructure\\obj\\",
+      "projectPath": "D:\\test\\exe\\unitask-API\\src\\Unitask.Infrastructure\\Unitask.Infrastructure.csproj",
+      "packagesPath": "C:\\Users\\ACER\\.nuget\\packages\\",
+      "outputPath": "D:\\test\\exe\\unitask-API\\src\\Unitask.Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\gia huy\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\ACER\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -3942,11 +3942,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\gia huy\\Documents\\duan\\unitask-API\\src\\Unitask.Application\\Unitask.Application.csproj": {
-              "projectPath": "C:\\Users\\gia huy\\Documents\\duan\\unitask-API\\src\\Unitask.Application\\Unitask.Application.csproj"
+            "D:\\test\\exe\\unitask-API\\src\\Unitask.Application\\Unitask.Application.csproj": {
+              "projectPath": "D:\\test\\exe\\unitask-API\\src\\Unitask.Application\\Unitask.Application.csproj"
             },
-            "C:\\Users\\gia huy\\Documents\\duan\\unitask-API\\src\\Unitask.Domain\\Unitask.Domain.csproj": {
-              "projectPath": "C:\\Users\\gia huy\\Documents\\duan\\unitask-API\\src\\Unitask.Domain\\Unitask.Domain.csproj"
+            "D:\\test\\exe\\unitask-API\\src\\Unitask.Domain\\Unitask.Domain.csproj": {
+              "projectPath": "D:\\test\\exe\\unitask-API\\src\\Unitask.Domain\\Unitask.Domain.csproj"
             }
           }
         }
@@ -4010,7 +4010,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.313/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
       }
     }
   },

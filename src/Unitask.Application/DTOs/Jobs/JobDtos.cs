@@ -164,9 +164,21 @@ public class JobDetailsResponse
 
     public int? SpotsFilled { get; set; }
 
+    public string? Location { get; set; }
+
+    public bool? IsRemote { get; set; }
+
+    public string? DurationType { get; set; }
+
+    public int? DurationDays { get; set; }
+
+    public DateTime? Deadline { get; set; }
+
     public IReadOnlyList<JobApplicationSummaryDto> Applications { get; set; } = Array.Empty<JobApplicationSummaryDto>();
 
     public DateTime? CreatedAt { get; set; }
+
+    public DateTime? PublishedAt { get; set; }
 }
 
 public class JobSummaryDto

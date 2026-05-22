@@ -31,67 +31,70 @@ public class JobsController : ControllerBase
         [FromQuery] Guid? categoryId,
         [FromQuery] bool? isRemote,
         [FromQuery] bool? isFeatured,
+        [FromQuery] string? search,
         [FromQuery] int page = 1,
         [FromQuery] int limit = 10)
     {
-        var query = _dbContext.Jobs.AsNoTracking()
+        var jobQuery = _dbContext.Jobs.AsNoTracking()
             .Include(j => j.Category)
             .Include(j => j.Business)
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(status))
         {
-            query = query.Where(j => j.Status == status);
+            jobQuery = jobQuery.Where(j => j.Status == status);
         }
 
         if (categoryId.HasValue)
         {
-            query = query.Where(j => j.CategoryId == categoryId.Value);
+            jobQuery = jobQuery.Where(j => j.CategoryId == categoryId.Value);
         }
 
         if (isRemote.HasValue)
         {
-            query = query.Where(j => j.IsRemote == isRemote.Value);
+            jobQuery = jobQuery.Where(j => j.IsRemote == isRemote.Value);
         }
 
         if (isFeatured.HasValue)
         {
-            query = query.Where(j => j.IsFeatured == isFeatured.Value);
+            jobQuery = jobQuery.Where(j => j.IsFeatured == isFeatured.Value);
         }
 
-        var total = await query.CountAsync();
-        var items = await query
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var normalizedSearch = Normalize(search);
+            var rankedJobs = (await jobQuery.ToListAsync())
+                .Select(job => new
+                {
+                    Job = job,
+                    Score = ScoreJob(job, normalizedSearch)
+                })
+                .OrderByDescending(item => item.Score)
+                .ThenByDescending(item => item.Job.CreatedAt)
+                .ToList();
+
+            var searchTotal = rankedJobs.Count;
+            var searchItems = rankedJobs
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .Select(item => MapJob(item.Job))
+                .ToList();
+
+            return Ok(new PagedResult<JobListItemResponse>
+            {
+                Total = searchTotal,
+                Page = page,
+                Limit = limit,
+                Data = searchItems
+            });
+        }
+
+        var total = await jobQuery.CountAsync();
+        var items = await jobQuery
             .OrderByDescending(j => j.CreatedAt)
             .Skip((page - 1) * limit)
             .Take(limit)
-            .Select(j => new JobListItemResponse
-            {
-                Id = j.Id,
-                Title = j.Title,
-                Description = j.Description,
-                CategoryId = j.CategoryId,
-                CategoryName = j.Category != null ? j.Category.Name : null,
-                BusinessId = j.BusinessId,
-                CompanyName = j.Business.CompanyName,
-                Tags = ParseJsonList(j.TagsJson),
-                Status = j.Status,
-                SalaryMin = j.SalaryMin,
-                SalaryMax = j.SalaryMax,
-                Currency = j.Currency,
-                DurationType = j.DurationType,
-                DurationDays = j.DurationDays,
-                RequiredSkills = ParseJsonList(j.RequiredSkillsJson),
-                ExperienceLevel = j.ExperienceLevel,
-                SpotsTotal = j.SpotsTotal,
-                SpotsFilled = j.SpotsFilled,
-                Location = j.Location,
-                IsRemote = j.IsRemote,
-                IsFeatured = j.IsFeatured,
-                Deadline = j.Deadline,
-                CreatedAt = j.CreatedAt,
-                UpdatedAt = j.UpdatedAt,
-                PublishedAt = j.PublishedAt
-            })
+            .Select(j => MapJob(j))
             .ToListAsync();
 
         return Ok(new PagedResult<JobListItemResponse>
@@ -246,8 +249,14 @@ public class JobsController : ControllerBase
             RequiredSkills = ParseJsonList(job.RequiredSkillsJson),
             SpotsTotal = job.SpotsTotal,
             SpotsFilled = job.SpotsFilled,
+            Location = job.Location,
+            IsRemote = job.IsRemote,
+            DurationType = job.DurationType,
+            DurationDays = job.DurationDays,
+            Deadline = job.Deadline,
             Applications = applicationResponses,
-            CreatedAt = job.CreatedAt
+            CreatedAt = job.CreatedAt,
+            PublishedAt = job.PublishedAt
         };
 
         return Ok(response);
@@ -386,6 +395,100 @@ public class JobsController : ControllerBase
         await _dbContext.SaveChangesAsync();
 
         return Ok();
+    }
+
+    private static JobListItemResponse MapJob(Job job)
+    {
+        return new JobListItemResponse
+        {
+            Id = job.Id,
+            Title = job.Title,
+            Description = job.Description,
+            CategoryId = job.CategoryId,
+            CategoryName = job.Category != null ? job.Category.Name : null,
+            BusinessId = job.BusinessId,
+            CompanyName = job.Business.CompanyName,
+            Tags = ParseJsonList(job.TagsJson),
+            Status = job.Status,
+            SalaryMin = job.SalaryMin,
+            SalaryMax = job.SalaryMax,
+            Currency = job.Currency,
+            DurationType = job.DurationType,
+            DurationDays = job.DurationDays,
+            RequiredSkills = ParseJsonList(job.RequiredSkillsJson),
+            ExperienceLevel = job.ExperienceLevel,
+            SpotsTotal = job.SpotsTotal,
+            SpotsFilled = job.SpotsFilled,
+            Location = job.Location,
+            IsRemote = job.IsRemote,
+            IsFeatured = job.IsFeatured,
+            Deadline = job.Deadline,
+            CreatedAt = job.CreatedAt,
+            UpdatedAt = job.UpdatedAt,
+            PublishedAt = job.PublishedAt
+        };
+    }
+
+    private static int ScoreJob(Job job, string normalizedSearch)
+    {
+        if (string.IsNullOrWhiteSpace(normalizedSearch))
+        {
+            return 0;
+        }
+
+        var score = 0;
+        var tokens = normalizedSearch.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(token => token.Length > 2)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        var jobText = Normalize(string.Join(' ', new[]
+        {
+            job.Title,
+            job.Description,
+            job.Location,
+            job.Category?.Name,
+            job.Business.CompanyName,
+            job.TagsJson,
+            job.RequiredSkillsJson
+        }.Where(value => !string.IsNullOrWhiteSpace(value))));
+
+        score += tokens.Count(token => jobText.Contains(token)) * 5;
+
+        if (job.IsFeatured == true)
+        {
+            score += 6;
+        }
+
+        if (job.Deadline.HasValue && job.Deadline.Value.Date <= DateTime.UtcNow.AddDays(7).Date)
+        {
+            score += 3;
+        }
+
+        return score;
+    }
+
+    private static string Normalize(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        var normalized = value.Trim().Normalize(System.Text.NormalizationForm.FormD);
+        var builder = new System.Text.StringBuilder(normalized.Length);
+
+        foreach (var character in normalized)
+        {
+            if (System.Globalization.CharUnicodeInfo.GetUnicodeCategory(character) == System.Globalization.UnicodeCategory.NonSpacingMark)
+            {
+                continue;
+            }
+
+            builder.Append(char.ToLowerInvariant(character));
+        }
+
+        return builder.ToString();
     }
 
     private static IReadOnlyList<string> ParseJsonList(string? json)

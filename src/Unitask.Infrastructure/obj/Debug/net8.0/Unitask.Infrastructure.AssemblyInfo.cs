@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Unitask.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d2eabf5f06ead5c873195c530098bcf1a68b4c4d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8d7151da7dd079033f52c4465bad768892f8feba")]
 [assembly: System.Reflection.AssemblyProductAttribute("Unitask.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Unitask.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
