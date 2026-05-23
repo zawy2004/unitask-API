@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Unitask.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+db5de4cdd268491dd2b0005d415d1a1190614076")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f4f991887a17d2333b509a412e9c678017e7a0c0")]
 [assembly: System.Reflection.AssemblyProductAttribute("Unitask.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Unitask.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

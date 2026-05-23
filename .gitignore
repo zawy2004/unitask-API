@@ -1,0 +1,12 @@
+## Build
+bin/
+obj/
+publish/
+
+## IDE
+.vs/
+*.user
+*.suo
+
+## Secrets (use deploy/env on server or copy appsettings.Development.example.json)
+appsettings.*.local.json

@@ -152,3 +152,5 @@ D:\test\exe\unitask-API\src\Unitask.Api\obj\Release\net8.0\refint\Unitask.Api.dl
 D:\test\exe\unitask-API\src\Unitask.Api\obj\Release\net8.0\Unitask.Api.pdb
 D:\test\exe\unitask-API\src\Unitask.Api\obj\Release\net8.0\Unitask.Api.genruntimeconfig.cache
 D:\test\exe\unitask-API\src\Unitask.Api\obj\Release\net8.0\ref\Unitask.Api.dll
+D:\test\exe\unitask-API\src\Unitask.Api\bin\Release\net8.0\appsettings.Development.example.json
+D:\test\exe\unitask-API\src\Unitask.Api\bin\Release\net8.0\appsettings.Production.json

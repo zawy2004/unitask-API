@@ -35,8 +35,8 @@
               "D:\\test\\exe\\unitask-API\\src\\Unitask.Application\\Unitask.Application.csproj": {
                 "projectPath": "D:\\test\\exe\\unitask-API\\src\\Unitask.Application\\Unitask.Application.csproj"
               },
-              "d:\\test\\exe\\unitask-API\\src\\Unitask.Infrastructure\\Unitask.Infrastructure.csproj": {
-                "projectPath": "d:\\test\\exe\\unitask-API\\src\\Unitask.Infrastructure\\Unitask.Infrastructure.csproj"
+              "D:\\test\\exe\\unitask-API\\src\\Unitask.Infrastructure\\Unitask.Infrastructure.csproj": {
+                "projectPath": "D:\\test\\exe\\unitask-API\\src\\Unitask.Infrastructure\\Unitask.Infrastructure.csproj"
               }
             }
           }
@@ -87,12 +87,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.NETCore.App.Host.linux-x64",
-              "version": "[8.0.20, 8.0.20]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -102,11 +96,6 @@
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "linux-x64": {
-          "#import": []
         }
       }
     },
@@ -187,11 +176,6 @@
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
         }
-      },
-      "runtimes": {
-        "linux-x64": {
-          "#import": []
-        }
       }
     },
     "D:\\test\\exe\\unitask-API\\src\\Unitask.Domain\\Unitask.Domain.csproj": {
@@ -263,21 +247,16 @@
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
         }
-      },
-      "runtimes": {
-        "linux-x64": {
-          "#import": []
-        }
       }
     },
-    "d:\\test\\exe\\unitask-API\\src\\Unitask.Infrastructure\\Unitask.Infrastructure.csproj": {
+    "D:\\test\\exe\\unitask-API\\src\\Unitask.Infrastructure\\Unitask.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\test\\exe\\unitask-API\\src\\Unitask.Infrastructure\\Unitask.Infrastructure.csproj",
+        "projectUniqueName": "D:\\test\\exe\\unitask-API\\src\\Unitask.Infrastructure\\Unitask.Infrastructure.csproj",
         "projectName": "Unitask.Infrastructure",
-        "projectPath": "d:\\test\\exe\\unitask-API\\src\\Unitask.Infrastructure\\Unitask.Infrastructure.csproj",
+        "projectPath": "D:\\test\\exe\\unitask-API\\src\\Unitask.Infrastructure\\Unitask.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\ACER\\.nuget\\packages\\",
-        "outputPath": "d:\\test\\exe\\unitask-API\\src\\Unitask.Infrastructure\\obj\\",
+        "outputPath": "D:\\test\\exe\\unitask-API\\src\\Unitask.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -367,11 +346,6 @@
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "linux-x64": {
-          "#import": []
         }
       }
     }
