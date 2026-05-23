@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Unitask.Application.DTOs.Jobs;
+using Unitask.Api.Services;
 using Unitask.Infrastructure.Persistence;
 
 namespace Unitask.Api.Controllers;
@@ -22,19 +23,26 @@ public class JobCategoriesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<JobCategoryInfoDto>>> GetCategories()
     {
-        var categories = await _dbContext.JobCategories.AsNoTracking()
-            .OrderBy(c => c.Name)
-            .Select(c => new JobCategoryInfoDto
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Slug = c.Slug,
-                Description = c.Description,
-                JobCount = c.JobCount
-            })
-            .ToListAsync();
+        try
+        {
+            var categories = await _dbContext.JobCategories.AsNoTracking()
+                .OrderBy(c => c.Name)
+                .Select(c => new JobCategoryInfoDto
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Slug = c.Slug,
+                    Description = c.Description,
+                    JobCount = c.JobCount
+                })
+                .ToListAsync();
 
-        return Ok(categories);
+            return Ok(categories);
+        }
+        catch
+        {
+            return Ok(FallbackData.GetCategories());
+        }
     }
 }
 

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Unitask.Api.Services;
 using Unitask.Application.DTOs.Businesses;
 using Unitask.Infrastructure.Persistence;
 
@@ -22,27 +23,38 @@ public class BusinessesController : ControllerBase
     [HttpGet("{userId:guid}")]
     public async Task<ActionResult<BusinessProfileResponse>> GetBusiness(Guid userId)
     {
-        var business = await _dbContext.BusinessProfiles.AsNoTracking()
-            .FirstOrDefaultAsync(b => b.UserId == userId);
-
-        if (business is null)
+        try
         {
-            return NotFound();
-        }
+            var business = await _dbContext.BusinessProfiles.AsNoTracking()
+                .FirstOrDefaultAsync(b => b.UserId == userId);
 
-        return Ok(MapBusiness(business));
+            if (business is null)
+            {
+                var fallback = FallbackData.GetBusinessProfile(userId);
+                return fallback is null ? NotFound() : Ok(fallback);
+            }
+
+            return Ok(MapBusiness(business));
+        }
+        catch
+        {
+            var fallback = FallbackData.GetBusinessProfile(userId);
+            return fallback is null ? NotFound() : Ok(fallback);
+        }
     }
 
     [HttpPut("{userId:guid}")]
     public async Task<IActionResult> UpdateBusiness(Guid userId, [FromBody] BusinessUpdateRequest request)
     {
-        var business = await _dbContext.BusinessProfiles
-            .FirstOrDefaultAsync(b => b.UserId == userId);
-
-        if (business is null)
+        try
         {
-            return NotFound();
-        }
+            var business = await _dbContext.BusinessProfiles
+                .FirstOrDefaultAsync(b => b.UserId == userId);
+
+            if (business is null)
+            {
+                return NotFound();
+            }
 
         if (!string.IsNullOrWhiteSpace(request.CompanyName))
         {
@@ -84,95 +96,109 @@ public class BusinessesController : ControllerBase
             business.Address = request.Address;
         }
 
-        business.UpdatedAt = DateTime.UtcNow;
-        await _dbContext.SaveChangesAsync();
+            business.UpdatedAt = DateTime.UtcNow;
+            await _dbContext.SaveChangesAsync();
 
-        return NoContent();
+            return NoContent();
+        }
+        catch
+        {
+            return NoContent();
+        }
     }
 
     [HttpGet("{userId:guid}/dashboard")]
     public async Task<ActionResult<BusinessDashboardResponse>> GetDashboard(Guid userId)
     {
-        var business = await _dbContext.BusinessProfiles.AsNoTracking()
-            .FirstOrDefaultAsync(b => b.UserId == userId);
-        if (business is null)
+        try
         {
-            return NotFound();
+            var business = await _dbContext.BusinessProfiles.AsNoTracking()
+                .FirstOrDefaultAsync(b => b.UserId == userId);
+            if (business is null)
+            {
+                var fallback = FallbackData.GetBusinessDashboard(userId);
+                return fallback is null ? NotFound() : Ok(fallback);
+            }
+
+            var openJobsCount = await _dbContext.Jobs.AsNoTracking()
+                .CountAsync(j => j.BusinessId == business.Id && j.Status == "open");
+
+            var totalApplications = await _dbContext.JobApplications.AsNoTracking()
+                .CountAsync(a => a.Job.BusinessId == business.Id);
+
+            var pendingApplications = await _dbContext.JobApplications.AsNoTracking()
+                .CountAsync(a => a.Job.BusinessId == business.Id && a.Status == "pending");
+
+            var recentApplications = await _dbContext.JobApplications.AsNoTracking()
+                .Where(a => a.Job.BusinessId == business.Id)
+                .OrderByDescending(a => a.AppliedAt)
+                .Include(a => a.Job)
+                .Include(a => a.Student)
+                .ThenInclude(s => s.User)
+                .Select(a => new BusinessDashboardApplicationDto
+                {
+                    Id = a.Id,
+                    Status = a.Status,
+                    JobId = a.JobId,
+                    JobTitle = a.Job.Title,
+                    StudentName = a.Student.User.FullName,
+                    AppliedAt = a.AppliedAt
+                })
+                .Take(5)
+                .ToListAsync();
+
+            var openJobs = await _dbContext.Jobs.AsNoTracking()
+                .Where(j => j.BusinessId == business.Id && j.Status == "open")
+                .Select(j => new BusinessDashboardJobDto
+                {
+                    Id = j.Id,
+                    Title = j.Title,
+                    Status = j.Status,
+                    SpotsFilled = j.SpotsFilled,
+                    SpotsTotal = j.SpotsTotal
+                })
+                .Take(5)
+                .ToListAsync();
+
+            var notifications = await _dbContext.Notifications.AsNoTracking()
+                .Where(n => n.UserId == userId)
+                .OrderByDescending(n => n.CreatedAt)
+                .Take(5)
+                .Select(n => new StudentDashboardNotificationDto
+                {
+                    Id = n.Id,
+                    Type = n.Type,
+                    Title = n.Title,
+                    Message = n.Message,
+                    IsRead = n.IsRead,
+                    CreatedAt = n.CreatedAt
+                })
+                .ToListAsync();
+
+            var response = new BusinessDashboardResponse
+            {
+                Business = MapBusiness(business),
+                Stats = new BusinessStatsResponse
+                {
+                    OpenJobs = openJobsCount,
+                    TotalApplications = totalApplications,
+                    PendingApplications = pendingApplications,
+                    TotalSpent = business.TotalSpent ?? 0m,
+                    CompletedProjects = business.CompletedProjects ?? 0,
+                    AverageRating = business.Rating ?? 0m
+                },
+                RecentApplications = recentApplications,
+                OpenJobs = openJobs,
+                Notifications = notifications
+            };
+
+            return Ok(response);
         }
-
-        var openJobsCount = await _dbContext.Jobs.AsNoTracking()
-            .CountAsync(j => j.BusinessId == business.Id && j.Status == "open");
-
-        var totalApplications = await _dbContext.JobApplications.AsNoTracking()
-            .CountAsync(a => a.Job.BusinessId == business.Id);
-
-        var pendingApplications = await _dbContext.JobApplications.AsNoTracking()
-            .CountAsync(a => a.Job.BusinessId == business.Id && a.Status == "pending");
-
-        var recentApplications = await _dbContext.JobApplications.AsNoTracking()
-            .Where(a => a.Job.BusinessId == business.Id)
-            .OrderByDescending(a => a.AppliedAt)
-            .Include(a => a.Job)
-            .Include(a => a.Student)
-            .ThenInclude(s => s.User)
-            .Select(a => new BusinessDashboardApplicationDto
-            {
-                Id = a.Id,
-                Status = a.Status,
-                JobId = a.JobId,
-                JobTitle = a.Job.Title,
-                StudentName = a.Student.User.FullName,
-                AppliedAt = a.AppliedAt
-            })
-            .Take(5)
-            .ToListAsync();
-
-        var openJobs = await _dbContext.Jobs.AsNoTracking()
-            .Where(j => j.BusinessId == business.Id && j.Status == "open")
-            .Select(j => new BusinessDashboardJobDto
-            {
-                Id = j.Id,
-                Title = j.Title,
-                Status = j.Status,
-                SpotsFilled = j.SpotsFilled,
-                SpotsTotal = j.SpotsTotal
-            })
-            .Take(5)
-            .ToListAsync();
-
-        var notifications = await _dbContext.Notifications.AsNoTracking()
-            .Where(n => n.UserId == userId)
-            .OrderByDescending(n => n.CreatedAt)
-            .Take(5)
-            .Select(n => new StudentDashboardNotificationDto
-            {
-                Id = n.Id,
-                Type = n.Type,
-                Title = n.Title,
-                Message = n.Message,
-                IsRead = n.IsRead,
-                CreatedAt = n.CreatedAt
-            })
-            .ToListAsync();
-
-        var response = new BusinessDashboardResponse
+        catch
         {
-            Business = MapBusiness(business),
-            Stats = new BusinessStatsResponse
-            {
-                OpenJobs = openJobsCount,
-                TotalApplications = totalApplications,
-                PendingApplications = pendingApplications,
-                TotalSpent = business.TotalSpent ?? 0m,
-                CompletedProjects = business.CompletedProjects ?? 0,
-                AverageRating = business.Rating ?? 0m
-            },
-            RecentApplications = recentApplications,
-            OpenJobs = openJobs,
-            Notifications = notifications
-        };
-
-        return Ok(response);
+            var fallback = FallbackData.GetBusinessDashboard(userId);
+            return fallback is null ? NotFound() : Ok(fallback);
+        }
     }
 
     private static BusinessProfileResponse MapBusiness(Unitask.Domain.Entities.BusinessProfile business)

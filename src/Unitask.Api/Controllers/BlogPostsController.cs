@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Unitask.Api.Extensions;
+using Unitask.Api.Services;
 using Unitask.Application.DTOs.Blog;
 using Unitask.Application.DTOs.Common;
 using Unitask.Infrastructure.Persistence;
@@ -31,76 +32,92 @@ public class BlogPostsController : ControllerBase
         [FromQuery] int page = 1)
     {
         const int limit = 10;
-        var query = _dbContext.BlogPosts.AsNoTracking().AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(category))
+        try
         {
-            query = query.Where(p => p.Category == category);
-        }
+            var query = _dbContext.BlogPosts.AsNoTracking().AsQueryable();
 
-        if (!string.IsNullOrWhiteSpace(status))
-        {
-            query = query.Where(p => p.Status == status);
-        }
-
-        var total = await query.CountAsync();
-        var items = await query
-            .OrderByDescending(p => p.PublishedAt ?? p.CreatedAt)
-            .Skip((page - 1) * limit)
-            .Take(limit)
-            .Select(p => new BlogPostListItemResponse
+            if (!string.IsNullOrWhiteSpace(category))
             {
-                Id = p.Id,
-                Title = p.Title,
-                Slug = p.Slug,
-                Excerpt = p.Excerpt,
-                FeaturedImageUrl = p.FeaturedImageUrl,
-                Category = p.Category,
-                Status = p.Status,
-                CreatedAt = p.CreatedAt,
-                PublishedAt = p.PublishedAt
-            })
-            .ToListAsync();
+                query = query.Where(p => p.Category == category);
+            }
 
-        return Ok(new PagedResult<BlogPostListItemResponse>
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                query = query.Where(p => p.Status == status);
+            }
+
+            var total = await query.CountAsync();
+            var items = await query
+                .OrderByDescending(p => p.PublishedAt ?? p.CreatedAt)
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .Select(p => new BlogPostListItemResponse
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Slug = p.Slug,
+                    Excerpt = p.Excerpt,
+                    FeaturedImageUrl = p.FeaturedImageUrl,
+                    Category = p.Category,
+                    Status = p.Status,
+                    CreatedAt = p.CreatedAt,
+                    PublishedAt = p.PublishedAt
+                })
+                .ToListAsync();
+
+            return Ok(new PagedResult<BlogPostListItemResponse>
+            {
+                Total = total,
+                Page = page,
+                Limit = limit,
+                Data = items
+            });
+        }
+        catch
         {
-            Total = total,
-            Page = page,
-            Limit = limit,
-            Data = items
-        });
+            return Ok(FallbackData.GetBlogPosts(page, limit));
+        }
     }
 
     [HttpGet("posts/{slug}")]
     public async Task<ActionResult<BlogPostResponse>> GetPostBySlug(string slug)
     {
-        var post = await _dbContext.BlogPosts.AsNoTracking()
-            .Include(p => p.Author)
-            .FirstOrDefaultAsync(p => p.Slug == slug);
-
-        if (post is null)
+        try
         {
-            return NotFound();
+            var post = await _dbContext.BlogPosts.AsNoTracking()
+                .Include(p => p.Author)
+                .FirstOrDefaultAsync(p => p.Slug == slug);
+
+            if (post is null)
+            {
+                var fallbackPost = FallbackData.GetBlogPostBySlug(slug);
+                return fallbackPost is null ? NotFound() : Ok(fallbackPost);
+            }
+
+            var response = new BlogPostResponse
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Slug = post.Slug,
+                Content = post.Content,
+                Excerpt = post.Excerpt,
+                FeaturedImageUrl = post.FeaturedImageUrl,
+                Category = post.Category,
+                Tags = ParseJsonList(post.TagsJson),
+                Status = post.Status,
+                CreatedAt = post.CreatedAt,
+                UpdatedAt = post.UpdatedAt,
+                PublishedAt = post.PublishedAt,
+                AuthorName = post.Author.FullName
+            };
+
+            return Ok(response);
         }
-
-        var response = new BlogPostResponse
+        catch
         {
-            Id = post.Id,
-            Title = post.Title,
-            Slug = post.Slug,
-            Content = post.Content,
-            Excerpt = post.Excerpt,
-            FeaturedImageUrl = post.FeaturedImageUrl,
-            Category = post.Category,
-            Tags = ParseJsonList(post.TagsJson),
-            Status = post.Status,
-            CreatedAt = post.CreatedAt,
-            UpdatedAt = post.UpdatedAt,
-            PublishedAt = post.PublishedAt,
-            AuthorName = post.Author.FullName
-        };
-
-        return Ok(response);
+            var fallbackPost = FallbackData.GetBlogPostBySlug(slug);
+            return fallbackPost is null ? NotFound() : Ok(fallbackPost);
+        }
     }
 
     [Authorize]

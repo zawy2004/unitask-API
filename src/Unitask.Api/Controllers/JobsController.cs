@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Unitask.Api.Extensions;
+using Unitask.Api.Services;
 using Unitask.Application.DTOs.Common;
 using Unitask.Application.DTOs.Jobs;
 using Unitask.Domain.Entities;
@@ -35,10 +36,12 @@ public class JobsController : ControllerBase
         [FromQuery] int page = 1,
         [FromQuery] int limit = 10)
     {
-        var jobQuery = _dbContext.Jobs.AsNoTracking()
-            .Include(j => j.Category)
-            .Include(j => j.Business)
-            .AsQueryable();
+        try
+        {
+            var jobQuery = _dbContext.Jobs.AsNoTracking()
+                .Include(j => j.Category)
+                .Include(j => j.Business)
+                .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(status))
         {
@@ -89,21 +92,26 @@ public class JobsController : ControllerBase
             });
         }
 
-        var total = await jobQuery.CountAsync();
-        var items = await jobQuery
-            .OrderByDescending(j => j.CreatedAt)
-            .Skip((page - 1) * limit)
-            .Take(limit)
-            .Select(j => MapJob(j))
-            .ToListAsync();
+            var total = await jobQuery.CountAsync();
+            var items = await jobQuery
+                .OrderByDescending(j => j.CreatedAt)
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .Select(j => MapJob(j))
+                .ToListAsync();
 
-        return Ok(new PagedResult<JobListItemResponse>
+            return Ok(new PagedResult<JobListItemResponse>
+            {
+                Total = total,
+                Page = page,
+                Limit = limit,
+                Data = items
+            });
+        }
+        catch
         {
-            Total = total,
-            Page = page,
-            Limit = limit,
-            Data = items
-        });
+            return Ok(FallbackData.GetJobs(page, limit));
+        }
     }
 
     [Authorize]
@@ -186,80 +194,89 @@ public class JobsController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<JobDetailsResponse>> GetJobById(Guid id)
     {
-        var job = await _dbContext.Jobs.AsNoTracking()
-            .Include(j => j.Category)
-            .Include(j => j.Business)
-            .Include(j => j.JobApplications)
-            .ThenInclude(a => a.Student)
-            .ThenInclude(s => s.User)
-            .FirstOrDefaultAsync(j => j.Id == id);
-
-        if (job is null)
+        try
         {
-            return NotFound();
-        }
+            var job = await _dbContext.Jobs.AsNoTracking()
+                .Include(j => j.Category)
+                .Include(j => j.Business)
+                .Include(j => j.JobApplications)
+                .ThenInclude(a => a.Student)
+                .ThenInclude(s => s.User)
+                .FirstOrDefaultAsync(j => j.Id == id);
 
-        var studentUserIds = job.JobApplications
-            .Select(a => a.Student.UserId)
-            .Distinct()
-            .ToList();
-
-        var ratings = await _dbContext.Reviews.AsNoTracking()
-            .Where(r => studentUserIds.Contains(r.ToUserId))
-            .GroupBy(r => r.ToUserId)
-            .Select(g => new { UserId = g.Key, Rating = g.Average(r => (decimal?)r.Rating) ?? 0m })
-            .ToDictionaryAsync(x => x.UserId, x => x.Rating);
-
-        var applicationResponses = job.JobApplications.Select(application => new JobApplicationSummaryDto
-        {
-            Id = application.Id,
-            Status = application.Status,
-            AppliedAt = application.AppliedAt,
-            Student = new JobApplicationStudentDto
+            if (job is null)
             {
-                Id = application.Student.Id,
-                Name = application.Student.User.FullName,
-                Rating = ratings.TryGetValue(application.Student.UserId, out var rating) ? rating : 0m
+                var fallbackJob = FallbackData.GetJobById(id);
+                return fallbackJob is null ? NotFound() : Ok(fallbackJob);
             }
-        }).ToList();
 
-        var response = new JobDetailsResponse
+            var studentUserIds = job.JobApplications
+                .Select(a => a.Student.UserId)
+                .Distinct()
+                .ToList();
+
+            var ratings = await _dbContext.Reviews.AsNoTracking()
+                .Where(r => studentUserIds.Contains(r.ToUserId))
+                .GroupBy(r => r.ToUserId)
+                .Select(g => new { UserId = g.Key, Rating = g.Average(r => (decimal?)r.Rating) ?? 0m })
+                .ToDictionaryAsync(x => x.UserId, x => x.Rating);
+
+            var applicationResponses = job.JobApplications.Select(application => new JobApplicationSummaryDto
+            {
+                Id = application.Id,
+                Status = application.Status,
+                AppliedAt = application.AppliedAt,
+                Student = new JobApplicationStudentDto
+                {
+                    Id = application.Student.Id,
+                    Name = application.Student.User.FullName,
+                    Rating = ratings.TryGetValue(application.Student.UserId, out var rating) ? rating : 0m
+                }
+            }).ToList();
+
+            var response = new JobDetailsResponse
+            {
+                Id = job.Id,
+                Title = job.Title,
+                Description = job.Description,
+                Category = job.Category is null ? null : new JobCategoryInfoDto
+                {
+                    Id = job.Category.Id,
+                    Name = job.Category.Name,
+                    Slug = job.Category.Slug,
+                    Description = job.Category.Description,
+                    JobCount = job.Category.JobCount
+                },
+                Business = new JobBusinessInfoDto
+                {
+                    Id = job.Business.Id,
+                    CompanyName = job.Business.CompanyName,
+                    Rating = job.Business.Rating
+                },
+                Tags = ParseJsonList(job.TagsJson),
+                Status = job.Status,
+                SalaryMin = job.SalaryMin,
+                SalaryMax = job.SalaryMax,
+                RequiredSkills = ParseJsonList(job.RequiredSkillsJson),
+                SpotsTotal = job.SpotsTotal,
+                SpotsFilled = job.SpotsFilled,
+                Location = job.Location,
+                IsRemote = job.IsRemote,
+                DurationType = job.DurationType,
+                DurationDays = job.DurationDays,
+                Deadline = job.Deadline,
+                Applications = applicationResponses,
+                CreatedAt = job.CreatedAt,
+                PublishedAt = job.PublishedAt
+            };
+
+            return Ok(response);
+        }
+        catch
         {
-            Id = job.Id,
-            Title = job.Title,
-            Description = job.Description,
-            Category = job.Category is null ? null : new JobCategoryInfoDto
-            {
-                Id = job.Category.Id,
-                Name = job.Category.Name,
-                Slug = job.Category.Slug,
-                Description = job.Category.Description,
-                JobCount = job.Category.JobCount
-            },
-            Business = new JobBusinessInfoDto
-            {
-                Id = job.Business.Id,
-                CompanyName = job.Business.CompanyName,
-                Rating = job.Business.Rating
-            },
-            Tags = ParseJsonList(job.TagsJson),
-            Status = job.Status,
-            SalaryMin = job.SalaryMin,
-            SalaryMax = job.SalaryMax,
-            RequiredSkills = ParseJsonList(job.RequiredSkillsJson),
-            SpotsTotal = job.SpotsTotal,
-            SpotsFilled = job.SpotsFilled,
-            Location = job.Location,
-            IsRemote = job.IsRemote,
-            DurationType = job.DurationType,
-            DurationDays = job.DurationDays,
-            Deadline = job.Deadline,
-            Applications = applicationResponses,
-            CreatedAt = job.CreatedAt,
-            PublishedAt = job.PublishedAt
-        };
-
-        return Ok(response);
+            var fallbackJob = FallbackData.GetJobById(id);
+            return fallbackJob is null ? NotFound() : Ok(fallbackJob);
+        }
     }
 
     [Authorize]
