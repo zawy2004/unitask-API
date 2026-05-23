@@ -1,18 +1,6 @@
--- UniTask SQL Server Database Schema (idempotent)
--- Target: SQL Server 2019+
--- For use with .NET API and Entity Framework Core
 
-USE master;
-GO
 
--- Create database if it does not exist
-IF DB_ID('unitask') IS NULL
-BEGIN
-    CREATE DATABASE unitask;
-END
-GO
-
-USE unitask;
+USE UnitaskExe;
 GO
 
 -- ==========================================
