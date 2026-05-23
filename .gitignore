@@ -10,3 +10,7 @@ publish/
 
 ## Secrets (use deploy/env on server or copy appsettings.Development.example.json)
 appsettings.*.local.json
+appsettings.Development.json
+.env
+.env.local
+.env.*.local
