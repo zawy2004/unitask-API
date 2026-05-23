@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "cAzOrJGcO2M=",
+  "dgSpecHash": "piUj9pAw424=",
   "success": true,
   "projectFilePath": "D:\\test\\exe\\unitask-API\\src\\Unitask.Infrastructure\\Unitask.Infrastructure.csproj",
   "expectedPackageFiles": [
@@ -88,7 +88,8 @@
       "filePath": "D:\\test\\exe\\unitask-API\\src\\Unitask.Infrastructure\\Unitask.Infrastructure.csproj",
       "libraryId": "AutoMapper",
       "targetGraphs": [
-        "net8.0"
+        "net8.0",
+        "net8.0/linux-x64"
       ]
     }
   ]

@@ -84,7 +84,6 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
-// Đăng ký các RAG/AI services từ implementation cũ nếu cấu hình tồn tại
 builder.Services.AddRagServices(builder.Configuration);
 
 var app = builder.Build();
