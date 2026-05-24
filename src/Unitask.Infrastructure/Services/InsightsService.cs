@@ -27,10 +27,48 @@ public class InsightsService : IInsightsService
     };
 
     private readonly UnitaskDbContext _dbContext;
+    private readonly IGroqChatClient? _groq;
 
-    public InsightsService(UnitaskDbContext dbContext)
+    public InsightsService(UnitaskDbContext dbContext, IGroqChatClient? groq = null)
     {
         _dbContext = dbContext;
+        _groq = groq;
+    }
+
+    // ── Privacy & safety constants ───────────────────────────────
+    private const int MaxUserMessageChars = 800;
+    private const int MaxHistoryTurns = 6;
+    private const int MaxBioChars = 240;
+    private static readonly string[] InjectionMarkers =
+    {
+        "ignore previous", "ignore all previous", "disregard the above",
+        "system:", "you are now", "act as ", "forget your instructions",
+        "bỏ qua hướng dẫn", "quên đi", "đóng vai", "hệ thống:"
+    };
+    private static readonly System.Text.RegularExpressions.Regex EmailRegex =
+        new(@"[\w\.-]+@[\w\.-]+\.\w+", System.Text.RegularExpressions.RegexOptions.Compiled);
+    private static readonly System.Text.RegularExpressions.Regex PhoneRegex =
+        new(@"\b0\d{9,10}\b|\b\+?84\d{9,10}\b", System.Text.RegularExpressions.RegexOptions.Compiled);
+
+    private static string SanitizeUserText(string? text, int maxLen)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return string.Empty;
+        var stripped = EmailRegex.Replace(text, "[email]");
+        stripped = PhoneRegex.Replace(stripped, "[phone]");
+        stripped = stripped.Trim();
+        if (stripped.Length > maxLen) stripped = stripped[..maxLen] + "…";
+        return stripped;
+    }
+
+    private static bool LooksLikePromptInjection(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return false;
+        var lower = text.ToLowerInvariant();
+        foreach (var marker in InjectionMarkers)
+        {
+            if (lower.Contains(marker)) return true;
+        }
+        return false;
     }
 
     public async Task<JobRecommendationResponse> GetRecommendationsAsync(JobRecommendationRequest request, CancellationToken cancellationToken = default)
@@ -58,12 +96,40 @@ public class InsightsService : IInsightsService
 
     public async Task<CareerChatResponse> ChatAsync(CareerChatRequest request, CancellationToken cancellationToken = default)
     {
-        var normalizedMessage = Normalize(request.Message);
-        var context = request.User ?? new CareerUserContextDto();
+        // 1. Sanitize user input (strip PII, truncate)
+        var safeMessage = SanitizeUserText(request.Message, MaxUserMessageChars);
+        var normalizedMessage = Normalize(safeMessage);
 
+        // 2. Detect prompt-injection — refuse politely without hitting LLM
+        if (LooksLikePromptInjection(safeMessage))
+        {
+            return new CareerChatResponse
+            {
+                Reply = "Mình giúp tư vấn nghề nghiệp và gợi ý công việc trên UniTask. Bạn muốn mình hỗ trợ gì về tìm việc, kỹ năng, hoặc lộ trình học tập?",
+                Jobs = new List<InsightJobCardDto>(),
+                FollowUpQuestions = new List<string> { "Bạn đang học ngành gì?", "Bạn quan tâm lĩnh vực nào?", "Bạn có kỹ năng nào nổi bật?" },
+                CareerPaths = new List<string>(),
+                Refused = true,
+                Summary = "Yêu cầu nằm ngoài phạm vi hỗ trợ."
+            };
+        }
+
+        // 3. Sanitize user context (no PII out to LLM)
+        var rawContext = request.User ?? new CareerUserContextDto();
+        var context = new CareerUserContextDto
+        {
+            Role = rawContext.Role,
+            Major = SanitizeUserText(rawContext.Major, 80),
+            University = SanitizeUserText(rawContext.University, 100),
+            CompanyName = SanitizeUserText(rawContext.CompanyName, 100),
+            Bio = SanitizeUserText(rawContext.Bio, MaxBioChars),
+            Skills = (rawContext.Skills ?? new List<string>()).Take(10).Select(s => SanitizeUserText(s, 40)).ToList()
+        };
+
+        // 4. Build job recommendations using sanitized context
         var recommendationRequest = new JobRecommendationRequest
         {
-            Query = request.Message,
+            Query = safeMessage,
             Role = context.Role,
             Major = context.Major,
             Skills = context.Skills,
@@ -75,19 +141,121 @@ public class InsightsService : IInsightsService
                 : context.CompanyName,
             TopK = Math.Max(1, request.TopK)
         };
-
         var recommendations = await GetRecommendationsAsync(recommendationRequest, cancellationToken);
         var jobs = recommendations.Matches.ToList();
 
+        // 5. Try Groq LLM with FAQ + category knowledge base. Fallback to template reply if LLM unavailable.
+        var reply = await TryGroqReplyAsync(safeMessage, context, jobs, request.History, cancellationToken)
+                    ?? BuildChatReply(safeMessage, jobs, context, request.History);
+
         return new CareerChatResponse
         {
-            Reply = BuildChatReply(request.Message, jobs, context, request.History),
+            Reply = reply,
             Jobs = jobs,
             FollowUpQuestions = BuildFollowUpQuestions(context, jobs, normalizedMessage),
             CareerPaths = BuildCareerPaths(context, jobs),
             Refused = false,
             Summary = recommendations.Summary
         };
+    }
+
+    /// <summary>
+    /// Build prompt with DB context (top FAQs, categories, blog tips) and call Groq.
+    /// Returns null if Groq is disabled, fails, or returns empty.
+    /// Privacy: only the user's OWN sanitized profile + PUBLIC data goes to the LLM.
+    /// Never sends other users' PII, raw emails, phone numbers, or auth tokens.
+    /// </summary>
+    private async Task<string?> TryGroqReplyAsync(
+        string safeMessage,
+        CareerUserContextDto context,
+        IReadOnlyList<InsightJobCardDto> jobs,
+        IReadOnlyList<CareerChatTurnDto> history,
+        CancellationToken cancellationToken)
+    {
+        if (_groq is null) return null;
+
+        // Pull public knowledge from DB (FAQs + categories). Cap content for prompt budget.
+        var faqs = await _dbContext.Set<Unitask.Domain.Entities.FAQ>()
+            .AsNoTracking()
+            .OrderBy(f => f.OrderIndex)
+            .Take(12)
+            .Select(f => new { f.Question, f.Answer, f.Category })
+            .ToListAsync(cancellationToken);
+
+        var categories = await _dbContext.JobCategories
+            .AsNoTracking()
+            .Select(c => new { c.Name, c.Description })
+            .ToListAsync(cancellationToken);
+
+        var totalOpenJobs = await _dbContext.Jobs.AsNoTracking()
+            .Where(j => j.Status == "open" || j.Status == "published")
+            .CountAsync(cancellationToken);
+
+        var sb = new StringBuilder();
+        sb.AppendLine("Bạn là trợ lý nghề nghiệp của UniTask — nền tảng kết nối sinh viên Việt Nam với doanh nghiệp qua các micro-job & dự án ngắn hạn.");
+        sb.AppendLine();
+        sb.AppendLine("NGUYÊN TẮC TRẢ LỜI:");
+        sb.AppendLine("- Trả lời tự nhiên bằng tiếng Việt, văn phong thân thiện như một anh/chị mentor.");
+        sb.AppendLine("- Có thể trả lời câu hỏi về: cách dùng nền tảng, định hướng nghề, kỹ năng nên học, viết CV/Cover Letter, lộ trình freelance, mức lương tham khảo.");
+        sb.AppendLine("- Khi user hỏi tìm việc cụ thể: kết hợp gợi ý từ danh sách job ở dưới (nếu phù hợp) và lời khuyên thực tế.");
+        sb.AppendLine("- KHÔNG bịa thông tin về user, công ty, hoặc số liệu. Nếu không chắc — nói thẳng \"mình chưa có thông tin chính xác\".");
+        sb.AppendLine("- KHÔNG yêu cầu user tiết lộ mật khẩu, số CCCD, thẻ ngân hàng. Nếu user gửi — nhắc nhở họ không nên chia sẻ.");
+        sb.AppendLine("- KHÔNG đưa thông tin liên hệ cá nhân của user khác trong câu trả lời.");
+        sb.AppendLine("- Giới hạn ~150 từ, dùng gạch đầu dòng khi có >3 ý.");
+        sb.AppendLine();
+        sb.AppendLine($"THỐNG KÊ NỀN TẢNG: hiện có {totalOpenJobs} job đang mở trên {categories.Count} danh mục.");
+        sb.AppendLine();
+        sb.AppendLine("DANH MỤC CÔNG VIỆC:");
+        foreach (var c in categories)
+        {
+            sb.AppendLine($"- {c.Name}: {c.Description}");
+        }
+        sb.AppendLine();
+        sb.AppendLine("KIẾN THỨC NỀN TẢNG (FAQ):");
+        foreach (var f in faqs)
+        {
+            sb.AppendLine($"Q: {f.Question}");
+            sb.AppendLine($"A: {f.Answer}");
+        }
+        sb.AppendLine();
+
+        if (!string.IsNullOrWhiteSpace(context.Role) || (context.Skills?.Count ?? 0) > 0 || !string.IsNullOrWhiteSpace(context.Bio))
+        {
+            sb.AppendLine("HỒ SƠ NGƯỜI DÙNG (đã ẩn danh, không có email/SĐT):");
+            if (!string.IsNullOrWhiteSpace(context.Role)) sb.AppendLine($"- Vai trò: {context.Role}");
+            if (!string.IsNullOrWhiteSpace(context.Major)) sb.AppendLine($"- Ngành học: {context.Major}");
+            if (!string.IsNullOrWhiteSpace(context.University)) sb.AppendLine($"- Trường: {context.University}");
+            if (!string.IsNullOrWhiteSpace(context.CompanyName)) sb.AppendLine($"- Công ty: {context.CompanyName}");
+            if (context.Skills?.Count > 0) sb.AppendLine($"- Kỹ năng: {string.Join(", ", context.Skills)}");
+            if (!string.IsNullOrWhiteSpace(context.Bio)) sb.AppendLine($"- Mô tả: {context.Bio}");
+            sb.AppendLine();
+        }
+
+        if (jobs.Count > 0)
+        {
+            sb.AppendLine("JOB ĐƯỢC GỢI Ý SẴN (có thể dẫn lại trong câu trả lời nếu phù hợp):");
+            foreach (var j in jobs.Take(5))
+            {
+                sb.AppendLine($"- \"{j.Title}\" — {j.Company} — {(j.Pay ?? "Thỏa thuận")} — match {(int)Math.Round(j.MatchScore)}%");
+            }
+        }
+
+        var systemPrompt = sb.ToString();
+
+        // Build short history (sanitized, capped)
+        var msgs = new List<(string Role, string Content)>();
+        if (history is { Count: > 0 })
+        {
+            foreach (var turn in history.TakeLast(MaxHistoryTurns))
+            {
+                var role = string.Equals(turn.Role, "assistant", StringComparison.OrdinalIgnoreCase) ? "assistant" : "user";
+                msgs.Add((role, SanitizeUserText(turn.Content, MaxUserMessageChars)));
+            }
+        }
+        msgs.Add(("user", safeMessage));
+
+        var llmReply = await _groq.ChatAsync(systemPrompt, msgs, cancellationToken);
+        return string.IsNullOrWhiteSpace(llmReply) ? null : llmReply;
     }
 
     public async Task<PersonalizationResponse> GetPersonalizationAsync(Guid userId, CancellationToken cancellationToken = default)

@@ -18,6 +18,7 @@ public static class DependencyInjection
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddHttpClient<IGroqChatClient, GroqChatClient>();
         services.AddScoped<IInsightsService, InsightsService>();
 
         return services;
