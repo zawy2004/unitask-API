@@ -30,6 +30,27 @@ public class BusinessesController : ControllerBase
 
             if (business is null)
             {
+                var user = await _dbContext.Users.AsNoTracking()
+                    .FirstOrDefaultAsync(u => u.Id == userId && u.UserType == "business");
+                if (user is not null)
+                {
+                    var newProfile = new Unitask.Domain.Entities.BusinessProfile
+                    {
+                        Id = Guid.NewGuid(),
+                        UserId = userId,
+                        CompanyName = user.FullName,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow,
+                        IsVerified = false,
+                        CompletedProjects = 0,
+                        TotalSpent = 0m,
+                        Rating = 0m
+                    };
+                    _dbContext.BusinessProfiles.Add(newProfile);
+                    await _dbContext.SaveChangesAsync();
+                    return Ok(MapBusiness(newProfile));
+                }
+
                 var fallback = FallbackData.GetBusinessProfile(userId);
                 return fallback is null ? NotFound() : Ok(fallback);
             }
@@ -53,7 +74,23 @@ public class BusinessesController : ControllerBase
 
             if (business is null)
             {
-                return NotFound();
+                var user = await _dbContext.Users.AsNoTracking()
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+                if (user is null) return NotFound();
+
+                business = new Unitask.Domain.Entities.BusinessProfile
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userId,
+                    CompanyName = request.CompanyName ?? user.FullName,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsVerified = false,
+                    CompletedProjects = 0,
+                    TotalSpent = 0m,
+                    Rating = 0m
+                };
+                _dbContext.BusinessProfiles.Add(business);
             }
 
         if (!string.IsNullOrWhiteSpace(request.CompanyName))

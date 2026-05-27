@@ -23,20 +23,28 @@ public class SkillsController : ControllerBase
     }
 
     [HttpGet("skills")]
+    [ResponseCache(Duration = 300)]
     public async Task<ActionResult<IReadOnlyList<SkillResponse>>> GetSkills()
     {
-        var skills = await _dbContext.Skills.AsNoTracking()
-            .OrderBy(s => s.Name)
-            .Select(s => new SkillResponse
-            {
-                Id = s.Id,
-                Name = s.Name,
-                Category = s.Category,
-                IconUrl = s.IconUrl
-            })
-            .ToListAsync();
+        try
+        {
+            var skills = await _dbContext.Skills.AsNoTracking()
+                .OrderBy(s => s.Name)
+                .Select(s => new SkillResponse
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    Category = s.Category,
+                    IconUrl = s.IconUrl
+                })
+                .ToListAsync();
 
-        return Ok(skills);
+            return Ok(skills);
+        }
+        catch
+        {
+            return Ok(Array.Empty<SkillResponse>());
+        }
     }
 
     [HttpGet("students/{userId:guid}/skills")]
@@ -80,7 +88,24 @@ public class SkillsController : ControllerBase
             .FirstOrDefaultAsync(s => s.UserId == userId.Value);
         if (student is null)
         {
-            return BadRequest(new { message = "Student profile not found." });
+            var user = await _dbContext.Users.AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == userId.Value && u.UserType == "student");
+            if (user is null)
+                return BadRequest(new { message = "Student profile not found." });
+
+            student = new Unitask.Domain.Entities.StudentProfile
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId.Value,
+                StudentEmail = user.Email,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                IsVerified = false,
+                CompletedJobs = 0,
+                TotalEarnings = 0m
+            };
+            _dbContext.StudentProfiles.Add(student);
+            await _dbContext.SaveChangesAsync();
         }
 
         var exists = await _dbContext.StudentSkills

@@ -42,31 +42,52 @@ public class JobApplicationsController : ControllerBase
         }
 
         var total = await query.CountAsync();
-        var items = await query
+        var pagedApps = await query
             .OrderByDescending(a => a.AppliedAt)
             .Skip((page - 1) * limit)
             .Take(limit)
-            .Select(a => new JobApplicationListItemResponse
+            .Select(a => new
             {
-                Id = a.Id,
-                JobId = a.JobId,
-                StudentId = a.StudentId,
-                Status = a.Status,
-                CoverLetter = a.CoverLetter,
-                ProposedTimeline = a.ProposedTimeline,
-                AppliedAt = a.AppliedAt,
-                Student = new ApplicationStudentDto
-                {
-                    Id = a.Student.Id,
-                    Name = a.Student.User.FullName,
-                    University = a.Student.University,
-                    Rating = a.Student.User.ReviewToUsers.Any()
-                        ? a.Student.User.ReviewToUsers.Average(r => (decimal?)r.Rating)
-                        : 0m,
-                    CompletedJobs = a.Student.CompletedJobs
-                }
+                a.Id,
+                a.JobId,
+                a.StudentId,
+                a.Status,
+                a.CoverLetter,
+                a.ProposedTimeline,
+                a.AppliedAt,
+                StudentProfileId = a.Student.Id,
+                StudentName = a.Student.User.FullName,
+                a.Student.University,
+                a.Student.CompletedJobs,
+                StudentUserId = a.Student.UserId
             })
             .ToListAsync();
+
+        var studentUserIds = pagedApps.Select(a => a.StudentUserId).Distinct().ToList();
+        var ratings = await _dbContext.Reviews.AsNoTracking()
+            .Where(r => studentUserIds.Contains(r.ToUserId))
+            .GroupBy(r => r.ToUserId)
+            .Select(g => new { UserId = g.Key, Rating = g.Average(r => (decimal?)r.Rating) ?? 0m })
+            .ToDictionaryAsync(x => x.UserId, x => x.Rating);
+
+        var items = pagedApps.Select(a => new JobApplicationListItemResponse
+        {
+            Id = a.Id,
+            JobId = a.JobId,
+            StudentId = a.StudentId,
+            Status = a.Status,
+            CoverLetter = a.CoverLetter,
+            ProposedTimeline = a.ProposedTimeline,
+            AppliedAt = a.AppliedAt,
+            Student = new ApplicationStudentDto
+            {
+                Id = a.StudentProfileId,
+                Name = a.StudentName,
+                University = a.University,
+                Rating = ratings.TryGetValue(a.StudentUserId, out var r) ? r : 0m,
+                CompletedJobs = a.CompletedJobs
+            }
+        }).ToList();
 
         return Ok(new PagedResult<JobApplicationListItemResponse>
         {
@@ -91,7 +112,24 @@ public class JobApplicationsController : ControllerBase
             .FirstOrDefaultAsync(s => s.UserId == userId.Value);
         if (student is null)
         {
-            return BadRequest(new { message = "Student profile not found." });
+            var user = await _dbContext.Users.AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == userId.Value && u.UserType == "student");
+            if (user is null)
+                return BadRequest(new { message = "Student profile not found." });
+
+            student = new Unitask.Domain.Entities.StudentProfile
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId.Value,
+                StudentEmail = user.Email,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                IsVerified = false,
+                CompletedJobs = 0,
+                TotalEarnings = 0m
+            };
+            _dbContext.StudentProfiles.Add(student);
+            await _dbContext.SaveChangesAsync();
         }
 
         var exists = await _dbContext.JobApplications
@@ -138,6 +176,10 @@ public class JobApplicationsController : ControllerBase
             return NotFound();
         }
 
+        var avgRating = await _dbContext.Reviews.AsNoTracking()
+            .Where(r => r.ToUserId == application.Student.UserId)
+            .AverageAsync(r => (decimal?)r.Rating) ?? 0m;
+
         var response = new JobApplicationListItemResponse
         {
             Id = application.Id,
@@ -152,9 +194,7 @@ public class JobApplicationsController : ControllerBase
                 Id = application.Student.Id,
                 Name = application.Student.User.FullName,
                 University = application.Student.University,
-                Rating = application.Student.User.ReviewToUsers.Any()
-                    ? application.Student.User.ReviewToUsers.Average(r => (decimal?)r.Rating)
-                    : 0m,
+                Rating = avgRating,
                 CompletedJobs = application.Student.CompletedJobs
             }
         };
@@ -254,6 +294,72 @@ public class JobApplicationsController : ControllerBase
             .ToListAsync();
 
         return Ok(applications);
+    }
+
+    [Authorize]
+    [HttpGet("my-business-applicants")]
+    public async Task<ActionResult<IReadOnlyList<JobApplicationListItemResponse>>> GetBusinessApplicants()
+    {
+        var userId = User.GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+
+        var business = await _dbContext.BusinessProfiles.AsNoTracking()
+            .FirstOrDefaultAsync(b => b.UserId == userId.Value);
+        if (business is null)
+        {
+            return BadRequest(new { message = "Business profile not found." });
+        }
+
+        var apps = await _dbContext.JobApplications.AsNoTracking()
+            .Where(a => a.Job.BusinessId == business.Id)
+            .OrderByDescending(a => a.AppliedAt)
+            .Select(a => new
+            {
+                a.Id,
+                a.JobId,
+                a.StudentId,
+                a.Status,
+                a.CoverLetter,
+                a.ProposedTimeline,
+                a.AppliedAt,
+                StudentProfileId = a.Student.Id,
+                StudentName = a.Student.User.FullName,
+                a.Student.University,
+                a.Student.CompletedJobs,
+                StudentUserId = a.Student.UserId
+            })
+            .ToListAsync();
+
+        var studentUserIds = apps.Select(a => a.StudentUserId).Distinct().ToList();
+        var ratings = await _dbContext.Reviews.AsNoTracking()
+            .Where(r => studentUserIds.Contains(r.ToUserId))
+            .GroupBy(r => r.ToUserId)
+            .Select(g => new { UserId = g.Key, Rating = g.Average(r => (decimal?)r.Rating) ?? 0m })
+            .ToDictionaryAsync(x => x.UserId, x => x.Rating);
+
+        var result = apps.Select(a => new JobApplicationListItemResponse
+        {
+            Id = a.Id,
+            JobId = a.JobId,
+            StudentId = a.StudentId,
+            Status = a.Status,
+            CoverLetter = a.CoverLetter,
+            ProposedTimeline = a.ProposedTimeline,
+            AppliedAt = a.AppliedAt,
+            Student = new ApplicationStudentDto
+            {
+                Id = a.StudentProfileId,
+                Name = a.StudentName,
+                University = a.University,
+                Rating = ratings.TryGetValue(a.StudentUserId, out var r) ? r : 0m,
+                CompletedJobs = a.CompletedJobs
+            }
+        }).ToList();
+
+        return Ok(result);
     }
 
     private static string? FormatSalary(decimal? min, decimal? max, string? currency)

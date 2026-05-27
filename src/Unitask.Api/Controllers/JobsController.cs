@@ -65,31 +65,15 @@ public class JobsController : ControllerBase
 
         if (!string.IsNullOrWhiteSpace(search))
         {
-            var normalizedSearch = Normalize(search);
-            var rankedJobs = (await jobQuery.ToListAsync())
-                .Select(job => new
-                {
-                    Job = job,
-                    Score = ScoreJob(job, normalizedSearch)
-                })
-                .OrderByDescending(item => item.Score)
-                .ThenByDescending(item => item.Job.CreatedAt)
-                .ToList();
-
-            var searchTotal = rankedJobs.Count;
-            var searchItems = rankedJobs
-                .Skip((page - 1) * limit)
-                .Take(limit)
-                .Select(item => MapJob(item.Job))
-                .ToList();
-
-            return Ok(new PagedResult<JobListItemResponse>
-            {
-                Total = searchTotal,
-                Page = page,
-                Limit = limit,
-                Data = searchItems
-            });
+            var term = search.Trim().ToLower();
+            jobQuery = jobQuery.Where(j =>
+                j.Title.ToLower().Contains(term)
+                || (j.Description != null && j.Description.ToLower().Contains(term))
+                || (j.Location != null && j.Location.ToLower().Contains(term))
+                || (j.Category != null && j.Category.Name.ToLower().Contains(term))
+                || j.Business.CompanyName.ToLower().Contains(term)
+                || (j.TagsJson != null && j.TagsJson.ToLower().Contains(term))
+                || (j.RequiredSkillsJson != null && j.RequiredSkillsJson.ToLower().Contains(term)));
         }
 
             var total = await jobQuery.CountAsync();
@@ -128,7 +112,25 @@ public class JobsController : ControllerBase
             .FirstOrDefaultAsync(b => b.UserId == userId.Value);
         if (business is null)
         {
-            return BadRequest(new { message = "Business profile not found." });
+            var user = await _dbContext.Users.AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == userId.Value && u.UserType == "business");
+            if (user is null)
+                return BadRequest(new { message = "Business profile not found." });
+
+            business = new Unitask.Domain.Entities.BusinessProfile
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId.Value,
+                CompanyName = user.FullName,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                IsVerified = false,
+                CompletedProjects = 0,
+                TotalSpent = 0m,
+                Rating = 0m
+            };
+            _dbContext.BusinessProfiles.Add(business);
+            await _dbContext.SaveChangesAsync();
         }
 
         var job = new Job

@@ -103,17 +103,13 @@ public class NotificationsController : ControllerBase
             return Unauthorized();
         }
 
-        var notifications = await _dbContext.Notifications
+        var now = DateTime.UtcNow;
+        await _dbContext.Notifications
             .Where(n => n.UserId == userId.Value && (n.IsRead == false || n.IsRead == null))
-            .ToListAsync();
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(n => n.IsRead, true)
+                .SetProperty(n => n.ReadAt, now));
 
-        foreach (var notification in notifications)
-        {
-            notification.IsRead = true;
-            notification.ReadAt = DateTime.UtcNow;
-        }
-
-        await _dbContext.SaveChangesAsync();
         return NoContent();
     }
 }

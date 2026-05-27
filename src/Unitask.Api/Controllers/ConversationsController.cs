@@ -32,43 +32,29 @@ public class ConversationsController : ControllerBase
             return Unauthorized();
         }
 
-        var conversations = await _dbContext.Conversations.AsNoTracking()
+        var result = await _dbContext.Conversations.AsNoTracking()
             .Where(c => c.User1Id == userId.Value || c.User2Id == userId.Value)
             .Include(c => c.User1)
             .Include(c => c.User2)
             .OrderByDescending(c => c.LastMessageAt)
-            .ToListAsync();
-
-        var result = new List<ConversationListItemResponse>();
-        foreach (var conversation in conversations)
-        {
-            var otherUser = conversation.User1Id == userId.Value ? conversation.User2 : conversation.User1;
-
-            var lastMessage = await _dbContext.Messages.AsNoTracking()
-                .Where(m => m.ConversationId == conversation.Id)
-                .OrderByDescending(m => m.CreatedAt)
-                .Select(m => m.Content)
-                .FirstOrDefaultAsync();
-
-            var unreadCount = await _dbContext.Messages.AsNoTracking()
-                .CountAsync(m => m.ConversationId == conversation.Id
-                    && m.SenderId != userId.Value
-                    && (m.IsRead == false || m.IsRead == null));
-
-            result.Add(new ConversationListItemResponse
+            .Select(c => new ConversationListItemResponse
             {
-                Id = conversation.Id,
+                Id = c.Id,
                 OtherUser = new UserBriefDto
                 {
-                    Id = otherUser.Id,
-                    Name = otherUser.FullName,
-                    AvatarUrl = otherUser.AvatarUrl
+                    Id = c.User1Id == userId.Value ? c.User2.Id : c.User1.Id,
+                    Name = c.User1Id == userId.Value ? c.User2.FullName : c.User1.FullName,
+                    AvatarUrl = c.User1Id == userId.Value ? c.User2.AvatarUrl : c.User1.AvatarUrl
                 },
-                LastMessage = lastMessage,
-                LastMessageAt = conversation.LastMessageAt,
-                UnreadCount = unreadCount
-            });
-        }
+                LastMessage = c.Messages
+                    .OrderByDescending(m => m.CreatedAt)
+                    .Select(m => m.Content)
+                    .FirstOrDefault(),
+                LastMessageAt = c.LastMessageAt,
+                UnreadCount = c.Messages
+                    .Count(m => m.SenderId != userId.Value && (m.IsRead == false || m.IsRead == null))
+            })
+            .ToListAsync();
 
         return Ok(result);
     }

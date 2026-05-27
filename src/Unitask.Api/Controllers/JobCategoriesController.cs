@@ -21,6 +21,7 @@ public class JobCategoriesController : ControllerBase
     }
 
     [HttpGet]
+    [ResponseCache(Duration = 300)]
     public async Task<ActionResult<IReadOnlyList<JobCategoryInfoDto>>> GetCategories()
     {
         try

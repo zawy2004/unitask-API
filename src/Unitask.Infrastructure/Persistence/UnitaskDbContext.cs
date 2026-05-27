@@ -166,6 +166,9 @@ public partial class UnitaskDbContext : DbContext
 
             entity.ToTable(tb => tb.HasTrigger("trg_Jobs_UpdatedAt"));
 
+            entity.HasIndex(e => new { e.Status, e.BusinessId }, "IX_Jobs_Status_BusinessId");
+            entity.HasIndex(e => new { e.Status, e.CreatedAt }, "IX_Jobs_Status_CreatedAt");
+
             entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
             entity.Property(e => e.Currency).HasDefaultValue("VND");
@@ -188,6 +191,9 @@ public partial class UnitaskDbContext : DbContext
         modelBuilder.Entity<JobApplication>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__JobAppli__3214EC078CD78FF4");
+
+            entity.HasIndex(e => new { e.JobId, e.Status }, "IX_JobApplications_JobId_Status");
+            entity.HasIndex(e => new { e.StudentId, e.AppliedAt }, "IX_JobApplications_StudentId_AppliedAt");
 
             entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
             entity.Property(e => e.AppliedAt).HasDefaultValueSql("(getutcdate())");
@@ -218,6 +224,9 @@ public partial class UnitaskDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Messages__3214EC07ECFE687E");
 
+            entity.HasIndex(e => new { e.ConversationId, e.CreatedAt }, "IX_Messages_ConversationId_CreatedAt");
+            entity.HasIndex(e => new { e.ConversationId, e.IsRead, e.SenderId }, "IX_Messages_Unread");
+
             entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
             entity.Property(e => e.IsRead).HasDefaultValue(false);
@@ -232,6 +241,8 @@ public partial class UnitaskDbContext : DbContext
         modelBuilder.Entity<Notification>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Notifica__3214EC077F7DF681");
+
+            entity.HasIndex(e => new { e.UserId, e.IsRead, e.CreatedAt }, "IX_Notifications_UserId_IsRead_CreatedAt");
 
             entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
@@ -272,6 +283,8 @@ public partial class UnitaskDbContext : DbContext
         modelBuilder.Entity<Review>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Reviews__3214EC07C82B75F3");
+
+            entity.HasIndex(e => new { e.ToUserId, e.Rating }, "IX_Reviews_ToUserId_Rating");
 
             entity.ToTable(tb => tb.HasTrigger("trg_Reviews_UpdatedAt"));
 

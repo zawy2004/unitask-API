@@ -31,6 +31,26 @@ public class StudentsController : ControllerBase
 
             if (student is null)
             {
+                var user = await _dbContext.Users.AsNoTracking()
+                    .FirstOrDefaultAsync(u => u.Id == userId && u.UserType == "student");
+                if (user is not null)
+                {
+                    var newProfile = new Unitask.Domain.Entities.StudentProfile
+                    {
+                        Id = Guid.NewGuid(),
+                        UserId = userId,
+                        StudentEmail = user.Email,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow,
+                        IsVerified = false,
+                        CompletedJobs = 0,
+                        TotalEarnings = 0m
+                    };
+                    _dbContext.StudentProfiles.Add(newProfile);
+                    await _dbContext.SaveChangesAsync();
+                    return Ok(MapStudent(newProfile));
+                }
+
                 var fallback = FallbackData.GetStudentProfile(userId);
                 return fallback is null ? NotFound() : Ok(fallback);
             }
@@ -54,7 +74,21 @@ public class StudentsController : ControllerBase
 
             if (student is null)
             {
-                return NotFound();
+                var user = await _dbContext.Users.AsNoTracking()
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+                if (user is null) return NotFound();
+
+                student = new Unitask.Domain.Entities.StudentProfile
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userId,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    IsVerified = false,
+                    CompletedJobs = 0,
+                    TotalEarnings = 0m
+                };
+                _dbContext.StudentProfiles.Add(student);
             }
 
         if (request.StudentEmail is not null)

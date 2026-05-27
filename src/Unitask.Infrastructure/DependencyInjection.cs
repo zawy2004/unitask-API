@@ -15,6 +15,8 @@ public static class DependencyInjection
         services.AddDbContext<UnitaskDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("UnitaskDb")));
 
+        services.AddMemoryCache();
+
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<IAuthService, AuthService>();
