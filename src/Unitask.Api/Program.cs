@@ -115,6 +115,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 builder.Services.AddResponseCaching();
+
+var momoSettings = builder.Configuration.GetSection("MomoAPI").Get<Unitask.Api.Services.MomoSettings>();
+if (momoSettings is not null)
+{
+    builder.Services.AddSingleton(momoSettings);
+    builder.Services.AddHttpClient<Unitask.Api.Services.MomoService>();
+}
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddRagServices(builder.Configuration);

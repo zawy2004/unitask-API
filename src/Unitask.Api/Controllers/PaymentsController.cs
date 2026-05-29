@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Unitask.Api.Extensions;
+using Unitask.Api.Services;
 using Unitask.Application.DTOs.Common;
 using Unitask.Application.DTOs.Payments;
 using Unitask.Infrastructure.Persistence;
@@ -16,10 +17,12 @@ namespace Unitask.Api.Controllers;
 public class PaymentsController : ControllerBase
 {
     private readonly UnitaskDbContext _dbContext;
+    private readonly MomoService? _momoService;
 
-    public PaymentsController(UnitaskDbContext dbContext)
+    public PaymentsController(UnitaskDbContext dbContext, MomoService? momoService = null)
     {
         _dbContext = dbContext;
+        _momoService = momoService;
     }
 
     [HttpGet]
@@ -168,5 +171,117 @@ public class PaymentsController : ControllerBase
 
         return Ok();
     }
+
+    [Authorize]
+    [HttpPost("momo/create")]
+    public async Task<IActionResult> CreateMomoPayment([FromBody] MomoDepositRequest request)
+    {
+        if (_momoService is null)
+            return BadRequest(new { message = "MoMo chưa được cấu hình." });
+
+        var userId = User.GetUserId();
+        if (userId is null) return Unauthorized();
+
+        var orderId = $"UNITASK_{userId.Value.ToString("N")[..8]}_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+        var orderInfo = $"Nạp tiền UniTask - {request.Amount:N0} VND";
+
+        var result = await _momoService.CreatePaymentAsync(
+            orderId,
+            (long)request.Amount,
+            orderInfo,
+            userId.Value.ToString()
+        );
+
+        if (result.ResultCode != 0 || string.IsNullOrEmpty(result.PayUrl))
+        {
+            return BadRequest(new { message = result.Message ?? "Không tạo được giao dịch MoMo." });
+        }
+
+        return Ok(new
+        {
+            payUrl = result.PayUrl,
+            orderId,
+            requestId = result.RequestId
+        });
+    }
+
+    [HttpPost("momo/ipn")]
+    public async Task<IActionResult> MomoIpn([FromBody] MomoIpnRequest ipn)
+    {
+        if (_momoService is null || ipn.OrderId is null)
+            return Ok(new { resultCode = 1 });
+
+        if (!_momoService.VerifySignature(ipn))
+            return Ok(new { resultCode = 1, message = "Invalid signature" });
+
+        if (ipn.ResultCode != 0)
+            return Ok(new { resultCode = 0 });
+
+        if (!Guid.TryParse(ipn.ExtraData, out var userId))
+            return Ok(new { resultCode = 0 });
+
+        var student = await _dbContext.StudentProfiles
+            .FirstOrDefaultAsync(s => s.UserId == userId);
+
+        if (student is not null)
+        {
+            var wallet = await _dbContext.StudentWallets
+                .FirstOrDefaultAsync(w => w.StudentId == student.Id);
+
+            if (wallet is null)
+            {
+                wallet = new Unitask.Domain.Entities.StudentWallet
+                {
+                    Id = Guid.NewGuid(),
+                    StudentId = student.Id,
+                    Balance = ipn.Amount,
+                    TotalEarned = ipn.Amount,
+                    TotalWithdrawn = 0m,
+                    UpdatedAt = DateTime.UtcNow
+                };
+                _dbContext.StudentWallets.Add(wallet);
+            }
+            else
+            {
+                wallet.Balance += ipn.Amount;
+                wallet.TotalEarned += ipn.Amount;
+                wallet.UpdatedAt = DateTime.UtcNow;
+            }
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        var business = await _dbContext.BusinessProfiles
+            .FirstOrDefaultAsync(b => b.UserId == userId);
+
+        if (business is not null)
+        {
+            business.TotalSpent = (business.TotalSpent ?? 0m) + ipn.Amount;
+            business.UpdatedAt = DateTime.UtcNow;
+            await _dbContext.SaveChangesAsync();
+        }
+
+        return Ok(new { resultCode = 0 });
+    }
+
+    [HttpGet("momo/return")]
+    public IActionResult MomoReturn(
+        [FromQuery] string? orderId,
+        [FromQuery] int resultCode,
+        [FromQuery] string? message)
+    {
+        return Ok(new
+        {
+            orderId,
+            resultCode,
+            message,
+            success = resultCode == 0
+        });
+    }
+}
+
+public class MomoDepositRequest
+{
+    public decimal Amount { get; set; }
 }
 
