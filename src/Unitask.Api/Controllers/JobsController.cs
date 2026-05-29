@@ -252,6 +252,7 @@ public class JobsController : ControllerBase
                 Business = new JobBusinessInfoDto
                 {
                     Id = job.Business.Id,
+                    UserId = job.Business.UserId,
                     CompanyName = job.Business.CompanyName,
                     Rating = job.Business.Rating
                 },

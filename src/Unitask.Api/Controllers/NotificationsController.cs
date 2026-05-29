@@ -77,6 +77,44 @@ public class NotificationsController : ControllerBase
     }
 
     [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> CreateNotification([FromBody] NotificationCreateRequest request)
+    {
+        var userExists = await _dbContext.Users.AnyAsync(u => u.Id == request.RecipientId);
+        if (!userExists)
+        {
+            return BadRequest(new { message = "Recipient not found." });
+        }
+
+        var notification = new Unitask.Domain.Entities.Notification
+        {
+            Id = Guid.NewGuid(),
+            UserId = request.RecipientId,
+            Type = request.Type ?? "system",
+            Title = request.Title,
+            Message = request.Message,
+            RelatedJobId = request.RelatedJobId,
+            RelatedUserId = User.GetUserId(),
+            IsRead = false,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _dbContext.Notifications.Add(notification);
+        await _dbContext.SaveChangesAsync();
+
+        return Ok(new NotificationResponse
+        {
+            Id = notification.Id,
+            Type = notification.Type,
+            Title = notification.Title,
+            Message = notification.Message,
+            RelatedJobId = notification.RelatedJobId,
+            IsRead = notification.IsRead,
+            CreatedAt = notification.CreatedAt
+        });
+    }
+
+    [Authorize]
     [HttpPut("{id:guid}/read")]
     public async Task<IActionResult> MarkRead(Guid id)
     {

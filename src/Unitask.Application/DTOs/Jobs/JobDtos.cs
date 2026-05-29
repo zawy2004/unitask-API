@@ -113,6 +113,8 @@ public class JobBusinessInfoDto
 {
     public Guid Id { get; set; }
 
+    public Guid UserId { get; set; }
+
     public string CompanyName { get; set; } = null!;
 
     public decimal? Rating { get; set; }

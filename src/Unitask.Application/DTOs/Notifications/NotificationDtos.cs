@@ -2,6 +2,19 @@ using System;
 
 namespace Unitask.Application.DTOs.Notifications;
 
+public class NotificationCreateRequest
+{
+    public Guid RecipientId { get; set; }
+
+    public string? Type { get; set; }
+
+    public string? Title { get; set; }
+
+    public string Message { get; set; } = null!;
+
+    public Guid? RelatedJobId { get; set; }
+}
+
 public class NotificationResponse
 {
     public Guid Id { get; set; }
