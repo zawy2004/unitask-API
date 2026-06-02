@@ -82,6 +82,7 @@ public class JobApplicationsController : ControllerBase
             Student = new ApplicationStudentDto
             {
                 Id = a.StudentProfileId,
+                UserId = a.StudentUserId,
                 Name = a.StudentName,
                 University = a.University,
                 Rating = ratings.TryGetValue(a.StudentUserId, out var r) ? r : 0m,
@@ -192,6 +193,7 @@ public class JobApplicationsController : ControllerBase
             Student = new ApplicationStudentDto
             {
                 Id = application.Student.Id,
+                UserId = application.Student.UserId,
                 Name = application.Student.User.FullName,
                 University = application.Student.University,
                 Rating = avgRating,
@@ -352,6 +354,7 @@ public class JobApplicationsController : ControllerBase
             Student = new ApplicationStudentDto
             {
                 Id = a.StudentProfileId,
+                UserId = a.StudentUserId,
                 Name = a.StudentName,
                 University = a.University,
                 Rating = ratings.TryGetValue(a.StudentUserId, out var r) ? r : 0m,

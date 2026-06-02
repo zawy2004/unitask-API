@@ -14,6 +14,8 @@ public class ApplicationStudentDto
 {
     public Guid Id { get; set; }
 
+    public Guid UserId { get; set; }
+
     public string Name { get; set; } = null!;
 
     public string? University { get; set; }
