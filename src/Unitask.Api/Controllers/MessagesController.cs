@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Unitask.Api.Extensions;
+using Unitask.Api.Services;
 using Unitask.Application.DTOs.Common;
 using Unitask.Application.DTOs.Conversations;
 using Unitask.Infrastructure.Persistence;
@@ -82,9 +83,12 @@ public class MessagesController : ControllerBase
             return NotFound();
         }
 
+        var moderation = MessageModerationService.Analyze(request.Content);
+        var msgId = Guid.NewGuid();
+
         var message = new Unitask.Domain.Entities.Message
         {
-            Id = Guid.NewGuid(),
+            Id = msgId,
             ConversationId = conversationId,
             SenderId = userId.Value,
             Content = request.Content,
@@ -96,9 +100,47 @@ public class MessagesController : ControllerBase
         _dbContext.Messages.Add(message);
         conversation.LastMessageAt = DateTime.UtcNow;
         conversation.UpdatedAt = DateTime.UtcNow;
+
         await _dbContext.SaveChangesAsync();
 
-        return Ok();
+        if (moderation.Flagged)
+        {
+            try
+            {
+                await _dbContext.Database.ExecuteSqlRawAsync(
+                    "INSERT INTO MessageFlags (Id, MessageId, ConversationId, SenderId, Content, Reasons, CreatedAt) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6})",
+                    Guid.NewGuid(), msgId, conversationId, userId.Value, request.Content,
+                    string.Join(",", moderation.Reasons), DateTime.UtcNow);
+            }
+            catch
+            {
+                // Table may not exist yet — create it
+                try
+                {
+                    await _dbContext.Database.ExecuteSqlRawAsync(@"
+                        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'MessageFlags')
+                        CREATE TABLE MessageFlags (
+                            Id UNIQUEIDENTIFIER PRIMARY KEY,
+                            MessageId UNIQUEIDENTIFIER NOT NULL,
+                            ConversationId UNIQUEIDENTIFIER NOT NULL,
+                            SenderId UNIQUEIDENTIFIER NOT NULL,
+                            Content NVARCHAR(MAX) NOT NULL,
+                            Reasons NVARCHAR(500) NOT NULL,
+                            CreatedAt DATETIME2 NOT NULL
+                        )");
+                    await _dbContext.Database.ExecuteSqlRawAsync(
+                        "INSERT INTO MessageFlags (Id, MessageId, ConversationId, SenderId, Content, Reasons, CreatedAt) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6})",
+                        Guid.NewGuid(), msgId, conversationId, userId.Value, request.Content,
+                        string.Join(",", moderation.Reasons), DateTime.UtcNow);
+                }
+                catch
+                {
+                    // Still fails — moderation data lost but message was sent OK
+                }
+            }
+        }
+
+        return Ok(new { flagged = moderation.Flagged });
     }
 }
 
