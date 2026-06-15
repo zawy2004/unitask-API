@@ -48,6 +48,10 @@ public partial class BusinessProfile
 
     public int? CompletedProjects { get; set; }
 
+    /// <summary>Số dư khả dụng của doanh nghiệp (nạp vào để ký quỹ milestone).</summary>
+    [Column(TypeName = "decimal(15, 2)")]
+    public decimal? Balance { get; set; }
+
     [Column(TypeName = "decimal(15, 2)")]
     public decimal? TotalSpent { get; set; }
 

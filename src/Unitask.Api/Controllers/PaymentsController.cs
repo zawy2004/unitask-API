@@ -256,7 +256,8 @@ public class PaymentsController : ControllerBase
 
         if (business is not null)
         {
-            business.TotalSpent = (business.TotalSpent ?? 0m) + ipn.Amount;
+            // Nạp tiền -> cộng vào số dư khả dụng (để ký quỹ milestone), KHÔNG phải TotalSpent.
+            business.Balance = (business.Balance ?? 0m) + ipn.Amount;
             business.UpdatedAt = DateTime.UtcNow;
             await _dbContext.SaveChangesAsync();
         }

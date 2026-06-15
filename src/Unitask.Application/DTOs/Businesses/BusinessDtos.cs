@@ -25,6 +25,8 @@ public class BusinessProfileResponse
 
     public int? CompletedProjects { get; set; }
 
+    public decimal? Balance { get; set; }
+
     public decimal? TotalSpent { get; set; }
 
     public decimal? Rating { get; set; }
