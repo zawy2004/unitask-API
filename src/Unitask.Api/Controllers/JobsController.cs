@@ -108,6 +108,11 @@ public class JobsController : ControllerBase
             return Unauthorized();
         }
 
+        // Khung M1–M3: chặn nếu tài khoản bị khóa (M3) hoặc đang đình chỉ (M2).
+        var actor = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId.Value);
+        if (actor is not null && (actor.IsActive == false || (actor.SuspendedUntil != null && actor.SuspendedUntil > DateTime.UtcNow)))
+            return StatusCode(StatusCodes.Status403Forbidden, new { message = "Tài khoản đang bị đình chỉ/khóa, không thể đăng task." });
+
         var business = await _dbContext.BusinessProfiles
             .FirstOrDefaultAsync(b => b.UserId == userId.Value);
         if (business is null)
@@ -132,6 +137,11 @@ public class JobsController : ControllerBase
             _dbContext.BusinessProfiles.Add(business);
             await _dbContext.SaveChangesAsync();
         }
+
+        // Chính sách 1.4: doanh nghiệp bị khóa (3 lần từ chối vô lý) không được đăng task.
+        if (business.IsPostingLocked == true)
+            return StatusCode(StatusCodes.Status403Forbidden,
+                new { message = "Tài khoản bị khóa đăng task do từ chối nghiệm thu không hợp lệ nhiều lần. Vui lòng liên hệ hỗ trợ." });
 
         var job = new Job
         {

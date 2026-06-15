@@ -20,9 +20,23 @@ public class UserProfileResponse
 
     public bool? IsActive { get; set; }
 
+    public int? ReputationScore { get; set; }
+
+    public DateTime? SuspendedUntil { get; set; }
+
     public DateTime? CreatedAt { get; set; }
 
     public string? AvatarUrl { get; set; }
+}
+
+/// <summary>Body cho POST /api/users/{id}/sanction (khung vi phạm M1–M3).</summary>
+public class SanctionRequest
+{
+    /// <summary>M1 | M2 | M3</summary>
+    public string Level { get; set; } = string.Empty;
+    /// <summary>Số ngày đình chỉ cho M2 (7–30, mặc định 7).</summary>
+    public int? Days { get; set; }
+    public string? Reason { get; set; }
 }
 
 public class UpdateUserRequest

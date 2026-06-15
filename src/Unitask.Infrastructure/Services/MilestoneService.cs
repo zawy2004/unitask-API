@@ -38,6 +38,7 @@ public class MilestoneService : IMilestoneService
         public const string UnderReview = "UNDER_REVIEW";
         public const string Revision = "REVISION";
         public const string Completed = "COMPLETED";
+        public const string Canceled = "CANCELED";
     }
 
     private static class ContractStatus
@@ -179,7 +180,10 @@ public class MilestoneService : IMilestoneService
         // Cả Business chủ HĐ lẫn Student của HĐ đều được xem.
         await EnsureContractParticipantAsync(contract.StudentId, contract.BusinessId, currentUserId, ct);
 
-        return MapContract(contract);
+        // Người xem là doanh nghiệp chủ HĐ? Nếu không (sinh viên) -> ẩn task chưa ký quỹ (1.1).
+        var isBusinessViewer = await _db.BusinessProfiles.AsNoTracking()
+            .AnyAsync(b => b.Id == contract.BusinessId && b.UserId == currentUserId, ct);
+        return MapContract(contract, hidePending: !isBusinessViewer);
     }
 
     public async Task<IReadOnlyList<ContractResponse>> GetMyContractsAsync(Guid currentUserId, CancellationToken ct = default)
@@ -201,7 +205,9 @@ public class MilestoneService : IMilestoneService
             .OrderByDescending(c => c.CreatedAt)
             .ToListAsync(ct);
 
-        return contracts.Select(MapContract).ToList();
+        // Sinh viên (không phải doanh nghiệp) -> ẩn task chưa ký quỹ (1.1).
+        var hidePending = businessId is null;
+        return contracts.Select(c => MapContract(c, hidePending)).ToList();
     }
 
     public async Task<ContractResponse> GetContractByApplicationAsync(Guid jobApplicationId, Guid currentUserId, CancellationToken ct = default)
@@ -256,6 +262,8 @@ public class MilestoneService : IMilestoneService
         business.UpdatedAt = DateTime.UtcNow;
 
         milestone.Status = MilestoneStatus.Escrowed;
+        milestone.EscrowedAt = DateTime.UtcNow; // mốc tính 48h cho chính sách hủy 1.3
+        await AddPaymentRecordAsync(contract, milestone.Amount, "escrow", "escrow", $"Ký quỹ: {milestone.Title}", ct);
 
         // Thông báo cho sinh viên: đã có tiền ký quỹ, bắt đầu làm.
         var (studentUserId, _) = await ResolveUserIdsAsync(contract, ct);
@@ -327,10 +335,24 @@ public class MilestoneService : IMilestoneService
 
         // Bọc trong transaction: đổi trạng thái milestone + cộng ví phải toàn-vẹn (cùng thành công/thất bại).
         await using var tx = await _db.Database.BeginTransactionAsync(ct);
+        await ApplyApprovalAsync(milestone, contract, currentUserId, auto: false, ct);
+        await _db.SaveChangesAsync(ct);
+        await tx.CommitAsync(ct);
 
+        return await ReloadMilestoneAsync(milestone.Id, ct);
+    }
+
+    /// <summary>
+    /// Lõi nghiệm thu (dùng chung cho approve thủ công và auto-release 72h):
+    /// COMPLETED + giải ngân vào ví Sinh viên + ghi TotalSpent doanh nghiệp + đóng HĐ nếu xong hết
+    /// + tạo thông báo. KHÔNG SaveChanges (caller tự lưu/commit).
+    /// </summary>
+    /// <param name="actorUserId">User thực hiện; null nếu hệ thống tự động giải ngân.</param>
+    private async Task ApplyApprovalAsync(Milestone milestone, Contract contract, Guid? actorUserId, bool auto, CancellationToken ct)
+    {
         milestone.Status = MilestoneStatus.Completed;
 
-        // --- Giả lập "giải ngân" tiền ký quỹ vào ví Sinh viên ---
+        // --- Giải ngân tiền ký quỹ vào ví Sinh viên ---
         var wallet = await _db.StudentWallets.FirstOrDefaultAsync(w => w.StudentId == contract.StudentId, ct);
         if (wallet is null)
         {
@@ -355,6 +377,9 @@ public class MilestoneService : IMilestoneService
         business.TotalSpent = (business.TotalSpent ?? 0m) + milestone.Amount;
         business.UpdatedAt = DateTime.UtcNow;
 
+        // Ghi lịch sử dòng tiền: giải ngân cho người thực hiện.
+        await AddPaymentRecordAsync(contract, milestone.Amount, "released", "escrow", $"Giải ngân: {milestone.Title}", ct);
+
         // Nếu mọi milestone đã COMPLETED -> đóng hợp đồng.
         var allCompleted = await _db.Milestones
             .Where(m => m.ContractId == contract.Id && m.Id != milestone.Id)
@@ -365,17 +390,46 @@ public class MilestoneService : IMilestoneService
             trackedContract.Status = ContractStatus.Completed;
         }
 
-        // Thông báo cho sinh viên: đã nghiệm thu & giải ngân vào ví.
+        // Thông báo cho sinh viên (khác nhau giữa nghiệm thu thủ công và tự động 72h).
         var (studentUserId, _) = await ResolveUserIdsAsync(contract, ct);
-        QueueNotification(studentUserId, currentUserId, "payment",
-            "✅ Đã nghiệm thu & giải ngân",
-            $"Task \"{milestone.Title}\" đã được nghiệm thu. {Vnd(milestone.Amount)} đã vào ví của bạn.",
-            contract.JobId);
+        var (title, message) = auto
+            ? ("⏱️ Tự động nghiệm thu (72h)",
+               $"Doanh nghiệp không phản hồi trong 72 giờ. Task \"{milestone.Title}\" được tự động nghiệm thu, {Vnd(milestone.Amount)} đã vào ví của bạn.")
+            : ("✅ Đã nghiệm thu & giải ngân",
+               $"Task \"{milestone.Title}\" đã được nghiệm thu. {Vnd(milestone.Amount)} đã vào ví của bạn.");
+        QueueNotification(studentUserId, actorUserId ?? studentUserId, "payment", title, message, contract.JobId);
+    }
 
+    /// <summary>
+    /// CHÍNH SÁCH 1.2 — "im lặng = chấp thuận": tự động nghiệm thu & giải ngân các milestone
+    /// đang UNDER_REVIEW mà bản nộp mới nhất đã quá <paramref name="timeoutHours"/> giờ.
+    /// Gọi định kỳ bởi background service. Trả về số milestone đã giải ngân.
+    /// </summary>
+    public async Task<int> AutoReleaseExpiredAsync(int timeoutHours, CancellationToken ct = default)
+    {
+        var cutoff = DateTime.UtcNow.AddHours(-timeoutHours);
+
+        var expired = await _db.Milestones
+            .Include(m => m.Contract)
+            .Include(m => m.Submissions)
+            .Where(m => m.Status == MilestoneStatus.UnderReview
+                        && m.Submissions.Any()
+                        && m.Submissions.Max(s => s.CreatedAt) < cutoff)
+            .ToListAsync(ct);
+
+        if (expired.Count == 0)
+            return 0;
+
+        await using var tx = await _db.Database.BeginTransactionAsync(ct);
+        foreach (var milestone in expired)
+        {
+            // actorUserId = null -> hành động của hệ thống.
+            await ApplyApprovalAsync(milestone, milestone.Contract, actorUserId: null, auto: true, ct);
+        }
         await _db.SaveChangesAsync(ct);
         await tx.CommitAsync(ct);
 
-        return await ReloadMilestoneAsync(milestone.Id, ct);
+        return expired.Count;
     }
 
     // ============================================================
@@ -384,8 +438,11 @@ public class MilestoneService : IMilestoneService
 
     public async Task<MilestoneResponse> RequestChangesAsync(Guid milestoneId, Guid currentUserId, RequestChangesRequest request, CancellationToken ct = default)
     {
+        // Chính sách 1.4: từ chối nghiệm thu phải có LÝ DO cụ thể + BẰNG CHỨNG kèm theo.
         if (string.IsNullOrWhiteSpace(request?.Feedback))
             throw new InvalidOperationException("Vui lòng nhập lý do cần chỉnh sửa (feedback).");
+        if (string.IsNullOrWhiteSpace(request?.EvidenceUrl))
+            throw new InvalidOperationException("Vui lòng đính kèm bằng chứng (link) khi từ chối nghiệm thu.");
 
         var (milestone, contract) = await LoadMilestoneWithContractAsync(milestoneId, ct);
 
@@ -404,6 +461,7 @@ public class MilestoneService : IMilestoneService
             ?? throw new InvalidOperationException("Không tìm thấy bản nộp để gửi yêu cầu sửa.");
 
         latest.ClientFeedback = request.Feedback;
+        latest.ClientEvidenceUrl = request.EvidenceUrl;
         milestone.Status = MilestoneStatus.Revision;
 
         // Thông báo cho sinh viên: cần chỉnh sửa, kèm lý do.
@@ -414,6 +472,83 @@ public class MilestoneService : IMilestoneService
             contract.JobId);
 
         await _db.SaveChangesAsync(ct);
+
+        return await ReloadMilestoneAsync(milestone.Id, ct);
+    }
+
+    // ============================================================
+    // (4) CANCEL — Business hủy task: hoàn tiền theo % tiến độ (chính sách 1.3)
+    // ============================================================
+
+    public async Task<MilestoneResponse> CancelMilestoneAsync(Guid milestoneId, Guid currentUserId, CancelMilestoneRequest request, CancellationToken ct = default)
+    {
+        var (milestone, contract) = await LoadMilestoneWithContractAsync(milestoneId, ct);
+
+        // GUARD: đúng Business chủ hợp đồng.
+        await EnsureBusinessOwnerAsync(contract.BusinessId, currentUserId, ct);
+
+        if (milestone.Status == MilestoneStatus.Completed || milestone.Status == MilestoneStatus.Canceled)
+            throw new InvalidOperationException($"Không thể hủy task ở trạng thái {milestone.Status}.");
+
+        await using var tx = await _db.Database.BeginTransactionAsync(ct);
+        var (studentUserId, businessUserId) = await ResolveUserIdsAsync(contract, ct);
+
+        // Task CHƯA ký quỹ (PENDING): không có tiền giữ -> chỉ hủy.
+        if (milestone.Status == MilestoneStatus.Pending)
+        {
+            milestone.Status = MilestoneStatus.Canceled;
+            QueueNotification(studentUserId, currentUserId, "milestone",
+                "🚫 Task đã bị hủy", $"Task \"{milestone.Title}\" đã bị doanh nghiệp hủy.", contract.JobId);
+            await _db.SaveChangesAsync(ct);
+            await tx.CommitAsync(ct);
+            return await ReloadMilestoneAsync(milestone.Id, ct);
+        }
+
+        // Đã ký quỹ (ESCROWED/UNDER_REVIEW/REVISION): chia tiền theo % tiến độ.
+        var percent = Math.Clamp(request?.ProgressPercent ?? 0, 0, 100);
+
+        // Chính sách 1.3: tối thiểu 30% cho người thực hiện nếu đã qua 48h kể từ lúc ký quỹ.
+        if (milestone.EscrowedAt is { } escrowedAt && DateTime.UtcNow - escrowedAt > TimeSpan.FromHours(48))
+            percent = Math.Max(percent, 30);
+
+        var studentAmount = Math.Round(milestone.Amount * percent / 100m, 2);
+        var businessRefund = milestone.Amount - studentAmount;
+
+        // Trả phần tiến độ cho người thực hiện.
+        if (studentAmount > 0)
+        {
+            var wallet = await _db.StudentWallets.FirstOrDefaultAsync(w => w.StudentId == contract.StudentId, ct);
+            if (wallet is null)
+            {
+                wallet = new StudentWallet { Id = Guid.NewGuid(), StudentId = contract.StudentId, Balance = 0m, TotalEarned = 0m, TotalWithdrawn = 0m, UpdatedAt = DateTime.UtcNow };
+                _db.StudentWallets.Add(wallet);
+            }
+            wallet.Balance = (wallet.Balance ?? 0m) + studentAmount;
+            wallet.TotalEarned = (wallet.TotalEarned ?? 0m) + studentAmount;
+            wallet.UpdatedAt = DateTime.UtcNow;
+        }
+
+        // Hoàn phần còn lại + ghi nhận phần đã chi cho doanh nghiệp.
+        var business = await _db.BusinessProfiles.FirstAsync(b => b.Id == contract.BusinessId, ct);
+        business.Balance = (business.Balance ?? 0m) + businessRefund;
+        if (studentAmount > 0)
+            business.TotalSpent = (business.TotalSpent ?? 0m) + studentAmount;
+        business.UpdatedAt = DateTime.UtcNow;
+
+        // Ghi lịch sử: phần trả cho người thực hiện theo tiến độ (nếu có).
+        await AddPaymentRecordAsync(contract, studentAmount, "released", "escrow", $"Hủy task (trả {percent}% tiến độ): {milestone.Title}", ct);
+
+        milestone.Status = MilestoneStatus.Canceled;
+
+        QueueNotification(studentUserId, currentUserId, "payment",
+            "🚫 Task bị hủy — thanh toán theo tiến độ",
+            $"Task \"{milestone.Title}\" bị hủy. Bạn nhận {Vnd(studentAmount)} ({percent}% tiến độ).", contract.JobId);
+        QueueNotification(businessUserId, currentUserId, "payment",
+            "🚫 Đã hủy task — hoàn quỹ",
+            $"Task \"{milestone.Title}\" đã hủy. Hoàn {Vnd(businessRefund)} về ví, trả {Vnd(studentAmount)} cho người thực hiện.", contract.JobId);
+
+        await _db.SaveChangesAsync(ct);
+        await tx.CommitAsync(ct);
 
         return await ReloadMilestoneAsync(milestone.Id, ct);
     }
@@ -476,6 +611,44 @@ public class MilestoneService : IMilestoneService
 
     private static string Vnd(decimal v) => v.ToString("#,##0", new CultureInfo("vi-VN")) + "₫";
 
+    // ----- LỊCH SỬ DÒNG TIỀN (dbo.Payments) -----
+
+    /// <summary>Tìm JobApplication ứng với hợp đồng (theo Job + Student) để gắn vào Payment.</summary>
+    private Task<Guid?> ResolveApplicationIdAsync(Contract c, CancellationToken ct) =>
+        _db.JobApplications.AsNoTracking()
+            .Where(a => a.JobId == c.JobId && a.StudentId == c.StudentId)
+            .Select(a => (Guid?)a.Id)
+            .FirstOrDefaultAsync(ct);
+
+    /// <summary>
+    /// Ghi 1 bản ghi vào dbo.Payments để hiển thị trong "lịch sử dòng tiền" của ví.
+    /// status: escrow | released | refunded. Bỏ qua nếu không tìm thấy JobApplication
+    /// (cột JobApplicationId là NOT NULL).
+    /// </summary>
+    private async Task AddPaymentRecordAsync(Contract c, decimal amount, string status, string method, string? description, CancellationToken ct)
+    {
+        if (amount <= 0) return;
+        var appId = await ResolveApplicationIdAsync(c, ct);
+        if (appId is null) return;
+
+        _db.Payments.Add(new Payment
+        {
+            Id = Guid.NewGuid(),
+            JobId = c.JobId,
+            JobApplicationId = appId.Value,
+            BusinessId = c.BusinessId,
+            StudentId = c.StudentId,
+            Amount = amount,
+            Currency = "VND",
+            Status = status,
+            PaymentMethod = method,
+            Description = description,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+            ReleasedAt = status == "released" ? DateTime.UtcNow : null
+        });
+    }
+
     /// <summary>GUARD: currentUserId phải là chủ của BusinessProfile = businessId.</summary>
     private async Task EnsureBusinessOwnerAsync(Guid businessId, Guid currentUserId, CancellationToken ct)
     {
@@ -505,8 +678,12 @@ public class MilestoneService : IMilestoneService
             throw new UnauthorizedAccessException("Bạn không có quyền truy cập hợp đồng này.");
     }
 
-    /// <summary>Map entity Contract -> DTO (kèm milestone + bản nộp mới nhất).</summary>
-    private static ContractResponse MapContract(Contract contract) => new()
+    /// <summary>
+    /// Map entity Contract -> DTO. Chính sách 1.1: khi <paramref name="hidePending"/> = true
+    /// (người xem là Sinh viên), ẩn các task CHƯA ký quỹ (PENDING) — task chỉ hiển thị cho
+    /// người nhận sau khi doanh nghiệp nạp đủ 100% vào Escrow.
+    /// </summary>
+    private static ContractResponse MapContract(Contract contract, bool hidePending = false) => new()
     {
         Id = contract.Id,
         JobId = contract.JobId,
@@ -518,6 +695,7 @@ public class MilestoneService : IMilestoneService
         Status = contract.Status,
         CreatedAt = contract.CreatedAt,
         Milestones = contract.Milestones
+            .Where(m => !hidePending || m.Status != "PENDING")
             .OrderBy(m => m.CreatedAt)
             .Select(MapMilestone)
             .ToList()
@@ -546,6 +724,7 @@ public class MilestoneService : IMilestoneService
                 FileUrl = latest.FileUrl,
                 CoverLetter = latest.CoverLetter,
                 ClientFeedback = latest.ClientFeedback,
+                ClientEvidenceUrl = latest.ClientEvidenceUrl,
                 CreatedAt = latest.CreatedAt
             }
         };

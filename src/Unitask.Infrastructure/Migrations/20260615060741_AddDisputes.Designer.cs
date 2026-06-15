@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Unitask.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Unitask.Infrastructure.Persistence;
 namespace Unitask.Infrastructure.Migrations
 {
     [DbContext(typeof(UnitaskDbContext))]
-    partial class UnitaskDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260615060741_AddDisputes")]
+    partial class AddDisputes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -273,9 +276,6 @@ namespace Unitask.Infrastructure.Migrations
                         .HasColumnType("decimal(15, 2)")
                         .HasDefaultValue(0m);
 
-                    b.Property<string>("BusinessLicenseUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CompanyEmail")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -341,10 +341,6 @@ namespace Unitask.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
-
-                    b.Property<string>("TaxCode")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
 
                     b.Property<decimal?>("TotalSpent")
                         .ValueGeneratedOnAdd()
@@ -1331,10 +1327,6 @@ namespace Unitask.Infrastructure.Migrations
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CitizenId")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
                     b.Property<int?>("CompletedJobs")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
@@ -1364,9 +1356,6 @@ namespace Unitask.Infrastructure.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("PortfolioUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StudentCardUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StudentEmail")

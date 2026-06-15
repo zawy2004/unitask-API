@@ -25,11 +25,14 @@ public partial class Milestone
     [Column(TypeName = "decimal(15, 2)")]
     public decimal Amount { get; set; }
 
-    /// <summary>PENDING | ESCROWED | UNDER_REVIEW | REVISION | COMPLETED</summary>
+    /// <summary>PENDING | ESCROWED | UNDER_REVIEW | REVISION | COMPLETED | CANCELED</summary>
     [StringLength(20)]
     public string Status { get; set; } = "PENDING";
 
     public DateTime? DueDate { get; set; }
+
+    /// <summary>Thời điểm ký quỹ (mốc tính 48h cho chính sách hủy 1.3).</summary>
+    public DateTime? EscrowedAt { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 

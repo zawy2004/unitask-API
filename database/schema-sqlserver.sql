@@ -21,6 +21,8 @@ CREATE TABLE [dbo].[Users] (
         CHECK ([UserType] IN ('student', 'business', 'admin')),
     [IsVerified] BIT DEFAULT 0,
     [IsActive] BIT DEFAULT 1,
+    [ReputationScore] INT DEFAULT 100,
+    [SuspendedUntil] DATETIME2(7) NULL,
     [CreatedAt] DATETIME2(7) DEFAULT GETUTCDATE(),
     [UpdatedAt] DATETIME2(7) DEFAULT GETUTCDATE(),
     [LastLogin] DATETIME2(7) NULL,
@@ -49,6 +51,8 @@ CREATE TABLE [dbo].[StudentProfiles] (
     [GraduationYear] INT,
     [CvUrl] NVARCHAR(MAX),
     [GradePoint] DECIMAL(3, 2),
+    [StudentCardUrl] NVARCHAR(MAX),
+    [CitizenId] NVARCHAR(20),
     [IsVerified] BIT DEFAULT 0,
     [VerifiedAt] DATETIME2(7) NULL,
     [Bio] NVARCHAR(MAX),
@@ -88,12 +92,16 @@ CREATE TABLE [dbo].[BusinessProfiles] (
     [CoverImageUrl] NVARCHAR(MAX),
     [IsVerified] BIT DEFAULT 0,
     [VerifiedAt] DATETIME2(7) NULL,
+    [TaxCode] NVARCHAR(20),
+    [BusinessLicenseUrl] NVARCHAR(MAX),
     [Address] NVARCHAR(MAX),
     [Phone] NVARCHAR(20),
     [CompletedProjects] INT DEFAULT 0,
     [Balance] DECIMAL(15, 2) DEFAULT 0,
     [TotalSpent] DECIMAL(15, 2) DEFAULT 0,
     [Rating] DECIMAL(3, 2) DEFAULT 0,
+    [RejectionStrikes] INT DEFAULT 0,
+    [IsPostingLocked] BIT DEFAULT 0,
     [CreatedAt] DATETIME2(7) DEFAULT GETUTCDATE(),
     [UpdatedAt] DATETIME2(7) DEFAULT GETUTCDATE(),
     FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users]([Id]) ON DELETE NO ACTION,
@@ -612,8 +620,9 @@ CREATE TABLE [dbo].[Milestones] (
     [Title] NVARCHAR(255) NOT NULL,
     [Amount] DECIMAL(15, 2) NOT NULL DEFAULT 0,
     [Status] NVARCHAR(20) NOT NULL DEFAULT 'PENDING'
-        CHECK ([Status] IN ('PENDING', 'ESCROWED', 'UNDER_REVIEW', 'REVISION', 'COMPLETED')),
+        CHECK ([Status] IN ('PENDING', 'ESCROWED', 'UNDER_REVIEW', 'REVISION', 'COMPLETED', 'CANCELED')),
     [DueDate] DATETIME2(7) NULL,
+    [EscrowedAt] DATETIME2(7) NULL,
     [CreatedAt] DATETIME2(7) DEFAULT GETUTCDATE(),
     FOREIGN KEY ([ContractId]) REFERENCES [dbo].[Contracts]([Id]) ON DELETE CASCADE,
     INDEX [idx_milestone_contract] ([ContractId]),
@@ -640,6 +649,7 @@ CREATE TABLE [dbo].[Submissions] (
     [FileUrl] NVARCHAR(MAX) NULL,
     [CoverLetter] NVARCHAR(MAX) NULL,
     [ClientFeedback] NVARCHAR(MAX) NULL,
+    [ClientEvidenceUrl] NVARCHAR(MAX) NULL,
     [CreatedAt] DATETIME2(7) DEFAULT GETUTCDATE(),
     FOREIGN KEY ([MilestoneId]) REFERENCES [dbo].[Milestones]([Id])      ON DELETE CASCADE,
     FOREIGN KEY ([StudentId])   REFERENCES [dbo].[StudentProfiles]([Id]) ON DELETE NO ACTION,
@@ -650,6 +660,39 @@ END
 GO
 
 PRINT 'Ensured [Submissions] table';
+GO
+
+-- ==========================================
+-- 23. DISPUTES TABLE
+-- Tranh chấp về một Milestone (quy trình B1–B4).
+-- ==========================================
+
+IF OBJECT_ID('dbo.Disputes','U') IS NULL
+BEGIN
+CREATE TABLE [dbo].[Disputes] (
+    [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    [MilestoneId] UNIQUEIDENTIFIER NOT NULL,
+    [ContractId] UNIQUEIDENTIFIER NOT NULL,
+    [RaisedByUserId] UNIQUEIDENTIFIER NOT NULL,
+    [Reason] NVARCHAR(MAX) NOT NULL,
+    [Status] NVARCHAR(20) NOT NULL DEFAULT 'NEGOTIATION'
+        CHECK ([Status] IN ('NEGOTIATION', 'MEDIATION', 'RESOLVED', 'APPEAL', 'CLOSED')),
+    [MediatorId] UNIQUEIDENTIFIER NULL,
+    [Decision] NVARCHAR(20) NULL
+        CHECK ([Decision] IN ('RELEASE', 'REFUND', 'SPLIT')),
+    [StudentPercent] INT DEFAULT 0,
+    [DecisionNote] NVARCHAR(MAX) NULL,
+    [CreatedAt] DATETIME2(7) DEFAULT GETUTCDATE(),
+    [ResolvedAt] DATETIME2(7) NULL,
+    [AppealDeadline] DATETIME2(7) NULL,
+    FOREIGN KEY ([MilestoneId]) REFERENCES [dbo].[Milestones]([Id]) ON DELETE NO ACTION,
+    INDEX [idx_dispute_milestone] ([MilestoneId]),
+    INDEX [idx_dispute_status] ([Status])
+);
+END
+GO
+
+PRINT 'Ensured [Disputes] table';
 GO
 
 -- ==========================================
@@ -664,6 +707,82 @@ IF COL_LENGTH('dbo.BusinessProfiles', 'Balance') IS NULL
 BEGIN
     ALTER TABLE [dbo].[BusinessProfiles] ADD [Balance] DECIMAL(15, 2) NOT NULL DEFAULT 0;
     PRINT 'Added column [BusinessProfiles].[Balance]';
+END
+GO
+
+-- Chính sách 1.4: đếm từ chối vô lý + khóa đăng task
+IF COL_LENGTH('dbo.BusinessProfiles', 'RejectionStrikes') IS NULL
+BEGIN
+    ALTER TABLE [dbo].[BusinessProfiles] ADD [RejectionStrikes] INT NOT NULL DEFAULT 0;
+    PRINT 'Added column [BusinessProfiles].[RejectionStrikes]';
+END
+GO
+
+IF COL_LENGTH('dbo.BusinessProfiles', 'IsPostingLocked') IS NULL
+BEGIN
+    ALTER TABLE [dbo].[BusinessProfiles] ADD [IsPostingLocked] BIT NOT NULL DEFAULT 0;
+    PRINT 'Added column [BusinessProfiles].[IsPostingLocked]';
+END
+GO
+
+-- Chính sách 1.4: bằng chứng kèm theo khi từ chối nghiệm thu
+IF COL_LENGTH('dbo.Submissions', 'ClientEvidenceUrl') IS NULL
+BEGIN
+    ALTER TABLE [dbo].[Submissions] ADD [ClientEvidenceUrl] NVARCHAR(MAX) NULL;
+    PRINT 'Added column [Submissions].[ClientEvidenceUrl]';
+END
+GO
+
+-- Xác thực định danh: Student (thẻ SV + CCCD), Business (MST + giấy phép KD)
+IF COL_LENGTH('dbo.StudentProfiles', 'StudentCardUrl') IS NULL
+BEGIN ALTER TABLE [dbo].[StudentProfiles] ADD [StudentCardUrl] NVARCHAR(MAX) NULL; PRINT 'Added [StudentProfiles].[StudentCardUrl]'; END
+GO
+IF COL_LENGTH('dbo.StudentProfiles', 'CitizenId') IS NULL
+BEGIN ALTER TABLE [dbo].[StudentProfiles] ADD [CitizenId] NVARCHAR(20) NULL; PRINT 'Added [StudentProfiles].[CitizenId]'; END
+GO
+IF COL_LENGTH('dbo.BusinessProfiles', 'TaxCode') IS NULL
+BEGIN ALTER TABLE [dbo].[BusinessProfiles] ADD [TaxCode] NVARCHAR(20) NULL; PRINT 'Added [BusinessProfiles].[TaxCode]'; END
+GO
+IF COL_LENGTH('dbo.BusinessProfiles', 'BusinessLicenseUrl') IS NULL
+BEGIN ALTER TABLE [dbo].[BusinessProfiles] ADD [BusinessLicenseUrl] NVARCHAR(MAX) NULL; PRINT 'Added [BusinessProfiles].[BusinessLicenseUrl]'; END
+GO
+
+-- Khung vi phạm M1–M3: điểm uy tín + đình chỉ có thời hạn cho Users
+IF COL_LENGTH('dbo.Users', 'ReputationScore') IS NULL
+BEGIN
+    ALTER TABLE [dbo].[Users] ADD [ReputationScore] INT NOT NULL DEFAULT 100;
+    PRINT 'Added column [Users].[ReputationScore]';
+END
+GO
+
+IF COL_LENGTH('dbo.Users', 'SuspendedUntil') IS NULL
+BEGIN
+    ALTER TABLE [dbo].[Users] ADD [SuspendedUntil] DATETIME2(7) NULL;
+    PRINT 'Added column [Users].[SuspendedUntil]';
+END
+GO
+
+-- Chính sách 1.3: cột EscrowedAt + cho phép trạng thái CANCELED của Milestones
+IF COL_LENGTH('dbo.Milestones', 'EscrowedAt') IS NULL
+BEGIN
+    ALTER TABLE [dbo].[Milestones] ADD [EscrowedAt] DATETIME2(7) NULL;
+    PRINT 'Added column [Milestones].[EscrowedAt]';
+END
+GO
+
+-- Mở rộng CHECK constraint Status để thêm 'CANCELED' (drop & tạo lại idempotent)
+IF NOT EXISTS (
+    SELECT 1 FROM sys.check_constraints
+    WHERE parent_object_id = OBJECT_ID('dbo.Milestones')
+      AND definition LIKE '%CANCELED%')
+BEGIN
+    DECLARE @ck sysname;
+    SELECT @ck = name FROM sys.check_constraints
+        WHERE parent_object_id = OBJECT_ID('dbo.Milestones') AND definition LIKE '%[Status]%';
+    IF @ck IS NOT NULL EXEC('ALTER TABLE [dbo].[Milestones] DROP CONSTRAINT [' + @ck + ']');
+    ALTER TABLE [dbo].[Milestones] ADD CONSTRAINT [CK_Milestones_Status]
+        CHECK ([Status] IN ('PENDING','ESCROWED','UNDER_REVIEW','REVISION','COMPLETED','CANCELED'));
+    PRINT 'Updated CHECK constraint [Milestones].[Status] to allow CANCELED';
 END
 GO
 

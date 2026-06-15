@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Unitask.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Unitask.Infrastructure.Persistence;
 namespace Unitask.Infrastructure.Migrations
 {
     [DbContext(typeof(UnitaskDbContext))]
-    partial class UnitaskDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260615054930_AddMilestoneEscrowedAt")]
+    partial class AddMilestoneEscrowedAt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -273,9 +276,6 @@ namespace Unitask.Infrastructure.Migrations
                         .HasColumnType("decimal(15, 2)")
                         .HasDefaultValue(0m);
 
-                    b.Property<string>("BusinessLicenseUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CompanyEmail")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -341,10 +341,6 @@ namespace Unitask.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
-
-                    b.Property<string>("TaxCode")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
 
                     b.Property<decimal?>("TotalSpent")
                         .ValueGeneratedOnAdd()
@@ -465,68 +461,6 @@ namespace Unitask.Infrastructure.Migrations
                         });
 
                     b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
-                });
-
-            modelBuilder.Entity("Unitask.Domain.Entities.Dispute", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("(newid())");
-
-                    b.Property<DateTime?>("AppealDeadline")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("ContractId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("(getutcdate())");
-
-                    b.Property<string>("Decision")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("DecisionNote")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("MediatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("MilestoneId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("RaisedByUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ResolvedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasDefaultValue("NEGOTIATION");
-
-                    b.Property<int?>("StudentPercent")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex(new[] { "MilestoneId" }, "idx_dispute_milestone");
-
-                    b.HasIndex(new[] { "Status" }, "idx_dispute_status");
-
-                    b.ToTable("Disputes");
                 });
 
             modelBuilder.Entity("Unitask.Domain.Entities.FAQ", b =>
@@ -1331,10 +1265,6 @@ namespace Unitask.Infrastructure.Migrations
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CitizenId")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
                     b.Property<int?>("CompletedJobs")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
@@ -1364,9 +1294,6 @@ namespace Unitask.Infrastructure.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("PortfolioUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StudentCardUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StudentEmail")
@@ -1585,14 +1512,6 @@ namespace Unitask.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int?>("ReputationScore")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(100);
-
-                    b.Property<DateTime?>("SuspendedUntil")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -1781,17 +1700,6 @@ namespace Unitask.Infrastructure.Migrations
                     b.Navigation("User1");
 
                     b.Navigation("User2");
-                });
-
-            modelBuilder.Entity("Unitask.Domain.Entities.Dispute", b =>
-                {
-                    b.HasOne("Unitask.Domain.Entities.Milestone", "Milestone")
-                        .WithMany()
-                        .HasForeignKey("MilestoneId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Milestone");
                 });
 
             modelBuilder.Entity("Unitask.Domain.Entities.Job", b =>

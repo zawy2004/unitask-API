@@ -16,6 +16,7 @@ public class SubmissionResponse
     public string? FileUrl { get; set; }
     public string? CoverLetter { get; set; }
     public string? ClientFeedback { get; set; }
+    public string? ClientEvidenceUrl { get; set; }
     public DateTime? CreatedAt { get; set; }
 }
 
@@ -63,14 +64,26 @@ public class SubmitMilestoneRequest
 /// <summary>Body cho POST /api/milestones/{id}/request-changes (Business yêu cầu sửa).</summary>
 public class RequestChangesRequest
 {
-    /// <summary>Lý do cần sửa — bắt buộc.</summary>
+    /// <summary>Lý do cần sửa — bắt buộc (chính sách 1.4).</summary>
     public string Feedback { get; set; } = string.Empty;
+
+    /// <summary>Link bằng chứng kèm theo — bắt buộc (chính sách 1.4).</summary>
+    public string EvidenceUrl { get; set; } = string.Empty;
 }
 
 /// <summary>(Tùy chọn) Body cho escrow — cho phép gắn mã giao dịch cổng thanh toán giả lập.</summary>
 public class EscrowMilestoneRequest
 {
     public string? PaymentReference { get; set; }
+}
+
+/// <summary>Body cho POST /api/milestones/{id}/cancel (Business hủy task — chính sách 1.3).</summary>
+public class CancelMilestoneRequest
+{
+    /// <summary>% tiến độ đã hoàn thành (0–100) — phần này trả cho người thực hiện, phần còn lại hoàn về DN.</summary>
+    public int ProgressPercent { get; set; }
+
+    public string? Reason { get; set; }
 }
 
 // ---- (Tùy chọn) tạo hợp đồng + milestone khi Business duyệt ứng tuyển ----

@@ -38,6 +38,12 @@ public partial class User
 
     public bool? IsActive { get; set; }
 
+    /// <summary>Điểm uy tín (mặc định 100). Vi phạm sẽ bị trừ điểm (khung M1–M3).</summary>
+    public int? ReputationScore { get; set; }
+
+    /// <summary>Bị đình chỉ đến thời điểm này (M2). Null = không bị đình chỉ.</summary>
+    public DateTime? SuspendedUntil { get; set; }
+
     public DateTime? CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }

@@ -164,6 +164,38 @@ public class StudentsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Xác thực định danh sinh viên/freelancer: yêu cầu CCCD + (email .edu HOẶC ảnh thẻ SV).
+    /// Lưu hồ sơ và đánh dấu đã xác thực.
+    /// </summary>
+    [HttpPost("{userId:guid}/verify-identity")]
+    public async Task<IActionResult> VerifyIdentity(Guid userId, [FromBody] StudentVerifyRequest request)
+    {
+        var student = await _dbContext.StudentProfiles.FirstOrDefaultAsync(s => s.UserId == userId);
+        if (student is null) return NotFound();
+
+        var email = request?.StudentEmail?.Trim();
+        var hasEduEmail = !string.IsNullOrWhiteSpace(email) && email.EndsWith(".edu", StringComparison.OrdinalIgnoreCase)
+                          || (email?.Contains(".edu.", StringComparison.OrdinalIgnoreCase) ?? false);
+        var hasCard = !string.IsNullOrWhiteSpace(request?.StudentCardUrl);
+        var citizenId = request?.CitizenId?.Trim();
+
+        if (string.IsNullOrWhiteSpace(citizenId) || citizenId.Length < 9)
+            return BadRequest(new { message = "Vui lòng nhập số CCCD hợp lệ (xác thực định danh)." });
+        if (!hasEduEmail && !hasCard)
+            return BadRequest(new { message = "Cần email .edu do trường cấp HOẶC ảnh thẻ sinh viên hợp lệ." });
+
+        if (!string.IsNullOrWhiteSpace(email)) student.StudentEmail = email;
+        if (hasCard) student.StudentCardUrl = request!.StudentCardUrl;
+        student.CitizenId = citizenId;
+        student.IsVerified = true;
+        student.VerifiedAt = DateTime.UtcNow;
+        student.UpdatedAt = DateTime.UtcNow;
+        await _dbContext.SaveChangesAsync();
+
+        return Ok(new { message = "Đã xác thực định danh.", isVerified = true, verifiedAt = student.VerifiedAt });
+    }
+
     [HttpGet("{userId:guid}/dashboard")]
     public async Task<ActionResult<StudentDashboardResponse>> GetDashboard(Guid userId)
     {
@@ -271,7 +303,9 @@ public class StudentsController : ControllerBase
             TotalEarnings = student.TotalEarnings,
             Bio = student.Bio,
             PortfolioUrl = student.PortfolioUrl,
-            CvUrl = student.CvUrl
+            CvUrl = student.CvUrl,
+            StudentCardUrl = student.StudentCardUrl,
+            CitizenId = student.CitizenId
         };
     }
 }

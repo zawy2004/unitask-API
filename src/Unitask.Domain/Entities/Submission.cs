@@ -28,6 +28,9 @@ public partial class Submission
     /// <summary>Lý do Business yêu cầu chỉnh sửa (nếu có).</summary>
     public string? ClientFeedback { get; set; }
 
+    /// <summary>Bằng chứng kèm theo khi từ chối nghiệm thu (chính sách 1.4).</summary>
+    public string? ClientEvidenceUrl { get; set; }
+
     public DateTime? CreatedAt { get; set; }
 
     [ForeignKey("MilestoneId")]

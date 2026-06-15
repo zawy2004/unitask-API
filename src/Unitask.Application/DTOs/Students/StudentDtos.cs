@@ -30,6 +30,18 @@ public class StudentProfileResponse
     public string? PortfolioUrl { get; set; }
 
     public string? CvUrl { get; set; }
+
+    public string? StudentCardUrl { get; set; }
+
+    public string? CitizenId { get; set; }
+}
+
+/// <summary>Body xác thực định danh sinh viên/freelancer (email .edu hoặc thẻ SV + CCCD).</summary>
+public class StudentVerifyRequest
+{
+    public string? StudentEmail { get; set; }
+    public string? StudentCardUrl { get; set; }
+    public string? CitizenId { get; set; }
 }
 
 public class StudentUpdateRequest
