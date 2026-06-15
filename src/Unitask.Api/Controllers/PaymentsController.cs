@@ -327,18 +327,35 @@ public class PaymentsController : ControllerBase
     }
 
     [HttpGet("momo/return")]
-    public IActionResult MomoReturn(
+    public async Task<IActionResult> MomoReturn(
         [FromQuery] string? orderId,
         [FromQuery] int resultCode,
+        [FromQuery] long amount,
         [FromQuery] string? message)
     {
-        return Ok(new
+        _logger.LogInformation("MoMo return: OrderId={OrderId}, ResultCode={ResultCode}, Amount={Amount}", orderId, resultCode, amount);
+
+        if (resultCode == 0 && !string.IsNullOrEmpty(orderId) && _momoService is not null)
         {
-            orderId,
-            resultCode,
-            message,
-            success = resultCode == 0
-        });
+            try
+            {
+                var query = await _momoService.QueryPaymentAsync(orderId);
+                _logger.LogInformation("MoMo return query: OrderId={OrderId}, QueryResultCode={ResultCode}, Amount={Amount}, ExtraData={ExtraData}",
+                    orderId, query.ResultCode, query.Amount, query.ExtraData);
+
+                if (query.ResultCode == 0 && Guid.TryParse(query.ExtraData, out var userId))
+                {
+                    await CreditUserBalance(userId, query.Amount, orderId);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "MoMo return processing failed for OrderId={OrderId}", orderId);
+            }
+        }
+
+        var redirectUrl = $"https://www.unitask.io.vn/wallet?momo=return&resultCode={resultCode}&amount={amount}&orderId={orderId}";
+        return Redirect(redirectUrl);
     }
 }
 
