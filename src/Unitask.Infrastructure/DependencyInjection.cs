@@ -22,6 +22,7 @@ public static class DependencyInjection
         services.AddScoped<IAuthService, AuthService>();
         services.AddHttpClient<IGroqChatClient, GroqChatClient>();
         services.AddScoped<IInsightsService, InsightsService>();
+        services.AddScoped<IMilestoneService, MilestoneService>();
 
         return services;
     }

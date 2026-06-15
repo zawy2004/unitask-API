@@ -252,6 +252,7 @@ public class BusinessesController : ControllerBase
             IsVerified = business.IsVerified,
             VerifiedAt = business.VerifiedAt,
             CompletedProjects = business.CompletedProjects,
+            Balance = business.Balance,
             TotalSpent = business.TotalSpent,
             Rating = business.Rating,
             Description = business.Description,

@@ -91,6 +91,7 @@ CREATE TABLE [dbo].[BusinessProfiles] (
     [Address] NVARCHAR(MAX),
     [Phone] NVARCHAR(20),
     [CompletedProjects] INT DEFAULT 0,
+    [Balance] DECIMAL(15, 2) DEFAULT 0,
     [TotalSpent] DECIMAL(15, 2) DEFAULT 0,
     [Rating] DECIMAL(3, 2) DEFAULT 0,
     [CreatedAt] DATETIME2(7) DEFAULT GETUTCDATE(),
@@ -562,6 +563,111 @@ END
 GO
 
 PRINT 'Ensured [ActivityLogs] table';
+GO
+
+-- ==========================================
+-- 20. CONTRACTS TABLE
+-- Hợp đồng chính thức được sinh ra sau khi Business duyệt (accept) một
+-- JobApplication. Một Contract gắn 1 Job + 1 Student (StudentProfiles.Id)
+-- + 1 Business (BusinessProfiles.Id) và là "gốc" của các Milestone.
+-- ==========================================
+
+IF OBJECT_ID('dbo.Contracts','U') IS NULL
+BEGIN
+CREATE TABLE [dbo].[Contracts] (
+    [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    [JobId] UNIQUEIDENTIFIER NOT NULL,
+    -- StudentId / BusinessId tham chiếu tới *Profile* (đồng bộ với Jobs & JobApplications)
+    [StudentId] UNIQUEIDENTIFIER NOT NULL,
+    [BusinessId] UNIQUEIDENTIFIER NOT NULL,
+    [FinalPrice] DECIMAL(15, 2) NOT NULL DEFAULT 0,
+    [Status] NVARCHAR(20) NOT NULL DEFAULT 'ACTIVE'
+        CHECK ([Status] IN ('ACTIVE', 'COMPLETED', 'CANCELED')),
+    [CreatedAt] DATETIME2(7) DEFAULT GETUTCDATE(),
+    FOREIGN KEY ([JobId])      REFERENCES [dbo].[Jobs]([Id])             ON DELETE NO ACTION,
+    FOREIGN KEY ([StudentId])  REFERENCES [dbo].[StudentProfiles]([Id])  ON DELETE NO ACTION,
+    FOREIGN KEY ([BusinessId]) REFERENCES [dbo].[BusinessProfiles]([Id]) ON DELETE NO ACTION,
+    INDEX [idx_contract_job]      ([JobId]),
+    INDEX [idx_contract_student]  ([StudentId]),
+    INDEX [idx_contract_business] ([BusinessId]),
+    INDEX [idx_contract_status]   ([Status])
+);
+END
+GO
+
+PRINT 'Ensured [Contracts] table';
+GO
+
+-- ==========================================
+-- 21. MILESTONES TABLE
+-- Một Contract được chia thành nhiều Milestone (giai đoạn thanh toán).
+-- Vòng đời Status: PENDING -> ESCROWED -> UNDER_REVIEW -> (REVISION -> UNDER_REVIEW)* -> COMPLETED
+-- ==========================================
+
+IF OBJECT_ID('dbo.Milestones','U') IS NULL
+BEGIN
+CREATE TABLE [dbo].[Milestones] (
+    [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    [ContractId] UNIQUEIDENTIFIER NOT NULL,
+    [Title] NVARCHAR(255) NOT NULL,
+    [Amount] DECIMAL(15, 2) NOT NULL DEFAULT 0,
+    [Status] NVARCHAR(20) NOT NULL DEFAULT 'PENDING'
+        CHECK ([Status] IN ('PENDING', 'ESCROWED', 'UNDER_REVIEW', 'REVISION', 'COMPLETED')),
+    [DueDate] DATETIME2(7) NULL,
+    [CreatedAt] DATETIME2(7) DEFAULT GETUTCDATE(),
+    FOREIGN KEY ([ContractId]) REFERENCES [dbo].[Contracts]([Id]) ON DELETE CASCADE,
+    INDEX [idx_milestone_contract] ([ContractId]),
+    INDEX [idx_milestone_status]   ([Status])
+);
+END
+GO
+
+PRINT 'Ensured [Milestones] table';
+GO
+
+-- ==========================================
+-- 22. SUBMISSIONS TABLE
+-- Mỗi lần Student nộp bài cho một Milestone tạo ra 1 bản ghi (giữ lịch sử).
+-- ClientFeedback lưu lý do khi Business bấm "Request Changes".
+-- ==========================================
+
+IF OBJECT_ID('dbo.Submissions','U') IS NULL
+BEGIN
+CREATE TABLE [dbo].[Submissions] (
+    [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    [MilestoneId] UNIQUEIDENTIFIER NOT NULL,
+    [StudentId] UNIQUEIDENTIFIER NOT NULL,
+    [FileUrl] NVARCHAR(MAX) NULL,
+    [CoverLetter] NVARCHAR(MAX) NULL,
+    [ClientFeedback] NVARCHAR(MAX) NULL,
+    [CreatedAt] DATETIME2(7) DEFAULT GETUTCDATE(),
+    FOREIGN KEY ([MilestoneId]) REFERENCES [dbo].[Milestones]([Id])      ON DELETE CASCADE,
+    FOREIGN KEY ([StudentId])   REFERENCES [dbo].[StudentProfiles]([Id]) ON DELETE NO ACTION,
+    INDEX [idx_submission_milestone] ([MilestoneId]),
+    INDEX [idx_submission_student]   ([StudentId])
+);
+END
+GO
+
+PRINT 'Ensured [Submissions] table';
+GO
+
+-- ==========================================
+-- COLUMN MIGRATIONS (idempotent)
+-- Bổ sung cột mới cho các bảng ĐÃ TỒN TẠI. Khối CREATE TABLE phía trên chỉ chạy
+-- khi bảng chưa có, nên các cột thêm sau này phải được ALTER riêng ở đây để
+-- database cũ cũng được cập nhật khi chạy lại script.
+-- ==========================================
+
+-- BusinessProfiles.Balance: số dư khả dụng của doanh nghiệp (dùng để ký quỹ milestone)
+IF COL_LENGTH('dbo.BusinessProfiles', 'Balance') IS NULL
+BEGIN
+    ALTER TABLE [dbo].[BusinessProfiles] ADD [Balance] DECIMAL(15, 2) NOT NULL DEFAULT 0;
+    PRINT 'Added column [BusinessProfiles].[Balance]';
+END
+GO
+
+PRINT 'Ensured column migrations';
 GO
 
 -- ==========================================

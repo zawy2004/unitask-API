@@ -124,6 +124,7 @@ public partial class UnitaskDbContext : DbContext
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
             entity.Property(e => e.IsVerified).HasDefaultValue(false);
             entity.Property(e => e.Rating).HasDefaultValue(0m);
+            entity.Property(e => e.Balance).HasDefaultValue(0m);
             entity.Property(e => e.TotalSpent).HasDefaultValue(0m);
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getutcdate())");
 
