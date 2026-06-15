@@ -41,6 +41,13 @@ public partial class BusinessProfile
 
     public DateTime? VerifiedAt { get; set; }
 
+    /// <summary>Mã số thuế (xác thực doanh nghiệp).</summary>
+    [StringLength(20)]
+    public string? TaxCode { get; set; }
+
+    /// <summary>Ảnh/scan giấy phép kinh doanh.</summary>
+    public string? BusinessLicenseUrl { get; set; }
+
     public string? Address { get; set; }
 
     [StringLength(20)]
@@ -57,6 +64,12 @@ public partial class BusinessProfile
 
     [Column(TypeName = "decimal(3, 2)")]
     public decimal? Rating { get; set; }
+
+    /// <summary>Số lần từ chối nghiệm thu bị đánh giá vô lý (chính sách 1.4).</summary>
+    public int? RejectionStrikes { get; set; }
+
+    /// <summary>Bị khóa tính năng đăng task (sau 3 lần từ chối vô lý).</summary>
+    public bool? IsPostingLocked { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 

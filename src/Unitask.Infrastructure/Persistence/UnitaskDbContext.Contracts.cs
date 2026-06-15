@@ -17,6 +17,8 @@ public partial class UnitaskDbContext
 
     public virtual DbSet<Submission> Submissions { get; set; } = null!;
 
+    public virtual DbSet<Dispute> Disputes { get; set; } = null!;
+
     /// <summary>
     /// Cấu hình Fluent API cho 3 bảng mới. Được gọi ở cuối OnModelCreating của file gốc.
     /// </summary>
@@ -67,6 +69,18 @@ public partial class UnitaskDbContext
 
             entity.HasOne(d => d.Student).WithMany()
                 .HasForeignKey(d => d.StudentId)
+                .OnDelete(DeleteBehavior.NoAction);
+        });
+
+        modelBuilder.Entity<Dispute>(entity =>
+        {
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Status).HasDefaultValue("NEGOTIATION");
+            entity.Property(e => e.StudentPercent).HasDefaultValue(0);
+
+            entity.HasOne(d => d.Milestone).WithMany()
+                .HasForeignKey(d => d.MilestoneId)
                 .OnDelete(DeleteBehavior.NoAction);
         });
     }

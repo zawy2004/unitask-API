@@ -126,6 +126,8 @@ public partial class UnitaskDbContext : DbContext
             entity.Property(e => e.Rating).HasDefaultValue(0m);
             entity.Property(e => e.Balance).HasDefaultValue(0m);
             entity.Property(e => e.TotalSpent).HasDefaultValue(0m);
+            entity.Property(e => e.RejectionStrikes).HasDefaultValue(0);
+            entity.Property(e => e.IsPostingLocked).HasDefaultValue(false);
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getutcdate())");
 
             entity.HasOne(d => d.User).WithOne(p => p.BusinessProfile).HasConstraintName("FK__BusinessP__UserI__5441852A");
@@ -379,6 +381,7 @@ public partial class UnitaskDbContext : DbContext
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.IsVerified).HasDefaultValue(false);
+            entity.Property(e => e.ReputationScore).HasDefaultValue(100);
             entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getutcdate())");
             entity.Property(e => e.UserType).HasDefaultValue("student");
         });

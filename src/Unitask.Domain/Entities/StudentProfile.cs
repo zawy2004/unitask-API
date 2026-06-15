@@ -33,6 +33,13 @@ public partial class StudentProfile
     [Column(TypeName = "decimal(3, 2)")]
     public decimal? GradePoint { get; set; }
 
+    /// <summary>Ảnh thẻ sinh viên (xác thực sinh viên).</summary>
+    public string? StudentCardUrl { get; set; }
+
+    /// <summary>Số CCCD gắn chip (xác thực định danh freelancer).</summary>
+    [StringLength(20)]
+    public string? CitizenId { get; set; }
+
     public bool? IsVerified { get; set; }
 
     public DateTime? VerifiedAt { get; set; }

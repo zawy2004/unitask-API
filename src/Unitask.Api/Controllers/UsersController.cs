@@ -1,7 +1,9 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Unitask.Api.Extensions;
 using Unitask.Api.Services;
 using Unitask.Application.DTOs.Users;
 using Unitask.Infrastructure.Persistence;
@@ -119,9 +121,77 @@ public class UsersController : ControllerBase
             UserType = user.UserType,
             IsVerified = user.IsVerified,
             IsActive = user.IsActive,
+            ReputationScore = user.ReputationScore,
+            SuspendedUntil = user.SuspendedUntil,
             CreatedAt = user.CreatedAt,
             AvatarUrl = user.AvatarUrl
         };
+    }
+
+    // ====== Khung xử lý vi phạm M1–M3 (chỉ Admin) ======
+
+    /// <summary>
+    /// Admin áp dụng chế tài: M1 (cảnh cáo −5đ), M2 (đình chỉ N ngày, mặc định 7), M3 (khóa vĩnh viễn).
+    /// </summary>
+    [Authorize]
+    [HttpPost("{id:guid}/sanction")]
+    public async Task<IActionResult> Sanction(Guid id, [FromBody] SanctionRequest request)
+    {
+        if (!string.Equals(User.GetUserRole(), "admin", StringComparison.OrdinalIgnoreCase))
+            return Forbid();
+
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+        if (user is null) return NotFound();
+
+        var level = (request?.Level ?? string.Empty).ToUpperInvariant();
+        switch (level)
+        {
+            case "M1":
+                user.ReputationScore = (user.ReputationScore ?? 100) - 5;
+                break;
+            case "M2":
+                var days = request!.Days is > 0 ? request.Days!.Value : 7;
+                days = Math.Clamp(days, 7, 30);
+                user.SuspendedUntil = DateTime.UtcNow.AddDays(days);
+                user.ReputationScore = (user.ReputationScore ?? 100) - 10;
+                break;
+            case "M3":
+                user.IsActive = false;
+                user.ReputationScore = 0;
+                break;
+            default:
+                return BadRequest(new { message = "Level phải là M1, M2 hoặc M3." });
+        }
+        user.UpdatedAt = DateTime.UtcNow;
+        await _dbContext.SaveChangesAsync();
+
+        return Ok(new
+        {
+            id = user.Id,
+            level,
+            reputationScore = user.ReputationScore,
+            suspendedUntil = user.SuspendedUntil,
+            isActive = user.IsActive
+        });
+    }
+
+    /// <summary>Admin gỡ chế tài: bỏ đình chỉ và kích hoạt lại tài khoản.</summary>
+    [Authorize]
+    [HttpPost("{id:guid}/lift-sanction")]
+    public async Task<IActionResult> LiftSanction(Guid id)
+    {
+        if (!string.Equals(User.GetUserRole(), "admin", StringComparison.OrdinalIgnoreCase))
+            return Forbid();
+
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+        if (user is null) return NotFound();
+
+        user.SuspendedUntil = null;
+        user.IsActive = true;
+        user.UpdatedAt = DateTime.UtcNow;
+        await _dbContext.SaveChangesAsync();
+
+        return Ok(new { id = user.Id, suspendedUntil = (DateTime?)null, isActive = true });
     }
 }
 

@@ -1,8 +1,10 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Unitask.Api.Extensions;
 using Unitask.Api.Services;
 using Unitask.Application.DTOs.Businesses;
 using Unitask.Infrastructure.Persistence;
@@ -238,6 +240,77 @@ public class BusinessesController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Xác thực doanh nghiệp: bắt buộc Mã số thuế + Giấy phép kinh doanh ("nói KHÔNG với công ty ma").
+    /// </summary>
+    [HttpPost("{userId:guid}/verify-identity")]
+    public async Task<IActionResult> VerifyIdentity(Guid userId, [FromBody] BusinessVerifyRequest request)
+    {
+        var business = await _dbContext.BusinessProfiles.FirstOrDefaultAsync(b => b.UserId == userId);
+        if (business is null) return NotFound();
+
+        var taxCode = request?.TaxCode?.Trim();
+        if (string.IsNullOrWhiteSpace(taxCode) || taxCode.Length < 10)
+            return BadRequest(new { message = "Vui lòng nhập Mã số thuế hợp lệ (10–13 số)." });
+        if (string.IsNullOrWhiteSpace(request?.BusinessLicenseUrl))
+            return BadRequest(new { message = "Vui lòng cung cấp Giấy phép kinh doanh." });
+
+        business.TaxCode = taxCode;
+        business.BusinessLicenseUrl = request.BusinessLicenseUrl;
+        business.IsVerified = true;
+        business.VerifiedAt = DateTime.UtcNow;
+        business.UpdatedAt = DateTime.UtcNow;
+        await _dbContext.SaveChangesAsync();
+
+        return Ok(new { message = "Đã xác thực doanh nghiệp.", isVerified = true, verifiedAt = business.VerifiedAt });
+    }
+
+    // ====== Chính sách 1.4 — kiểm duyệt từ chối vô lý (chỉ Admin) ======
+
+    private const int PostingLockThreshold = 3;
+
+    /// <summary>
+    /// Admin ghi 1 "strike" cho doanh nghiệp khi từ chối nghiệm thu bị đánh giá vô lý.
+    /// Đạt 3 strike -> tự động khóa tính năng đăng task.
+    /// </summary>
+    [Authorize]
+    [HttpPost("{businessId:guid}/reject-strike")]
+    public async Task<IActionResult> AddRejectionStrike(Guid businessId)
+    {
+        if (!string.Equals(User.GetUserRole(), "admin", StringComparison.OrdinalIgnoreCase))
+            return Forbid();
+
+        var business = await _dbContext.BusinessProfiles.FirstOrDefaultAsync(b => b.Id == businessId);
+        if (business is null) return NotFound();
+
+        business.RejectionStrikes = (business.RejectionStrikes ?? 0) + 1;
+        if (business.RejectionStrikes >= PostingLockThreshold)
+            business.IsPostingLocked = true;
+        business.UpdatedAt = DateTime.UtcNow;
+        await _dbContext.SaveChangesAsync();
+
+        return Ok(new { businessId, strikes = business.RejectionStrikes, locked = business.IsPostingLocked ?? false });
+    }
+
+    /// <summary>Admin gỡ khóa: đặt lại strikes = 0 và mở lại đăng task.</summary>
+    [Authorize]
+    [HttpPost("{businessId:guid}/unlock")]
+    public async Task<IActionResult> UnlockPosting(Guid businessId)
+    {
+        if (!string.Equals(User.GetUserRole(), "admin", StringComparison.OrdinalIgnoreCase))
+            return Forbid();
+
+        var business = await _dbContext.BusinessProfiles.FirstOrDefaultAsync(b => b.Id == businessId);
+        if (business is null) return NotFound();
+
+        business.RejectionStrikes = 0;
+        business.IsPostingLocked = false;
+        business.UpdatedAt = DateTime.UtcNow;
+        await _dbContext.SaveChangesAsync();
+
+        return Ok(new { businessId, strikes = 0, locked = false });
+    }
+
     private static BusinessProfileResponse MapBusiness(Unitask.Domain.Entities.BusinessProfile business)
     {
         return new BusinessProfileResponse
@@ -255,9 +328,13 @@ public class BusinessesController : ControllerBase
             Balance = business.Balance,
             TotalSpent = business.TotalSpent,
             Rating = business.Rating,
+            RejectionStrikes = business.RejectionStrikes,
+            IsPostingLocked = business.IsPostingLocked,
             Description = business.Description,
             LogoUrl = business.LogoUrl,
-            Address = business.Address
+            Address = business.Address,
+            TaxCode = business.TaxCode,
+            BusinessLicenseUrl = business.BusinessLicenseUrl
         };
     }
 }

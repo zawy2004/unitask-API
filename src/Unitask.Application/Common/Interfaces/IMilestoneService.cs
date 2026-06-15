@@ -53,4 +53,16 @@ public interface IMilestoneService
 
     /// <summary>Business yêu cầu sửa: UNDER_REVIEW → REVISION (+ lưu feedback).</summary>
     Task<MilestoneResponse> RequestChangesAsync(Guid milestoneId, Guid currentUserId, RequestChangesRequest request, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Chính sách 1.3 — Business hủy task: trả % tiến độ cho người thực hiện, hoàn phần còn lại
+    /// về ví doanh nghiệp; tối thiểu 30% cho người thực hiện nếu đã qua 48h kể từ lúc ký quỹ.
+    /// </summary>
+    Task<MilestoneResponse> CancelMilestoneAsync(Guid milestoneId, Guid currentUserId, CancelMilestoneRequest request, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Chính sách 1.2 ("im lặng = chấp thuận"): tự động nghiệm thu &amp; giải ngân các milestone
+    /// UNDER_REVIEW quá <paramref name="timeoutHours"/> giờ. Dùng cho background service. Trả về số đã giải ngân.
+    /// </summary>
+    Task<int> AutoReleaseExpiredAsync(int timeoutHours, CancellationToken cancellationToken = default);
 }

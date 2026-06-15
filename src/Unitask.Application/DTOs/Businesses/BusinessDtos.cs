@@ -31,11 +31,26 @@ public class BusinessProfileResponse
 
     public decimal? Rating { get; set; }
 
+    public int? RejectionStrikes { get; set; }
+
+    public bool? IsPostingLocked { get; set; }
+
     public string? Description { get; set; }
 
     public string? LogoUrl { get; set; }
 
     public string? Address { get; set; }
+
+    public string? TaxCode { get; set; }
+
+    public string? BusinessLicenseUrl { get; set; }
+}
+
+/// <summary>Body xác thực doanh nghiệp: Mã số thuế + giấy phép kinh doanh.</summary>
+public class BusinessVerifyRequest
+{
+    public string? TaxCode { get; set; }
+    public string? BusinessLicenseUrl { get; set; }
 }
 
 public class BusinessUpdateRequest

@@ -2,6 +2,12 @@
 -- Sample data for development and testing
 -- Bcrypt hashed password: "password123"
 -- Hash: $2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36gZvWFm
+--
+-- LƯU Ý TIẾNG VIỆT (Unicode):
+--   1) Mọi chuỗi có dấu PHẢI dùng tiền tố N'...'  (NVARCHAR), ví dụ N'Nguyễn Văn A'.
+--   2) Chạy file bằng UTF-8 để không bị lỗi "????":
+--        sqlcmd -S localhost -d unitask -E -C -f 65001 -i seed-sqlserver.sql
+--      (hoặc lưu file dạng "UTF-8 with BOM" rồi mở bằng SSMS để chạy)
 
 BEGIN TRANSACTION;
 
@@ -17,10 +23,10 @@ VALUES
 ('550e8400-e29b-41d4-a716-446655440003', 'student3@edu.vn', '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36gZvWFm', N'Lê Hoàng C', '0987654323', N'Marketing & Content Creator', 'student', 1),
 ('550e8400-e29b-41d4-a716-446655440004', 'student4@edu.vn', '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36gZvWFm', N'Phạm Minh D', '0987654324', N'Backend Developer, Python & Node.js', 'student', 0),
 -- Businesses
-('550e8400-e29b-41d4-a716-446655440010', 'technova@company.vn', '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36gZvWFm', 'TechNova VN Team', '0243456789', 'Leading tech company in Vietnam', 'business', 1),
-('550e8400-e29b-41d4-a716-446655440011', 'creative@company.vn', '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36gZvWFm', 'CreativeBox Studio', '0243456790', 'Creative and Design Agency', 'business', 1),
-('550e8400-e29b-41d4-a716-446655440012', 'market@company.vn', '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36gZvWFm', 'MarketHub VN', '0243456791', 'Digital Marketing Solutions', 'business', 1),
-('550e8400-e29b-41d4-a716-446655440013', 'devstack@company.vn', '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36gZvWFm', 'DevStack JSC', '0243456792', 'Software Development & Tech Consulting', 'business', 1);
+('550e8400-e29b-41d4-a716-446655440010', 'technova@company.vn', '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36gZvWFm', N'Đội ngũ TechNova VN', '0243456789', N'Công ty công nghệ hàng đầu Việt Nam', 'business', 1),
+('550e8400-e29b-41d4-a716-446655440011', 'creative@company.vn', '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36gZvWFm', N'CreativeBox Studio', '0243456790', N'Agency sáng tạo & thiết kế', 'business', 1),
+('550e8400-e29b-41d4-a716-446655440012', 'market@company.vn', '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36gZvWFm', N'MarketHub VN', '0243456791', N'Giải pháp Marketing số', 'business', 1),
+('550e8400-e29b-41d4-a716-446655440013', 'devstack@company.vn', '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcg7b3XeKeUxWdeS86E36gZvWFm', N'DevStack JSC', '0243456792', N'Phát triển phần mềm & tư vấn công nghệ', 'business', 1);
 
 PRINT 'Inserted 8 users (4 students + 4 businesses)';
 GO
@@ -45,10 +51,10 @@ GO
 
 INSERT INTO [dbo].[BusinessProfiles] ([Id], [UserId], [CompanyName], [CompanyEmail], [CompanyWebsite], [CompanySize], [Industry], [IsVerified], [VerifiedAt], [CompletedProjects], [TotalSpent], [Rating])
 VALUES
-('750e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440010', 'TechNova VN', 'info@technova.vn', 'https://technova.vn', 'sme', 'Software Development', 1, GETUTCDATE(), 24, 245000000, 4.8),
-('750e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440011', 'CreativeBox Studio', 'hello@creativebox.vn', 'https://creativebox.vn', 'startup', 'Design Agency', 1, GETUTCDATE(), 18, 156000000, 4.6),
-('750e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440012', 'MarketHub VN', 'contact@markethub.vn', 'https://markethub.vn', 'sme', 'Digital Marketing', 1, GETUTCDATE(), 32, 320000000, 4.7),
-('750e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440013', 'DevStack JSC', 'hr@devstack.vn', 'https://devstack.vn', 'sme', 'Software Development', 1, GETUTCDATE(), 28, 280000000, 4.9);
+('750e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440010', N'TechNova VN', 'info@technova.vn', 'https://technova.vn', 'sme', N'Phát triển phần mềm', 1, GETUTCDATE(), 24, 245000000, 4.8),
+('750e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440011', N'CreativeBox Studio', 'hello@creativebox.vn', 'https://creativebox.vn', 'startup', N'Agency thiết kế', 1, GETUTCDATE(), 18, 156000000, 4.6),
+('750e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440012', N'MarketHub VN', 'contact@markethub.vn', 'https://markethub.vn', 'sme', N'Marketing số', 1, GETUTCDATE(), 32, 320000000, 4.7),
+('750e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440013', N'DevStack JSC', 'hr@devstack.vn', 'https://devstack.vn', 'sme', N'Phát triển phần mềm', 1, GETUTCDATE(), 28, 280000000, 4.9);
 
 PRINT 'Inserted 4 business profiles';
 GO

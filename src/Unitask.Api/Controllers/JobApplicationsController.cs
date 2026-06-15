@@ -109,6 +109,11 @@ public class JobApplicationsController : ControllerBase
             return Unauthorized();
         }
 
+        // Khung M1–M3: chặn nhận task nếu tài khoản bị khóa (M3) hoặc đang đình chỉ (M2).
+        var actor = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId.Value);
+        if (actor is not null && (actor.IsActive == false || (actor.SuspendedUntil != null && actor.SuspendedUntil > DateTime.UtcNow)))
+            return StatusCode(StatusCodes.Status403Forbidden, new { message = "Tài khoản đang bị đình chỉ/khóa, không thể nhận task." });
+
         var student = await _dbContext.StudentProfiles
             .FirstOrDefaultAsync(s => s.UserId == userId.Value);
         if (student is null)

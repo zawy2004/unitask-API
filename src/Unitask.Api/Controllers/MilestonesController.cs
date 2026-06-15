@@ -51,6 +51,11 @@ public class MilestonesController : ControllerBase
     public Task<ActionResult<MilestoneResponse>> RequestChanges(Guid id, [FromBody] RequestChangesRequest request, CancellationToken ct)
         => Run(userId => _milestoneService.RequestChangesAsync(id, userId, request, ct));
 
+    /// <summary>Business hủy task: hoàn tiền theo % tiến độ (chính sách 1.3).</summary>
+    [HttpPost("{id:guid}/cancel")]
+    public Task<ActionResult<MilestoneResponse>> Cancel(Guid id, [FromBody] CancelMilestoneRequest request, CancellationToken ct)
+        => Run(userId => _milestoneService.CancelMilestoneAsync(id, userId, request, ct));
+
     /// <summary>
     /// Bộ điều phối chung: lấy userId từ JWT, gọi service, và map exception nghiệp vụ → HTTP status.
     /// Gom về một chỗ để 4 endpoint trên ngắn gọn, nhất quán.
