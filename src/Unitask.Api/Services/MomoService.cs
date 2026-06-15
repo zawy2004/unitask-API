@@ -29,6 +29,16 @@ public class MomoCreateResponse
     public string? RequestId { get; set; }
 }
 
+public class MomoQueryResponse
+{
+    public int ResultCode { get; set; }
+    public string? Message { get; set; }
+    public long Amount { get; set; }
+    public long TransId { get; set; }
+    public string? OrderId { get; set; }
+    public string? ExtraData { get; set; }
+}
+
 public class MomoIpnRequest
 {
     public string? PartnerCode { get; set; }
@@ -103,6 +113,39 @@ public class MomoService
         });
 
         return result ?? new MomoCreateResponse { ResultCode = -1, Message = "Deserialize failed" };
+    }
+
+    public async Task<MomoQueryResponse> QueryPaymentAsync(string orderId)
+    {
+        var requestId = Guid.NewGuid().ToString();
+        var rawSignature = $"accessKey={_settings.AccessKey}" +
+                           $"&orderId={orderId}" +
+                           $"&partnerCode={_settings.PartnerCode}" +
+                           $"&requestId={requestId}";
+
+        var signature = HmacSha256(rawSignature, _settings.SecretKey);
+
+        var body = new
+        {
+            partnerCode = _settings.PartnerCode,
+            requestId,
+            orderId,
+            lang = "vi",
+            signature
+        };
+
+        var json = JsonSerializer.Serialize(body);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var queryUrl = _settings.MomoApiUrl.Replace("/create", "/query");
+        var response = await _httpClient.PostAsync(queryUrl, content);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        var result = JsonSerializer.Deserialize<MomoQueryResponse>(responseBody, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+
+        return result ?? new MomoQueryResponse { ResultCode = -1, Message = "Deserialize failed" };
     }
 
     public bool VerifySignature(MomoIpnRequest ipn)
