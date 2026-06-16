@@ -29,7 +29,9 @@ bool IsAllowedOrigin(string origin)
         || host.Equals("127.0.0.1", StringComparison.OrdinalIgnoreCase)
         || host.Equals("::1", StringComparison.OrdinalIgnoreCase)
         || host.EndsWith(".vercel.app", StringComparison.OrdinalIgnoreCase)
-        || host.EndsWith(".vercel.com", StringComparison.OrdinalIgnoreCase);
+        || host.EndsWith(".vercel.com", StringComparison.OrdinalIgnoreCase)
+        || host.EndsWith(".unitask.io.vn", StringComparison.OrdinalIgnoreCase)
+        || host.Equals("unitask.io.vn", StringComparison.OrdinalIgnoreCase);
 }
 
 builder.Services.AddControllers();

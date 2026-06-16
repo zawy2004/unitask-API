@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Unitask.Api.Extensions;
 using Unitask.Api.Services;
 using Unitask.Application.DTOs.Common;
@@ -18,10 +19,13 @@ public class PaymentsController : ControllerBase
 {
     private readonly UnitaskDbContext _dbContext;
     private readonly MomoService? _momoService;
+    private readonly ILogger<PaymentsController> _logger;
+    private static readonly HashSet<string> _processedOrders = new();
 
-    public PaymentsController(UnitaskDbContext dbContext, MomoService? momoService = null)
+    public PaymentsController(UnitaskDbContext dbContext, ILogger<PaymentsController> logger, MomoService? momoService = null)
     {
         _dbContext = dbContext;
+        _logger = logger;
         _momoService = momoService;
     }
 
@@ -208,17 +212,70 @@ public class PaymentsController : ControllerBase
     [HttpPost("momo/ipn")]
     public async Task<IActionResult> MomoIpn([FromBody] MomoIpnRequest ipn)
     {
+        _logger.LogInformation("MoMo IPN received: OrderId={OrderId}, ResultCode={ResultCode}, Amount={Amount}, ExtraData={ExtraData}",
+            ipn.OrderId, ipn.ResultCode, ipn.Amount, ipn.ExtraData);
+
         if (_momoService is null || ipn.OrderId is null)
             return Ok(new { resultCode = 1 });
 
         if (!_momoService.VerifySignature(ipn))
+        {
+            _logger.LogWarning("MoMo IPN signature invalid for OrderId={OrderId}", ipn.OrderId);
             return Ok(new { resultCode = 1, message = "Invalid signature" });
+        }
 
         if (ipn.ResultCode != 0)
+        {
+            _logger.LogInformation("MoMo IPN non-success ResultCode={ResultCode} for OrderId={OrderId}", ipn.ResultCode, ipn.OrderId);
             return Ok(new { resultCode = 0 });
+        }
 
         if (!Guid.TryParse(ipn.ExtraData, out var userId))
+        {
+            _logger.LogWarning("MoMo IPN invalid ExtraData={ExtraData} for OrderId={OrderId}", ipn.ExtraData, ipn.OrderId);
             return Ok(new { resultCode = 0 });
+        }
+
+        await CreditUserBalance(userId, ipn.Amount, ipn.OrderId);
+
+        return Ok(new { resultCode = 0 });
+    }
+
+    [Authorize]
+    [HttpPost("momo/confirm")]
+    public async Task<IActionResult> ConfirmMomoPayment([FromBody] MomoConfirmRequest request)
+    {
+        if (_momoService is null)
+            return BadRequest(new { message = "MoMo chưa được cấu hình." });
+
+        var userId = User.GetUserId();
+        if (userId is null) return Unauthorized();
+
+        _logger.LogInformation("MoMo confirm requested: OrderId={OrderId}, UserId={UserId}", request.OrderId, userId);
+
+        var query = await _momoService.QueryPaymentAsync(request.OrderId);
+
+        _logger.LogInformation("MoMo query result: OrderId={OrderId}, ResultCode={ResultCode}, Amount={Amount}",
+            request.OrderId, query.ResultCode, query.Amount);
+
+        if (query.ResultCode != 0)
+            return Ok(new { success = false, message = query.Message ?? "Giao dịch chưa thành công." });
+
+        await CreditUserBalance(userId.Value, query.Amount, request.OrderId);
+
+        return Ok(new { success = true, amount = query.Amount });
+    }
+
+    private async Task CreditUserBalance(Guid userId, long amount, string orderId)
+    {
+        lock (_processedOrders)
+        {
+            if (!_processedOrders.Add(orderId))
+            {
+                _logger.LogInformation("OrderId={OrderId} already processed, skipping", orderId);
+                return;
+            }
+        }
 
         var student = await _dbContext.StudentProfiles
             .FirstOrDefaultAsync(s => s.UserId == userId);
@@ -234,8 +291,8 @@ public class PaymentsController : ControllerBase
                 {
                     Id = Guid.NewGuid(),
                     StudentId = student.Id,
-                    Balance = ipn.Amount,
-                    TotalEarned = ipn.Amount,
+                    Balance = amount,
+                    TotalEarned = amount,
                     TotalWithdrawn = 0m,
                     UpdatedAt = DateTime.UtcNow
                 };
@@ -243,12 +300,13 @@ public class PaymentsController : ControllerBase
             }
             else
             {
-                wallet.Balance += ipn.Amount;
-                wallet.TotalEarned += ipn.Amount;
+                wallet.Balance += amount;
+                wallet.TotalEarned += amount;
                 wallet.UpdatedAt = DateTime.UtcNow;
             }
 
             await _dbContext.SaveChangesAsync();
+            _logger.LogInformation("Student wallet updated: UserId={UserId}, Amount={Amount}", userId, amount);
         }
 
         var business = await _dbContext.BusinessProfiles
@@ -256,33 +314,58 @@ public class PaymentsController : ControllerBase
 
         if (business is not null)
         {
-            // Nạp tiền -> cộng vào số dư khả dụng (để ký quỹ milestone), KHÔNG phải TotalSpent.
-            business.Balance = (business.Balance ?? 0m) + ipn.Amount;
+            business.Balance = (business.Balance ?? 0m) + amount;
             business.UpdatedAt = DateTime.UtcNow;
             await _dbContext.SaveChangesAsync();
+            _logger.LogInformation("Business balance updated: UserId={UserId}, Amount={Amount}, NewBalance={Balance}", userId, amount, business.Balance);
         }
 
-        return Ok(new { resultCode = 0 });
+        if (student is null && business is null)
+        {
+            _logger.LogWarning("No student or business profile found for UserId={UserId}", userId);
+        }
     }
 
     [HttpGet("momo/return")]
-    public IActionResult MomoReturn(
+    public async Task<IActionResult> MomoReturn(
         [FromQuery] string? orderId,
         [FromQuery] int resultCode,
+        [FromQuery] long amount,
         [FromQuery] string? message)
     {
-        return Ok(new
+        _logger.LogInformation("MoMo return: OrderId={OrderId}, ResultCode={ResultCode}, Amount={Amount}", orderId, resultCode, amount);
+
+        if (resultCode == 0 && !string.IsNullOrEmpty(orderId) && _momoService is not null)
         {
-            orderId,
-            resultCode,
-            message,
-            success = resultCode == 0
-        });
+            try
+            {
+                var query = await _momoService.QueryPaymentAsync(orderId);
+                _logger.LogInformation("MoMo return query: OrderId={OrderId}, QueryResultCode={ResultCode}, Amount={Amount}, ExtraData={ExtraData}",
+                    orderId, query.ResultCode, query.Amount, query.ExtraData);
+
+                if (query.ResultCode == 0 && Guid.TryParse(query.ExtraData, out var userId))
+                {
+                    await CreditUserBalance(userId, query.Amount, orderId);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "MoMo return processing failed for OrderId={OrderId}", orderId);
+            }
+        }
+
+        var redirectUrl = $"https://www.unitask.io.vn/wallet?momo=return&resultCode={resultCode}&amount={amount}&orderId={orderId}";
+        return Redirect(redirectUrl);
     }
 }
 
 public class MomoDepositRequest
 {
     public decimal Amount { get; set; }
+}
+
+public class MomoConfirmRequest
+{
+    public string OrderId { get; set; } = null!;
 }
 
