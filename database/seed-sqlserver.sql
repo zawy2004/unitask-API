@@ -84,42 +84,42 @@ VALUES
 -- IT Jobs
 ('950e8400-e29b-41d4-a716-446655440001', '750e8400-e29b-41d4-a716-446655440001', N'Frontend Developer (React + Tailwind)', 
 N'Cần nhà phát triển Frontend để xây dựng giao diện website e-commerce. Yêu cầu: React, TypeScript, Tailwind CSS. Dự án kéo dài 2 tuần, 20 giờ/tuần.',
-'850e8400-e29b-41d4-a716-446655440001', N'["React", "Frontend", "E-commerce"]', 'open', 2500000, 4000000, 'short-term', 14, N'["React", "TypeScript", "Tailwind CSS"]', 'intermediate', 2, 1, 'Hồ Chí Minh', 1, 1, DATEADD(day, 5, CAST(GETUTCDATE() AS DATE)), GETUTCDATE()),
+'850e8400-e29b-41d4-a716-446655440001', N'["React", "Frontend", "E-commerce"]', 'open', 2500000, 4000000, 'short-term', 14, N'["React", "TypeScript", "Tailwind CSS"]', 'intermediate', 2, 1, N'Hồ Chí Minh', 1, 1, DATEADD(day, 5, CAST(GETUTCDATE() AS DATE)), GETUTCDATE()),
 
 ('950e8400-e29b-41d4-a716-446655440002', '750e8400-e29b-41d4-a716-446655440004', N'Fix Bug Python Flask API - E-commerce',
 N'Ứng dụng Flask gặp lỗi trong xử lý thanh toán. Cần debug và khắc phục trong 3 ngày. API kết nối với database PostgreSQL.',
-'850e8400-e29b-41d4-a716-446655440001', N'["Python", "Backend", "Debug"]', 'open', 2000000, 3500000, 'micro', 3, N'["Python", "Flask", "PostgreSQL"]', 'advanced', 1, 0, 'Remote', 1, 0, DATEADD(day, 3, CAST(GETUTCDATE() AS DATE)), GETUTCDATE()),
+'850e8400-e29b-41d4-a716-446655440001', N'["Python", "Backend", "Debug"]', 'open', 2000000, 3500000, 'micro', 3, N'["Python", "Flask", "PostgreSQL"]', 'advanced', 1, 0, N'Remote', 1, 0, DATEADD(day, 3, CAST(GETUTCDATE() AS DATE)), GETUTCDATE()),
 
 ('950e8400-e29b-41d4-a716-446655440003', '750e8400-e29b-41d4-a716-446655440001', N'Xây dựng REST API với Node.js',
 N'Phát triển REST API cho ứng dụng quản lý dự án. Stack: Node.js, Express, MongoDB. Dự kiến 1 tháng.',
-'850e8400-e29b-41d4-a716-446655440001', N'["Node.js", "Backend", "API"]', 'open', 4000000, 6000000, 'project', 30, N'["Node.js", "Express", "MongoDB"]', 'intermediate', 1, 0, 'Remote', 1, 0, DATEADD(day, 10, CAST(GETUTCDATE() AS DATE)), GETUTCDATE()),
+'850e8400-e29b-41d4-a716-446655440001', N'["Node.js", "Backend", "API"]', 'open', 4000000, 6000000, 'project', 30, N'["Node.js", "Express", "MongoDB"]', 'intermediate', 1, 0, N'Remote', 1, 0, DATEADD(day, 10, CAST(GETUTCDATE() AS DATE)), GETUTCDATE()),
 
 -- Design Jobs
 ('950e8400-e29b-41d4-a716-446655440004', '750e8400-e29b-41d4-a716-446655440002', N'Thiết kế Bộ nhận diện thương hiệu',
 N'Tạo logo, color palette, typography cho startup fintech. Cần 5-7 khái niệm logo khác nhau và brand guideline hoàn chỉnh.',
-'850e8400-e29b-41d4-a716-446655440002', N'["Branding", "Logo Design", "Adobe"]', 'open', 1800000, 3000000, 'micro', 5, N'["Adobe XD", "Figma", "Illustrator"]', 'intermediate', 2, 0, 'Hà Nội', 1, 0, DATEADD(day, 8, CAST(GETUTCDATE() AS DATE)), GETUTCDATE()),
+'850e8400-e29b-41d4-a716-446655440002', N'["Branding", "Logo Design", "Adobe"]', 'open', 1800000, 3000000, 'micro', 5, N'["Adobe XD", "Figma", "Illustrator"]', 'intermediate', 2, 0, N'Hà Nội', 1, 0, DATEADD(day, 8, CAST(GETUTCDATE() AS DATE)), GETUTCDATE()),
 
 ('950e8400-e29b-41d4-a716-446655440005', '750e8400-e29b-41d4-a716-446655440002', N'Thiết kế UI/UX cho Mobile App',
 N'Thiết kế giao diện cho ứng dụng fitness tracking. Bao gồm wireframe, mockup, prototype. Sử dụng Figma.',
-'850e8400-e29b-41d4-a716-446655440002', N'["UI/UX", "Mobile", "Figma"]', 'open', 3000000, 5000000, 'project', 21, N'["Figma", "UI Design", "UX Design"]', 'intermediate', 1, 0, 'Remote', 1, 0, DATEADD(day, 12, CAST(GETUTCDATE() AS DATE)), GETUTCDATE()),
+'850e8400-e29b-41d4-a716-446655440002', N'["UI/UX", "Mobile", "Figma"]', 'open', 3000000, 5000000, 'project', 21, N'["Figma", "UI Design", "UX Design"]', 'intermediate', 1, 0, N'Remote', 1, 0, DATEADD(day, 12, CAST(GETUTCDATE() AS DATE)), GETUTCDATE()),
 
 -- Content Jobs
 ('950e8400-e29b-41d4-a716-446655440006', '750e8400-e29b-41d4-a716-446655440003', N'Viết 10 bài SEO Blog (chuẩn EEAT)',
 N'Viết bài blog về marketing digital, SEO. Mỗi bài 2000+ từ, chuẩn E-E-A-T (Google). Topic từ client cung cấp.',
-'850e8400-e29b-41d4-a716-446655440003', N'["SEO", "Content Writing", "Marketing"]', 'open', 1200000, 2000000, 'micro', 7, N'["SEO Writing", "Content Marketing"]', 'beginner', 5, 2, 'Remote', 1, 1, DATEADD(day, 12, CAST(GETUTCDATE() AS DATE)), GETUTCDATE()),
+'850e8400-e29b-41d4-a716-446655440003', N'["SEO", "Content Writing", "Marketing"]', 'open', 1200000, 2000000, 'micro', 7, N'["SEO Writing", "Content Marketing"]', 'beginner', 5, 2, N'Remote', 1, 1, DATEADD(day, 12, CAST(GETUTCDATE() AS DATE)), GETUTCDATE()),
 
 ('950e8400-e29b-41d4-a716-446655440007', '750e8400-e29b-41d4-a716-446655440003', N'Copywriting cho Email Marketing Campaign',
 N'Viết 15 email marketing sequences cho sản phẩm SaaS. Email conversion-focused, A/B testing ready.',
-'850e8400-e29b-41d4-a716-446655440003', N'["Copywriting", "Email Marketing"]', 'open', 800000, 1500000, 'micro', 5, N'["Copywriting", "Marketing"]', 'beginner', 3, 1, 'Remote', 1, 0, DATEADD(day, 10, CAST(GETUTCDATE() AS DATE)), GETUTCDATE()),
+'850e8400-e29b-41d4-a716-446655440003', N'["Copywriting", "Email Marketing"]', 'open', 800000, 1500000, 'micro', 5, N'["Copywriting", "Marketing"]', 'beginner', 3, 1, N'Remote', 1, 0, DATEADD(day, 10, CAST(GETUTCDATE() AS DATE)), GETUTCDATE()),
 
 -- Marketing Jobs
 ('950e8400-e29b-41d4-a716-446655440008', '750e8400-e29b-41d4-a716-446655440003', N'Chạy quảng cáo Facebook Ads - F&B',
 N'Quản lý campaign Facebook/Instagram Ads cho nhà hàng F&B. Budget: 5-10M/tháng. KPI: bán hàng/booking.',
-'850e8400-e29b-41d4-a716-446655440004', N'["Facebook Ads", "Social Media", "Marketing"]', 'open', 2000000, 3500000, 'short-term', 30, N'["Facebook Ads", "Google Analytics"]', 'intermediate', 2, 0, 'Đà Nẵng', 0, 1, DATEADD(day, 3, CAST(GETUTCDATE() AS DATE)), GETUTCDATE()),
+'850e8400-e29b-41d4-a716-446655440004', N'["Facebook Ads", "Social Media", "Marketing"]', 'open', 2000000, 3500000, 'short-term', 30, N'["Facebook Ads", "Google Analytics"]', 'intermediate', 2, 0, N'Đà Nẵng', 0, 1, DATEADD(day, 3, CAST(GETUTCDATE() AS DATE)), GETUTCDATE()),
 
 ('950e8400-e29b-41d4-a716-446655440009', '750e8400-e29b-41d4-a716-446655440003', N'Quản lý Social Media - 30 ngày',
 N'Quản lý TikTok/Instagram cho startup startup. Viết nội dung, lên schedule, theo dõi analytics hàng ngày.',
-'850e8400-e29b-41d4-a716-446655440004', N'["Social Media", "TikTok", "Instagram"]', 'open', 3000000, 5000000, 'short-term', 30, N'["Social Media Management", "Content Creation"]', 'intermediate', 2, 0, 'Remote', 1, 0, DATEADD(day, 7, CAST(GETUTCDATE() AS DATE)), GETUTCDATE());
+'850e8400-e29b-41d4-a716-446655440004', N'["Social Media", "TikTok", "Instagram"]', 'open', 3000000, 5000000, 'short-term', 30, N'["Social Media Management", "Content Creation"]', 'intermediate', 2, 0, N'Remote', 1, 0, DATEADD(day, 7, CAST(GETUTCDATE() AS DATE)), GETUTCDATE());
 
 PRINT 'Inserted 9 jobs';
 GO

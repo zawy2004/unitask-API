@@ -37,6 +37,11 @@ public class RegisterResponse
     public string RefreshToken { get; set; } = null!;
 }
 
+public class GoogleLoginRequest
+{
+    public string IdToken { get; set; } = null!;
+}
+
 public class RefreshTokenRequest
 {
     public string RefreshToken { get; set; } = null!;
