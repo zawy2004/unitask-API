@@ -329,7 +329,11 @@ public class QdrantService : IQdrantService
         try
         {
             var baseUrl = GetBaseUrl();
-            var response = await _httpClient.GetAsync($"{baseUrl}/health");
+            // Qdrant Cloud uses /healthz, self-hosted uses /health
+            var response = await _httpClient.GetAsync($"{baseUrl}/healthz");
+            if (response.IsSuccessStatusCode) return true;
+
+            response = await _httpClient.GetAsync($"{baseUrl}/health");
             return response.IsSuccessStatusCode;
         }
         catch
