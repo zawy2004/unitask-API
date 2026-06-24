@@ -58,6 +58,12 @@ public partial class UnitaskDbContext : DbContext
 
     public virtual DbSet<WithdrawalRequest> WithdrawalRequests { get; set; }
 
+    public virtual DbSet<PortfolioProject> PortfolioProjects { get; set; }
+
+    public virtual DbSet<Education> Educations { get; set; }
+
+    public virtual DbSet<Certification> Certifications { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ActivityLog>(entity =>
@@ -395,6 +401,47 @@ public partial class UnitaskDbContext : DbContext
             entity.Property(e => e.Status).HasDefaultValue("pending");
 
             entity.HasOne(d => d.Student).WithMany(p => p.WithdrawalRequests).HasConstraintName("FK__Withdrawa__Stude__0B91BA14");
+        });
+
+        modelBuilder.Entity<PortfolioProject>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.IsHighlighted).HasDefaultValue(false);
+            entity.Property(e => e.SortOrder).HasDefaultValue(0);
+
+            entity.HasOne(d => d.Student).WithMany(p => p.PortfolioProjects)
+                .HasForeignKey(d => d.StudentId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Education>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.IsCurrent).HasDefaultValue(false);
+            entity.Property(e => e.SortOrder).HasDefaultValue(0);
+
+            entity.HasOne(d => d.Student).WithMany(p => p.Educations)
+                .HasForeignKey(d => d.StudentId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Certification>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.SortOrder).HasDefaultValue(0);
+
+            entity.HasOne(d => d.Student).WithMany(p => p.Certifications)
+                .HasForeignKey(d => d.StudentId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         OnModelCreatingPartial(modelBuilder);

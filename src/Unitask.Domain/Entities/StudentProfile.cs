@@ -75,4 +75,13 @@ public partial class StudentProfile
 
     [InverseProperty("Student")]
     public virtual ICollection<WithdrawalRequest> WithdrawalRequests { get; set; } = new List<WithdrawalRequest>();
+
+    [InverseProperty("Student")]
+    public virtual ICollection<PortfolioProject> PortfolioProjects { get; set; } = new List<PortfolioProject>();
+
+    [InverseProperty("Student")]
+    public virtual ICollection<Education> Educations { get; set; } = new List<Education>();
+
+    [InverseProperty("Student")]
+    public virtual ICollection<Certification> Certifications { get; set; } = new List<Certification>();
 }
