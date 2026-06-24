@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Unitask.Application;
@@ -158,5 +159,75 @@ app.UseAuthorization();
 app.MapGet("/", () => Results.Ok(new { status = "ok", service = "Unitask API" }));
 app.MapGet("/health", () => Results.Ok(new { status = "healthy" }));
 app.MapControllers();
+
+// Auto-create portfolio tables if they don't exist
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<Unitask.Infrastructure.Persistence.UnitaskDbContext>();
+    try
+    {
+        db.Database.ExecuteSqlRaw(@"
+            IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'PortfolioProjects')
+            CREATE TABLE PortfolioProjects (
+                Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+                StudentId UNIQUEIDENTIFIER NOT NULL,
+                Title NVARCHAR(255) NOT NULL,
+                [Description] NVARCHAR(MAX) NULL,
+                ImageUrl NVARCHAR(500) NULL,
+                ProjectUrl NVARCHAR(500) NULL,
+                GithubUrl NVARCHAR(500) NULL,
+                Tags NVARCHAR(1000) NULL,
+                [Role] NVARCHAR(100) NULL,
+                StartDate DATETIME2 NULL,
+                EndDate DATETIME2 NULL,
+                IsHighlighted BIT DEFAULT 0,
+                SortOrder INT DEFAULT 0,
+                CreatedAt DATETIME2 DEFAULT GETUTCDATE(),
+                UpdatedAt DATETIME2 DEFAULT GETUTCDATE(),
+                FOREIGN KEY (StudentId) REFERENCES StudentProfiles(Id) ON DELETE CASCADE
+            );
+
+            IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Educations')
+            CREATE TABLE Educations (
+                Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+                StudentId UNIQUEIDENTIFIER NOT NULL,
+                Institution NVARCHAR(255) NOT NULL,
+                Degree NVARCHAR(255) NULL,
+                FieldOfStudy NVARCHAR(255) NULL,
+                StartYear INT NULL,
+                EndYear INT NULL,
+                Gpa DECIMAL(3,2) NULL,
+                [Description] NVARCHAR(MAX) NULL,
+                IsCurrent BIT DEFAULT 0,
+                SortOrder INT DEFAULT 0,
+                CreatedAt DATETIME2 DEFAULT GETUTCDATE(),
+                UpdatedAt DATETIME2 DEFAULT GETUTCDATE(),
+                FOREIGN KEY (StudentId) REFERENCES StudentProfiles(Id) ON DELETE CASCADE
+            );
+
+            IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Certifications')
+            CREATE TABLE Certifications (
+                Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+                StudentId UNIQUEIDENTIFIER NOT NULL,
+                Name NVARCHAR(255) NOT NULL,
+                IssuingOrganization NVARCHAR(255) NULL,
+                IssueDate DATETIME2 NULL,
+                ExpirationDate DATETIME2 NULL,
+                CredentialUrl NVARCHAR(500) NULL,
+                CredentialId NVARCHAR(100) NULL,
+                ImageUrl NVARCHAR(500) NULL,
+                SortOrder INT DEFAULT 0,
+                CreatedAt DATETIME2 DEFAULT GETUTCDATE(),
+                UpdatedAt DATETIME2 DEFAULT GETUTCDATE(),
+                FOREIGN KEY (StudentId) REFERENCES StudentProfiles(Id) ON DELETE CASCADE
+            );
+        ");
+        Console.WriteLine("[Startup] Portfolio tables ensured.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[Startup] Portfolio tables check: {ex.Message}");
+    }
+}
 
 app.Run();
