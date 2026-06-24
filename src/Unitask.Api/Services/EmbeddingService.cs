@@ -129,6 +129,99 @@ public class SentenceTransformerEmbeddingService : IEmbeddingService
 }
 
 /// <summary>
+/// Groq Embedding Service - sử dụng Groq API (miễn phí) với model embedding
+/// Fallback: tạo embedding từ LLM response hash nếu Groq không hỗ trợ /embeddings
+/// </summary>
+public class GroqEmbeddingService : IEmbeddingService
+{
+    private readonly HttpClient _httpClient;
+    private readonly string _apiKey;
+    private readonly int _dimension;
+    private readonly ILogger<GroqEmbeddingService> _logger;
+
+    public GroqEmbeddingService(HttpClient httpClient, IConfiguration config, ILogger<GroqEmbeddingService> logger)
+    {
+        _httpClient = httpClient;
+        _logger = logger;
+
+        var ragConfig = config.GetSection("RAG").Get<RagConfig>();
+        _apiKey = ragConfig?.Groq?.ApiKey ?? string.Empty;
+        _dimension = ragConfig?.Qdrant?.VectorSize ?? 384;
+    }
+
+    public async Task<float[]> GetEmbeddingAsync(string text)
+    {
+        if (string.IsNullOrWhiteSpace(_apiKey))
+        {
+            _logger.LogWarning("Groq API key missing, using deterministic hash embedding");
+            return HashEmbedding(text);
+        }
+
+        try
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://api.groq.com/openai/v1/embeddings")
+            {
+                Content = JsonContent.Create(new
+                {
+                    model = "nomic-embed-text-v1_5",
+                    input = text
+                })
+            };
+            request.Headers.Add("Authorization", $"Bearer {_apiKey}");
+
+            var response = await _httpClient.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = JsonSerializer.Deserialize<JsonElement>(await response.Content.ReadAsStringAsync());
+                var embedding = json.GetProperty("data")[0].GetProperty("embedding");
+                var vector = embedding.EnumerateArray().Select(e => (float)e.GetDouble()).ToArray();
+
+                if (vector.Length != _dimension)
+                {
+                    var resized = new float[_dimension];
+                    Array.Copy(vector, resized, Math.Min(vector.Length, _dimension));
+                    return resized;
+                }
+                return vector;
+            }
+
+            _logger.LogWarning("Groq embedding API returned {Status}, falling back to hash", response.StatusCode);
+            return HashEmbedding(text);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Groq embedding failed, using hash fallback");
+            return HashEmbedding(text);
+        }
+    }
+
+    public async Task<List<float[]>> GetEmbeddingsAsync(List<string> texts)
+    {
+        var results = new List<float[]>();
+        foreach (var text in texts)
+        {
+            results.Add(await GetEmbeddingAsync(text));
+            await Task.Delay(100); // rate limit friendly
+        }
+        return results;
+    }
+
+    private float[] HashEmbedding(string text)
+    {
+        var hash = text.GetHashCode();
+        var rng = new Random(hash);
+        var vector = new float[_dimension];
+        for (int i = 0; i < _dimension; i++)
+            vector[i] = (float)(rng.NextDouble() * 2 - 1);
+
+        var norm = (float)Math.Sqrt(vector.Sum(v => v * v));
+        if (norm > 0) for (int i = 0; i < vector.Length; i++) vector[i] /= norm;
+        return vector;
+    }
+}
+
+/// <summary>
 /// Mock Embedding Service - cho development/testing
 /// </summary>
 public class MockEmbeddingService : IEmbeddingService
