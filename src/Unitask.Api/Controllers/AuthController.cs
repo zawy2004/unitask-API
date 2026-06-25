@@ -61,6 +61,11 @@ public class AuthController : ControllerBase
 
             return Ok(MapLoginResponse(result));
         }
+        catch (UnauthorizedAccessException ex)
+        {
+            // Tài khoản bị vô hiệu hóa — không fallback sang demo.
+            return StatusCode(403, new { message = ex.Message });
+        }
         catch
         {
             var demoUser = FallbackData.TryGetDemoUser(request.Email, request.Password);

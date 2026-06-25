@@ -45,6 +45,11 @@ public class AuthService : IAuthService
             return null;
         }
 
+        if (user.IsActive == false)
+        {
+            throw new UnauthorizedAccessException("Tài khoản đã bị vô hiệu hóa. Vui lòng liên hệ quản trị viên.");
+        }
+
         return CreateAuthResult(user);
     }
 
