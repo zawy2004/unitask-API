@@ -175,7 +175,8 @@ public class AuthController : ControllerBase
             FullName = result.User.FullName,
             UserType = result.User.UserType,
             Token = result.Token,
-            RefreshToken = result.RefreshToken
+            RefreshToken = result.RefreshToken,
+            NeedsApproval = result.NeedsApproval
         };
     }
 

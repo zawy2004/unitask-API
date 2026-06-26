@@ -435,5 +435,63 @@ public class UsersController : ControllerBase
 
         return Ok(new { id = user.Id, suspendedUntil = (DateTime?)null, isActive = true });
     }
+
+    /// <summary>Admin phê duyệt tài khoản doanh nghiệp đang chờ (IsActive false → true).</summary>
+    [Authorize]
+    [HttpPost("{id:guid}/approve")]
+    public async Task<IActionResult> ApproveAccount(Guid id)
+    {
+        if (!IsAdmin()) return Forbid();
+
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+        if (user is null) return NotFound();
+
+        user.IsActive = true;
+        user.UpdatedAt = DateTime.UtcNow;
+        await _dbContext.SaveChangesAsync();
+
+        _dbContext.Notifications.Add(new Unitask.Domain.Entities.Notification
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            Type = "account_approved",
+            Title = "Tài khoản đã được phê duyệt",
+            Message = "Tài khoản doanh nghiệp của bạn đã được admin phê duyệt. Bạn có thể đăng nhập và sử dụng đầy đủ tính năng.",
+            IsRead = false,
+            CreatedAt = DateTime.UtcNow,
+        });
+        await _dbContext.SaveChangesAsync();
+
+        return Ok(new { id = user.Id, isActive = true, message = "Đã phê duyệt tài khoản." });
+    }
+
+    /// <summary>Admin từ chối tài khoản doanh nghiệp.</summary>
+    [Authorize]
+    [HttpPost("{id:guid}/reject")]
+    public async Task<IActionResult> RejectAccount(Guid id, [FromBody] RejectAccountRequest? request)
+    {
+        if (!IsAdmin()) return Forbid();
+
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+        if (user is null) return NotFound();
+
+        var reason = request?.Reason?.Trim();
+
+        _dbContext.Notifications.Add(new Unitask.Domain.Entities.Notification
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            Type = "account_rejected",
+            Title = "Tài khoản bị từ chối",
+            Message = string.IsNullOrWhiteSpace(reason)
+                ? "Tài khoản doanh nghiệp của bạn đã bị từ chối. Vui lòng liên hệ admin để biết thêm chi tiết."
+                : $"Tài khoản doanh nghiệp của bạn đã bị từ chối. Lý do: {reason}",
+            IsRead = false,
+            CreatedAt = DateTime.UtcNow,
+        });
+        await _dbContext.SaveChangesAsync();
+
+        return Ok(new { id = user.Id, message = "Đã từ chối tài khoản." });
+    }
 }
 

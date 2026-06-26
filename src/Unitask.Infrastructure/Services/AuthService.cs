@@ -47,6 +47,8 @@ public class AuthService : IAuthService
 
         if (user.IsActive == false)
         {
+            if (string.Equals(user.UserType, "business", StringComparison.OrdinalIgnoreCase))
+                throw new UnauthorizedAccessException("Tài khoản doanh nghiệp của bạn đang chờ admin phê duyệt. Vui lòng chờ thông báo.");
             throw new UnauthorizedAccessException("Tài khoản đã bị vô hiệu hóa. Vui lòng liên hệ quản trị viên.");
         }
 
@@ -61,6 +63,8 @@ public class AuthService : IAuthService
             throw new InvalidOperationException("Email already exists.");
         }
 
+        var isBusiness = string.Equals(request.UserType, "business", StringComparison.OrdinalIgnoreCase);
+
         var user = new User
         {
             Id = Guid.NewGuid(),
@@ -71,16 +75,42 @@ public class AuthService : IAuthService
             Phone = request.Phone,
             AvatarUrl = request.AvatarUrl,
             Bio = request.Bio,
-            IsActive = true,
+            IsActive = !isBusiness,
             IsVerified = false,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
 
         _dbContext.Users.Add(user);
+
+        if (isBusiness)
+        {
+            var admins = await _dbContext.Users.AsNoTracking()
+                .Where(u => u.UserType == "admin" && (u.IsActive ?? true))
+                .Select(u => u.Id)
+                .ToListAsync(cancellationToken);
+
+            foreach (var adminId in admins)
+            {
+                _dbContext.Notifications.Add(new Notification
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = adminId,
+                    Type = "business_approval",
+                    Title = "Yêu cầu phê duyệt tài khoản doanh nghiệp",
+                    Message = $"{request.FullName} ({request.Email}) đã đăng ký tài khoản doanh nghiệp và đang chờ phê duyệt.",
+                    RelatedUserId = user.Id,
+                    IsRead = false,
+                    CreatedAt = DateTime.UtcNow,
+                });
+            }
+        }
+
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return CreateAuthResult(user);
+        var result = CreateAuthResult(user);
+        result.NeedsApproval = isBusiness;
+        return result;
     }
 
     public async Task<AuthResult?> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)

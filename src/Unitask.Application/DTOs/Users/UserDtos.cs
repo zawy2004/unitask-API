@@ -101,3 +101,13 @@ public class VerifyEmailRequest
 {
     public string VerificationCode { get; set; } = null!;
 }
+
+public class UpdateRoleRequest
+{
+    public string UserType { get; set; } = null!;
+}
+
+public class RejectAccountRequest
+{
+    public string? Reason { get; set; }
+}
