@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Unitask.Api.Extensions;
+using Unitask.Application.Common.Interfaces;
+using Unitask.Application.Common.Settings;
 using Unitask.Application.DTOs.Applications;
 using Unitask.Application.DTOs.Common;
 using Unitask.Infrastructure.Persistence;
@@ -17,10 +22,20 @@ namespace Unitask.Api.Controllers;
 public class JobApplicationsController : ControllerBase
 {
     private readonly UnitaskDbContext _dbContext;
+    private readonly IEmailService _emailService;
+    private readonly EmailSettings _emailSettings;
+    private readonly ILogger<JobApplicationsController> _logger;
 
-    public JobApplicationsController(UnitaskDbContext dbContext)
+    public JobApplicationsController(
+        UnitaskDbContext dbContext,
+        IEmailService emailService,
+        IOptions<EmailSettings> emailSettings,
+        ILogger<JobApplicationsController> logger)
     {
         _dbContext = dbContext;
+        _emailService = emailService;
+        _emailSettings = emailSettings.Value;
+        _logger = logger;
     }
 
     [HttpGet("jobs/{jobId:guid}/applications")]
@@ -213,7 +228,10 @@ public class JobApplicationsController : ControllerBase
     [HttpPut("applications/{id:guid}/accept")]
     public async Task<IActionResult> AcceptApplication(Guid id, [FromBody] JobApplicationAcceptRequest request)
     {
-        var application = await _dbContext.JobApplications.FirstOrDefaultAsync(a => a.Id == id);
+        var application = await _dbContext.JobApplications
+            .Include(a => a.Student).ThenInclude(s => s.User)
+            .Include(a => a.Job).ThenInclude(j => j.Business)
+            .FirstOrDefaultAsync(a => a.Id == id);
         if (application is null)
         {
             return NotFound();
@@ -224,7 +242,59 @@ public class JobApplicationsController : ControllerBase
         application.StartedAt = request.StartDate;
         await _dbContext.SaveChangesAsync();
 
+        // Thông báo trong app cho sinh viên.
+        _dbContext.Notifications.Add(new Unitask.Domain.Entities.Notification
+        {
+            Id = Guid.NewGuid(),
+            UserId = application.Student.UserId,
+            Type = "application_accepted",
+            Title = "Bạn đã được nhận vào dự án",
+            Message = $"Doanh nghiệp {application.Job.Business.CompanyName} đã chấp nhận bạn cho dự án \"{application.Job.Title}\".",
+            IsRead = false,
+            CreatedAt = DateTime.UtcNow,
+        });
+        await _dbContext.SaveChangesAsync();
+
+        // Gửi email "Nhận được Offer" cho sinh viên (lỗi gửi mail không làm hỏng việc nhận).
+        try
+        {
+            await _emailService.SendTemplateAsync(
+                EmailTemplate.OfferReceived,
+                application.Student.User.Email,
+                new Dictionary<string, string>
+                {
+                    ["studentName"] = application.Student.User.FullName,
+                    ["businessName"] = application.Job.Business.CompanyName,
+                    ["projectName"] = application.Job.Title,
+                    ["offerAmount"] = FormatSalary(application.Job.SalaryMin, application.Job.SalaryMax),
+                    ["duration"] = FormatDuration(application.Job.DurationDays, application.Job.DurationType),
+                    ["startDate"] = request.StartDate?.ToString("dd/MM/yyyy") ?? "Theo thỏa thuận",
+                    ["viewOfferUrl"] = $"{_emailSettings.FrontendBaseUrl}/my-applications",
+                });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Không gửi được email Offer cho sinh viên (application {Id})", id);
+        }
+
         return NoContent();
+    }
+
+    /// <summary>Định dạng mức thù lao (VND) từ khoảng lương của job.</summary>
+    private static string FormatSalary(decimal? min, decimal? max)
+    {
+        string Money(decimal v) => v.ToString("#,0", CultureInfo.GetCultureInfo("vi-VN")) + "đ";
+        if (min.HasValue && max.HasValue && min.Value != max.Value) return $"{Money(min.Value)} - {Money(max.Value)}";
+        if (max.HasValue) return Money(max.Value);
+        if (min.HasValue) return Money(min.Value);
+        return "Thỏa thuận";
+    }
+
+    /// <summary>Định dạng thời hạn dự án.</summary>
+    private static string FormatDuration(int? days, string? type)
+    {
+        if (days.HasValue && days.Value > 0) return $"{days.Value} ngày";
+        return string.IsNullOrWhiteSpace(type) ? "Theo thỏa thuận" : type!;
     }
 
     [Authorize]

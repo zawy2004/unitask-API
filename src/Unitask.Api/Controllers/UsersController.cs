@@ -1,11 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Linq;
 using Unitask.Api.Extensions;
 using Unitask.Api.Services;
+using Unitask.Application.Common.Interfaces;
+using Unitask.Application.Common.Settings;
 using Unitask.Application.DTOs.Common;
 using Unitask.Application.DTOs.Users;
 using Unitask.Infrastructure.Persistence;
@@ -17,10 +22,20 @@ namespace Unitask.Api.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly UnitaskDbContext _dbContext;
+    private readonly IEmailService _emailService;
+    private readonly EmailSettings _emailSettings;
+    private readonly ILogger<UsersController> _logger;
 
-    public UsersController(UnitaskDbContext dbContext)
+    public UsersController(
+        UnitaskDbContext dbContext,
+        IEmailService emailService,
+        IOptions<EmailSettings> emailSettings,
+        ILogger<UsersController> logger)
     {
         _dbContext = dbContext;
+        _emailService = emailService;
+        _emailSettings = emailSettings.Value;
+        _logger = logger;
     }
 
     private bool IsAdmin() =>
@@ -461,6 +476,28 @@ public class UsersController : ControllerBase
             CreatedAt = DateTime.UtcNow,
         });
         await _dbContext.SaveChangesAsync();
+
+        // Gửi email thông báo cho doanh nghiệp (không để lỗi gửi mail làm hỏng việc phê duyệt).
+        try
+        {
+            var business = await _dbContext.BusinessProfiles.AsNoTracking()
+                .FirstOrDefaultAsync(b => b.UserId == user.Id);
+            var businessName = business?.CompanyName ?? user.FullName;
+
+            await _emailService.SendTemplateAsync(
+                EmailTemplate.BusinessApproved,
+                user.Email,
+                new Dictionary<string, string>
+                {
+                    ["userName"] = user.FullName,
+                    ["businessName"] = businessName,
+                    ["dashboardUrl"] = $"{_emailSettings.FrontendBaseUrl}/login",
+                });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Không gửi được email phê duyệt cho doanh nghiệp {UserId}", user.Id);
+        }
 
         return Ok(new { id = user.Id, isActive = true, message = "Đã phê duyệt tài khoản." });
     }

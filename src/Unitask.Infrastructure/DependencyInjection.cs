@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Unitask.Application.Common.Interfaces;
+using Unitask.Application.Common.Settings;
 using Unitask.Infrastructure.Persistence;
 using Unitask.Infrastructure.Repositories;
 using Unitask.Infrastructure.Services;
@@ -24,6 +25,10 @@ public static class DependencyInjection
         services.AddScoped<IInsightsService, InsightsService>();
         services.AddScoped<IMilestoneService, MilestoneService>();
         services.AddScoped<IDisputeService, DisputeService>();
+
+        // Email (SMTP / Gmail App Password)
+        services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
+        services.AddScoped<IEmailService, SmtpEmailService>();
 
         return services;
     }

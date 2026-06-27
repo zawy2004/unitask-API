@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Bạn có tin nhắn chưa đọc</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f4f7;-webkit-font-smoothing:antialiased;"><div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#f4f4f7;">Bạn có tin nhắn mới chưa đọc từ {{senderName}}.</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f7;padding:32px 12px;"><tr><td align="center"><table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(17,17,30,.06);font-family:'Be Vietnam Pro',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;"><tr><td style="background:linear-gradient(135deg,#7C3AED 0%,#5B21B6 100%);padding:28px 40px;"><table role="presentation" width="100%"><tr>
+            <td style="font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:24px;font-weight:800;color:#ffffff;letter-spacing:.3px;"><img src="https://res.cloudinary.com/dmdkuqmic/image/upload/v1782577036/logo_unitask_kmr29k.png" alt="UniTask" style="display:inline-block;height:110px;width:auto;border:0;vertical-align:middle;" /></td>
+            <td align="right" style="font-size:11px;font-weight:700;color:rgba(255,255,255,.75);letter-spacing:1px;text-transform:uppercase;">Tin nhắn</td>
+          </tr></table></td></tr>
+
+        <tr><td style="padding:40px 40px 32px;"><h1 style="margin:0 0 12px;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:23px;font-weight:800;color:#16161c;">Bạn có tin nhắn chưa đọc</h1>
+          <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#4b4b57;">Xin chào {{userName}}, bạn có <strong style="color:#16161c;">{{unreadCount}} tin nhắn mới</strong> từ <strong style="color:#16161c;">{{senderName}}</strong> đang chờ phản hồi.</p>
+
+          <!-- Chat preview -->
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fafafe;border:1px solid #eeeef5;border-radius:14px;margin:0 0 28px;"><tr><td style="padding:20px 22px;"><table role="presentation"><tr>
+                <td style="width:44px;vertical-align:top;"><div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#A78BFA);text-align:center;line-height:40px;color:#fff;font-weight:800;font-size:16px;">{{senderInitial}}</div></td>
+                <td style="padding-left:14px;vertical-align:top;"><div style="font-size:14px;font-weight:700;color:#16161c;margin-bottom:6px;">{{senderName}}</div>
+                  <div style="font-size:14px;line-height:1.6;color:#4b4b57;background:#fff;border:1px solid #eeeef5;border-radius:0 12px 12px 12px;padding:12px 14px;">{{messagePreview}}</div></td>
+              </tr></table></td></tr>
+          </table>
+
+          <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+            <td style="border-radius:10px;background:linear-gradient(135deg,#7C3AED,#5B21B6);"><a href="{{chatUrl}}" style="display:inline-block;padding:14px 36px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:10px;">Trả lời ngay →</a></td>
+          </tr></table></td></tr>
+
+        <tr><td style="background:#0f0f12;padding:28px 40px;"><p style="margin:0 0 6px;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;font-weight:800;color:#ffffff;"><img src="https://res.cloudinary.com/dmdkuqmic/image/upload/v1782577036/logo_unitask_kmr29k.png" alt="UniTask" style="display:inline-block;height:76px;width:auto;border:0;" /></p>
+          <p style="margin:0;font-size:11px;color:#5a5a66;">© 2026 UniTask. Bạn nhận email này vì có tin nhắn chưa đọc. <a href="{{notificationSettingsUrl}}" style="color:#A78BFA;">Cài đặt thông báo</a>.</p></td></tr>
+
+      </table></td></tr>
+  </table>
+</body>
+</html>
