@@ -192,6 +192,54 @@ public class DisputeService : IDisputeService
         return rows.Select(x => Map(x.d, x.Title)).ToList();
     }
 
+    // Admin: liệt kê tất cả tranh chấp kèm bối cảnh (job, sinh viên, doanh nghiệp, số tiền).
+    public async Task<IReadOnlyList<AdminDisputeResponse>> GetAllForAdminAsync(Guid adminUserId, string? status, CancellationToken ct = default)
+    {
+        var isAdmin = await _db.Users.AsNoTracking().AnyAsync(u => u.Id == adminUserId && u.UserType == "admin", ct);
+        if (!isAdmin)
+            throw new UnauthorizedAccessException("Chỉ admin được xem danh sách tranh chấp.");
+
+        var query = _db.Disputes.AsNoTracking().AsQueryable();
+        if (!string.IsNullOrWhiteSpace(status))
+        {
+            var st = status.Trim().ToUpperInvariant();
+            query = query.Where(d => d.Status == st);
+        }
+
+        var rows = await query
+            .Join(_db.Milestones.AsNoTracking(), d => d.MilestoneId, m => m.Id, (d, m) => new { d, m })
+            .Join(_db.Contracts.AsNoTracking(), x => x.d.ContractId, c => c.Id, (x, c) => new { x.d, x.m, c })
+            .Join(_db.Jobs.AsNoTracking(), x => x.c.JobId, j => j.Id, (x, j) => new { x.d, x.m, x.c, JobTitle = j.Title })
+            .Join(_db.StudentProfiles.AsNoTracking().Include(s => s.User), x => x.c.StudentId, s => s.Id,
+                  (x, s) => new { x.d, x.m, x.c, x.JobTitle, StudentName = s.User.FullName, StudentUserId = s.UserId })
+            .Join(_db.BusinessProfiles.AsNoTracking(), x => x.c.BusinessId, b => b.Id,
+                  (x, b) => new { x.d, x.m, x.JobTitle, x.StudentName, x.StudentUserId, CompanyName = b.CompanyName })
+            .OrderByDescending(x => x.d.CreatedAt)
+            .ToListAsync(ct);
+
+        return rows.Select(x => new AdminDisputeResponse
+        {
+            Id = x.d.Id,
+            MilestoneId = x.d.MilestoneId,
+            MilestoneTitle = x.m.Title,
+            ContractId = x.d.ContractId,
+            RaisedByUserId = x.d.RaisedByUserId,
+            Reason = x.d.Reason,
+            Status = x.d.Status,
+            Decision = x.d.Decision,
+            StudentPercent = x.d.StudentPercent,
+            DecisionNote = x.d.DecisionNote,
+            CreatedAt = x.d.CreatedAt,
+            ResolvedAt = x.d.ResolvedAt,
+            AppealDeadline = x.d.AppealDeadline,
+            MilestoneAmount = x.m.Amount,
+            JobTitle = x.JobTitle,
+            StudentName = x.StudentName,
+            CompanyName = x.CompanyName,
+            RaisedByRole = x.d.RaisedByUserId == x.StudentUserId ? "student" : "business",
+        }).ToList();
+    }
+
     // ----- helpers -----
     private async Task<(Dispute dispute, Milestone milestone, Contract contract)> LoadAsync(Guid disputeId, CancellationToken ct)
     {

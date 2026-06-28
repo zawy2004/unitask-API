@@ -174,6 +174,42 @@ public class JobApplicationsController : ControllerBase
         _dbContext.JobApplications.Add(application);
         await _dbContext.SaveChangesAsync();
 
+        // Gửi email "Ứng viên mới" cho doanh nghiệp (không để lỗi mail làm hỏng việc ứng tuyển).
+        try
+        {
+            var job = await _dbContext.Jobs.AsNoTracking()
+                .Include(j => j.Business).ThenInclude(b => b.User)
+                .FirstOrDefaultAsync(j => j.Id == jobId);
+            var studentName = actor?.FullName ?? student.StudentEmail ?? "Sinh viên";
+            if (job?.Business?.User?.Email is string bizEmail && !string.IsNullOrWhiteSpace(bizEmail))
+            {
+                var rating = await _dbContext.Reviews.AsNoTracking()
+                    .Where(r => r.ToUserId == student.UserId)
+                    .AverageAsync(r => (decimal?)r.Rating) ?? 0m;
+                var excerpt = request.CoverLetter ?? string.Empty;
+                if (excerpt.Length > 240) excerpt = excerpt.Substring(0, 240) + "…";
+
+                await _emailService.SendTemplateAsync(
+                    EmailTemplate.NewApplication,
+                    bizEmail,
+                    new Dictionary<string, string>
+                    {
+                        ["businessName"] = job.Business.CompanyName,
+                        ["studentName"] = studentName,
+                        ["studentInitial"] = string.IsNullOrWhiteSpace(studentName) ? "?" : studentName.Trim()[..1].ToUpper(),
+                        ["studentMajor"] = student.Major ?? student.University ?? "Sinh viên",
+                        ["studentRating"] = rating > 0 ? rating.ToString("0.0") : "Mới",
+                        ["coverLetterExcerpt"] = string.IsNullOrWhiteSpace(excerpt) ? "(Không có thư giới thiệu)" : excerpt,
+                        ["jobTitle"] = job.Title,
+                        ["viewApplicationUrl"] = $"{_emailSettings.FrontendBaseUrl}/manage-jobs",
+                    });
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Không gửi được email Ứng viên mới (job {JobId})", jobId);
+        }
+
         return Ok(new JobApplicationResponse
         {
             Id = application.Id,

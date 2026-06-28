@@ -23,6 +23,17 @@ public class DisputeResponse
     public DateTime? AppealDeadline { get; set; }
 }
 
+/// <summary>Tranh chấp kèm bối cảnh cho màn hình quản trị (admin).</summary>
+public class AdminDisputeResponse : DisputeResponse
+{
+    public decimal MilestoneAmount { get; set; }
+    public string? JobTitle { get; set; }
+    public string? StudentName { get; set; }
+    public string? CompanyName { get; set; }
+    /// <summary>"student" | "business" — bên đã mở tranh chấp.</summary>
+    public string? RaisedByRole { get; set; }
+}
+
 /// <summary>B1 — mở tranh chấp trên một milestone.</summary>
 public class OpenDisputeRequest
 {

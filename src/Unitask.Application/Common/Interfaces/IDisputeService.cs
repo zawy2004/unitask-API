@@ -23,4 +23,10 @@ public interface IDisputeService
 
     /// <summary>Tranh chấp của một hợp đồng (cho participant xem).</summary>
     Task<IReadOnlyList<DisputeResponse>> GetByContractAsync(Guid contractId, Guid currentUserId, CancellationToken ct = default);
+
+    /// <summary>
+    /// Admin: liệt kê tất cả tranh chấp (kèm bối cảnh) để hòa giải. Lọc theo
+    /// <paramref name="status"/> nếu có (NEGOTIATION/MEDIATION/RESOLVED/APPEAL/CLOSED).
+    /// </summary>
+    Task<IReadOnlyList<AdminDisputeResponse>> GetAllForAdminAsync(Guid adminUserId, string? status, CancellationToken ct = default);
 }

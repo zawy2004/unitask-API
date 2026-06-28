@@ -5,7 +5,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Unitask.Application.Common.Interfaces;
+using Unitask.Application.Common.Settings;
 using Unitask.Application.DTOs.Contracts;
 using Unitask.Domain.Entities;
 using Unitask.Infrastructure.Persistence;
@@ -24,10 +27,40 @@ namespace Unitask.Infrastructure.Services;
 public class MilestoneService : IMilestoneService
 {
     private readonly UnitaskDbContext _db;
+    private readonly IEmailService _email;
+    private readonly EmailSettings _emailSettings;
+    private readonly ILogger<MilestoneService> _logger;
 
-    public MilestoneService(UnitaskDbContext db)
+    public MilestoneService(
+        UnitaskDbContext db,
+        IEmailService email,
+        IOptions<EmailSettings> emailSettings,
+        ILogger<MilestoneService> logger)
     {
         _db = db;
+        _email = email;
+        _emailSettings = emailSettings.Value;
+        _logger = logger;
+    }
+
+    /// <summary>Lấy email + tên của Sinh viên và Doanh nghiệp đứng sau hợp đồng (để gửi mail).</summary>
+    private async Task<(string studentEmail, string studentName, string businessEmail, string companyName)> LoadPartiesAsync(Contract contract, CancellationToken ct)
+    {
+        var s = await _db.StudentProfiles.AsNoTracking().Include(x => x.User)
+            .Where(x => x.Id == contract.StudentId)
+            .Select(x => new { x.User.Email, x.User.FullName }).FirstAsync(ct);
+        var b = await _db.BusinessProfiles.AsNoTracking().Include(x => x.User)
+            .Where(x => x.Id == contract.BusinessId)
+            .Select(x => new { x.User.Email, x.CompanyName }).FirstAsync(ct);
+        return (s.Email, s.FullName, b.Email, b.CompanyName);
+    }
+
+    /// <summary>Gửi email theo template, nuốt lỗi (không làm hỏng nghiệp vụ chính).</summary>
+    private async Task TrySendEmailAsync(EmailTemplate template, string toEmail, Dictionary<string, string> vars, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(toEmail)) return;
+        try { await _email.SendTemplateAsync(template, toEmail, vars, ct); }
+        catch (Exception ex) { _logger.LogError(ex, "Gửi email {Template} thất bại tới {To}", template, toEmail); }
     }
 
     // ----- Hằng số trạng thái: tránh "magic string" rải rác -----
@@ -274,6 +307,16 @@ public class MilestoneService : IMilestoneService
 
         await _db.SaveChangesAsync(ct);
 
+        // Email cho sinh viên: mốc đã được ký quỹ.
+        var p = await LoadPartiesAsync(contract, ct);
+        await TrySendEmailAsync(EmailTemplate.MilestoneFunded, p.studentEmail, new Dictionary<string, string>
+        {
+            ["studentName"] = p.studentName,
+            ["milestoneName"] = milestone.Title,
+            ["amount"] = Vnd(milestone.Amount),
+            ["workspaceUrl"] = $"{_emailSettings.FrontendBaseUrl}/contracts/{contract.Id}",
+        }, ct);
+
         return await ReloadMilestoneAsync(milestone.Id, ct);
     }
 
@@ -315,6 +358,16 @@ public class MilestoneService : IMilestoneService
 
         await _db.SaveChangesAsync(ct);
 
+        // Email cho doanh nghiệp: có bài nộp cần nghiệm thu.
+        var p = await LoadPartiesAsync(contract, ct);
+        await TrySendEmailAsync(EmailTemplate.WorkSubmitted, p.businessEmail, new Dictionary<string, string>
+        {
+            ["businessName"] = p.companyName,
+            ["studentName"] = p.studentName,
+            ["milestoneName"] = milestone.Title,
+            ["reviewUrl"] = $"{_emailSettings.FrontendBaseUrl}/contracts/{contract.Id}",
+        }, ct);
+
         return await ReloadMilestoneAsync(milestone.Id, ct);
     }
 
@@ -338,6 +391,19 @@ public class MilestoneService : IMilestoneService
         await ApplyApprovalAsync(milestone, contract, currentUserId, auto: false, ct);
         await _db.SaveChangesAsync(ct);
         await tx.CommitAsync(ct);
+
+        // Email cho sinh viên: đã nghiệm thu & giải ngân (hệ thống giải ngân đủ 100%, không trừ phí ở bước này).
+        var p = await LoadPartiesAsync(contract, ct);
+        await TrySendEmailAsync(EmailTemplate.MilestoneApproved, p.studentEmail, new Dictionary<string, string>
+        {
+            ["studentName"] = p.studentName,
+            ["milestoneName"] = milestone.Title,
+            ["grossAmount"] = Vnd(milestone.Amount),
+            ["feePercent"] = "0%",
+            ["feeAmount"] = Vnd(0m),
+            ["netAmount"] = Vnd(milestone.Amount),
+            ["walletUrl"] = $"{_emailSettings.FrontendBaseUrl}/wallet",
+        }, ct);
 
         return await ReloadMilestoneAsync(milestone.Id, ct);
     }
@@ -472,6 +538,17 @@ public class MilestoneService : IMilestoneService
             contract.JobId);
 
         await _db.SaveChangesAsync(ct);
+
+        // Email cho sinh viên: yêu cầu chỉnh sửa, kèm feedback của doanh nghiệp.
+        var p = await LoadPartiesAsync(contract, ct);
+        await TrySendEmailAsync(EmailTemplate.RevisionRequested, p.studentEmail, new Dictionary<string, string>
+        {
+            ["studentName"] = p.studentName,
+            ["businessName"] = p.companyName,
+            ["milestoneName"] = milestone.Title,
+            ["clientFeedback"] = request.Feedback,
+            ["workspaceUrl"] = $"{_emailSettings.FrontendBaseUrl}/contracts/{contract.Id}",
+        }, ct);
 
         return await ReloadMilestoneAsync(milestone.Id, ct);
     }

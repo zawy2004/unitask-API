@@ -43,6 +43,16 @@ public class DisputesController : ControllerBase
     public Task<ActionResult<DisputeResponse>> Appeal(Guid id, [FromBody] AppealDisputeRequest request, CancellationToken ct)
         => Run(uid => _disputes.AppealAsync(id, uid, request, ct));
 
+    /// <summary>Admin: danh sách tất cả tranh chấp (lọc theo status nếu có) để hòa giải.</summary>
+    [HttpGet]
+    public async Task<ActionResult<IReadOnlyList<AdminDisputeResponse>>> GetAll([FromQuery] string? status, CancellationToken ct)
+    {
+        var userId = User.GetUserId();
+        if (userId is null) return Unauthorized();
+        try { return Ok(await _disputes.GetAllForAdminAsync(userId.Value, status, ct)); }
+        catch (UnauthorizedAccessException ex) { return StatusCode(StatusCodes.Status403Forbidden, new { message = ex.Message }); }
+    }
+
     /// <summary>Danh sách tranh chấp của một hợp đồng.</summary>
     [HttpGet("contract/{contractId:guid}")]
     public async Task<ActionResult<IReadOnlyList<DisputeResponse>>> ByContract(Guid contractId, CancellationToken ct)
