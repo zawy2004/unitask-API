@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Unitask.Api.Extensions;
+using Unitask.Api.Filters;
 using Unitask.Application.Common.Interfaces;
 using Unitask.Application.Common.Settings;
 using Unitask.Application.DTOs.Applications;
@@ -115,6 +116,7 @@ public class JobApplicationsController : ControllerBase
     }
 
     [Authorize]
+    [RequireRole("student")]
     [HttpPost("jobs/{jobId:guid}/apply")]
     public async Task<ActionResult<JobApplicationResponse>> ApplyToJob(Guid jobId, [FromBody] ApplyJobRequest request)
     {

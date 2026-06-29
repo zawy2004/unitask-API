@@ -132,6 +132,9 @@ builder.Services.AddRagServices(builder.Configuration);
 // Chính sách Escrow 1.2: tự động nghiệm thu & giải ngân sau 72h doanh nghiệp không phản hồi.
 builder.Services.AddHostedService<Unitask.Api.Jobs.EscrowAutoReleaseService>();
 
+// Logic thời gian (Giai đoạn 3): tự động chuyển Job quá hạn nộp sang trạng thái "expired".
+builder.Services.AddHostedService<Unitask.Api.Jobs.JobExpiryService>();
+
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
