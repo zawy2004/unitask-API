@@ -26,6 +26,7 @@ public class JobCategoriesController : ControllerBase
     {
         try
         {
+            // Đếm SỐNG số job đang mở theo từng ngành (cột JobCount tĩnh dễ bị lệch thực tế).
             var categories = await _dbContext.JobCategories.AsNoTracking()
                 .OrderBy(c => c.Name)
                 .Select(c => new JobCategoryInfoDto
@@ -34,7 +35,7 @@ public class JobCategoriesController : ControllerBase
                     Name = c.Name,
                     Slug = c.Slug,
                     Description = c.Description,
-                    JobCount = c.JobCount
+                    JobCount = _dbContext.Jobs.Count(j => j.CategoryId == c.Id && j.Status == "open")
                 })
                 .ToListAsync();
 

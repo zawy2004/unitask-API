@@ -20,6 +20,9 @@ public class LoginResponse
     public string RefreshToken { get; set; } = null!;
 
     public AuthUserDto User { get; set; } = new();
+
+    /// <summary>True nếu doanh nghiệp đã xác thực email nhưng vẫn đang chờ admin phê duyệt.</summary>
+    public bool NeedsApproval { get; set; }
 }
 
 public class RegisterResponse
@@ -39,6 +42,9 @@ public class RegisterResponse
     public bool NeedsApproval { get; set; }
 
     public bool NeedsEmailVerification { get; set; }
+
+    /// <summary>Mã OTP demo — chỉ trả về khi bật Sandbox:ExposeOtp (chưa cấu hình SMTP).</summary>
+    public string? DevOtp { get; set; }
 }
 
 public class VerifyEmailRequest

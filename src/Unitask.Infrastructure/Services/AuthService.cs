@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,10 @@ public class AuthService : IAuthService
     private readonly JwtSettings _jwtSettings;
     private readonly IEmailService _emailService;
     private readonly EmailSettings _emailSettings;
+    /// <summary>Sandbox/Demo: doanh nghiệp bỏ qua bước "Chờ Admin duyệt" (KHÔNG bỏ xác thực email của sinh viên).</summary>
+    private readonly bool _autoApprove;
+    /// <summary>Sandbox/Demo: trả mã OTP về client để test khi chưa cấu hình SMTP. KHÔNG bật ở production.</summary>
+    private readonly bool _exposeOtp;
 
     private const int OtpExpiryMinutes = 10;
 
@@ -33,13 +38,16 @@ public class AuthService : IAuthService
         IJwtTokenGenerator jwtTokenGenerator,
         IOptions<JwtSettings> jwtOptions,
         IEmailService emailService,
-        IOptions<EmailSettings> emailOptions)
+        IOptions<EmailSettings> emailOptions,
+        IConfiguration configuration)
     {
         _dbContext = dbContext;
         _jwtTokenGenerator = jwtTokenGenerator;
         _jwtSettings = jwtOptions.Value;
         _emailService = emailService;
         _emailSettings = emailOptions.Value;
+        _autoApprove = configuration.GetValue<bool>("Sandbox:AutoApprove");
+        _exposeOtp = configuration.GetValue<bool>("Sandbox:ExposeOtp");
     }
 
     /// <summary>Dòng OTP đọc từ bảng EmailVerifications (raw SQL).</summary>
@@ -95,7 +103,7 @@ public class AuthService : IAuthService
             Phone = request.Phone,
             AvatarUrl = request.AvatarUrl,
             Bio = request.Bio,
-            // Doanh nghiệp: chờ admin duyệt. Sinh viên: chờ xác thực email (OTP) → cũng để IsActive=false.
+            // Mọi tài khoản đều phải xác thực email (OTP) trước. Doanh nghiệp sau đó còn chờ admin duyệt.
             IsActive = false,
             IsVerified = false,
             CreatedAt = DateTime.UtcNow,
@@ -103,42 +111,40 @@ public class AuthService : IAuthService
         };
 
         _dbContext.Users.Add(user);
-
-        if (isBusiness)
-        {
-            var admins = await _dbContext.Users.AsNoTracking()
-                .Where(u => u.UserType == "admin" && (u.IsActive ?? true))
-                .Select(u => u.Id)
-                .ToListAsync(cancellationToken);
-
-            foreach (var adminId in admins)
-            {
-                _dbContext.Notifications.Add(new Notification
-                {
-                    Id = Guid.NewGuid(),
-                    UserId = adminId,
-                    Type = "business_approval",
-                    Title = "Yêu cầu phê duyệt tài khoản doanh nghiệp",
-                    Message = $"{request.FullName} ({request.Email}) đã đăng ký tài khoản doanh nghiệp và đang chờ phê duyệt.",
-                    RelatedUserId = user.Id,
-                    IsRead = false,
-                    CreatedAt = DateTime.UtcNow,
-                });
-            }
-        }
-
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        // Sinh viên: gửi OTP xác thực email để kích hoạt tài khoản.
-        if (!isBusiness)
-        {
-            await SendOtpAsync(user, cancellationToken);
-        }
+        // Gửi OTP xác thực email cho TẤT CẢ tài khoản mới (sinh viên & doanh nghiệp) — bắt buộc để đảm bảo an ninh.
+        var devOtp = await SendOtpAsync(user, cancellationToken);
 
         var result = CreateAuthResult(user);
-        result.NeedsApproval = isBusiness;
-        result.NeedsEmailVerification = !isBusiness;
+        result.NeedsApproval = isBusiness && !_autoApprove;
+        result.NeedsEmailVerification = true;
+        result.DevOtp = _exposeOtp ? devOtp : null;
         return result;
+    }
+
+    /// <summary>Tạo thông báo cho admin khi có doanh nghiệp (đã xác thực email) chờ phê duyệt.</summary>
+    private async Task NotifyAdminsBusinessApprovalAsync(User business, CancellationToken ct)
+    {
+        var admins = await _dbContext.Users.AsNoTracking()
+            .Where(u => u.UserType == "admin" && (u.IsActive ?? true))
+            .Select(u => u.Id)
+            .ToListAsync(ct);
+
+        foreach (var adminId in admins)
+        {
+            _dbContext.Notifications.Add(new Notification
+            {
+                Id = Guid.NewGuid(),
+                UserId = adminId,
+                Type = "business_approval",
+                Title = "Yêu cầu phê duyệt tài khoản doanh nghiệp",
+                Message = $"{business.FullName} ({business.Email}) đã xác thực email và đang chờ phê duyệt.",
+                RelatedUserId = business.Id,
+                IsRead = false,
+                CreatedAt = DateTime.UtcNow,
+            });
+        }
     }
 
     public async Task<AuthResult> VerifyEmailAsync(string email, string code, CancellationToken cancellationToken = default)
@@ -146,8 +152,15 @@ public class AuthService : IAuthService
         var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken)
             ?? throw new KeyNotFoundException("Không tìm thấy tài khoản với email này.");
 
-        if (user.IsVerified == true && user.IsActive == true)
-            return CreateAuthResult(user); // đã xác thực rồi
+        var isBusiness = string.Equals(user.UserType, "business", StringComparison.OrdinalIgnoreCase);
+
+        // Đã xác thực email rồi → không tiêu thêm OTP. DN chưa được duyệt thì vẫn báo "chờ phê duyệt".
+        if (user.IsVerified == true)
+        {
+            var already = CreateAuthResult(user);
+            already.NeedsApproval = isBusiness && !_autoApprove && user.IsActive != true;
+            return already;
+        }
 
         var normalized = (code ?? string.Empty).Trim();
         var match = await _dbContext.Database
@@ -164,24 +177,40 @@ public class AuthService : IAuthService
             $"UPDATE EmailVerifications SET ConsumedAt = {DateTime.UtcNow} WHERE Id = {match[0].Id}", cancellationToken);
 
         user.IsVerified = true;
-        user.IsActive = true;
+
+        var needsApproval = false;
+        if (!isBusiness || _autoApprove)
+        {
+            // Sinh viên, hoặc doanh nghiệp ở chế độ Sandbox auto-approve → kích hoạt ngay.
+            user.IsActive = true;
+        }
+        else
+        {
+            // Doanh nghiệp: đã xác thực email → vào hàng chờ admin duyệt, chưa kích hoạt.
+            user.IsActive = false;
+            needsApproval = true;
+            await NotifyAdminsBusinessApprovalAsync(user, cancellationToken);
+        }
+
         user.UpdatedAt = DateTime.UtcNow;
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return CreateAuthResult(user);
+        var result = CreateAuthResult(user);
+        result.NeedsApproval = needsApproval;
+        return result;
     }
 
-    public async Task ResendOtpAsync(string email, CancellationToken cancellationToken = default)
+    public async Task<string?> ResendOtpAsync(string email, CancellationToken cancellationToken = default)
     {
         var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
-        // Không tiết lộ email có tồn tại hay không. Chỉ gửi nếu là tài khoản chưa xác thực.
-        if (user is null || user.IsVerified == true) return;
-        if (string.Equals(user.UserType, "business", StringComparison.OrdinalIgnoreCase)) return;
-        await SendOtpAsync(user, cancellationToken);
+        // Không tiết lộ email có tồn tại hay không. Chỉ gửi nếu là tài khoản chưa xác thực (SV & DN).
+        if (user is null || user.IsVerified == true) return null;
+        var code = await SendOtpAsync(user, cancellationToken);
+        return _exposeOtp ? code : null;
     }
 
-    /// <summary>Sinh mã OTP 6 chữ số, lưu vào EmailVerifications và gửi email.</summary>
-    private async Task SendOtpAsync(User user, CancellationToken ct)
+    /// <summary>Sinh mã OTP 6 chữ số, lưu vào EmailVerifications và gửi email. Trả về mã vừa sinh.</summary>
+    private async Task<string> SendOtpAsync(User user, CancellationToken ct)
     {
         var code = System.Security.Cryptography.RandomNumberGenerator.GetInt32(0, 1_000_000).ToString("D6");
         var expires = DateTime.UtcNow.AddMinutes(OtpExpiryMinutes);
@@ -204,6 +233,14 @@ public class AuthService : IAuthService
         {
             // Không chặn đăng ký nếu gửi mail lỗi; user có thể bấm "gửi lại".
         }
+
+        // Demo/Sandbox: ghi mã OTP ra log để tester lấy khi chưa cấu hình SMTP.
+        if (_exposeOtp)
+        {
+            Console.WriteLine($"[Sandbox OTP] {user.Email} -> {code} (hết hạn sau {OtpExpiryMinutes} phút)");
+        }
+
+        return code;
     }
 
     public async Task<AuthResult?> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)

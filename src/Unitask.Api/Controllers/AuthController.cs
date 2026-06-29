@@ -68,9 +68,9 @@ public class AuthController : ControllerBase
     [HttpPost("resend-otp")]
     public async Task<IActionResult> ResendOtp([FromBody] ResendOtpRequest request)
     {
-        await _authService.ResendOtpAsync(request.Email);
-        // Luôn trả 200 để không tiết lộ email có tồn tại hay không.
-        return Ok(new { message = "Nếu email hợp lệ và chưa xác thực, mã OTP mới đã được gửi." });
+        var devOtp = await _authService.ResendOtpAsync(request.Email);
+        // Luôn trả 200 để không tiết lộ email có tồn tại hay không. devOtp chỉ có giá trị khi Sandbox:ExposeOtp.
+        return Ok(new { message = "Nếu email hợp lệ và chưa xác thực, mã OTP mới đã được gửi.", devOtp });
     }
 
     [HttpPost("login")]
@@ -203,7 +203,8 @@ public class AuthController : ControllerBase
             Token = result.Token,
             RefreshToken = result.RefreshToken,
             NeedsApproval = result.NeedsApproval,
-            NeedsEmailVerification = result.NeedsEmailVerification
+            NeedsEmailVerification = result.NeedsEmailVerification,
+            DevOtp = result.DevOtp
         };
     }
 
@@ -219,7 +220,8 @@ public class AuthController : ControllerBase
                 Email = result.User.Email,
                 FullName = result.User.FullName,
                 UserType = result.User.UserType
-            }
+            },
+            NeedsApproval = result.NeedsApproval
         };
     }
 }

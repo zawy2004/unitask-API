@@ -14,4 +14,7 @@ public class AuthResult
 
     /// <summary>True nếu sinh viên mới cần nhập OTP xác thực email trước khi kích hoạt.</summary>
     public bool NeedsEmailVerification { get; set; }
+
+    /// <summary>Mã OTP — CHỈ điền khi bật Sandbox:ExposeOtp (môi trường demo, chưa cấu hình SMTP).</summary>
+    public string? DevOtp { get; set; }
 }
