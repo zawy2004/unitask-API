@@ -10,7 +10,8 @@ services:
       - .env
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_URLS: http://+:8080
+      # Bind cả IPv4 + IPv6 để healthcheck (127.0.0.1) và mọi client đều kết nối được.
+      ASPNETCORE_URLS: "http://0.0.0.0:8080;http://[::]:8080"
     healthcheck:
       test: ["CMD", "wget", "-q", "-O-", "http://127.0.0.1:8080/health"]
       interval: 30s
