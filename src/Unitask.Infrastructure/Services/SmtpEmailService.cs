@@ -87,6 +87,9 @@ public class SmtpEmailService : IEmailService
         message.Body = new BodyBuilder { HtmlBody = htmlBody }.ToMessageBody();
 
         using var client = new SmtpClient();
+        // Tắt kiểm tra thu hồi chứng chỉ (OCSP/CRL): endpoint thu hồi thường không reachable
+        // từ container/EC2 → MailKit (mặc định bật) sẽ từ chối cert dù chain hợp lệ. Vẫn validate chain qua CA tin cậy.
+        client.CheckCertificateRevocation = false;
         try
         {
             var secureOption = _settings.UseSsl
