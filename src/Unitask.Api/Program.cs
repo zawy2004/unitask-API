@@ -241,6 +241,34 @@ using (var scope = app.Services.CreateScope())
     {
         Console.WriteLine($"[Startup] Portfolio tables check: {ex.Message}");
     }
+
+    // Mở rộng CHECK constraint của Jobs.Status để cho phép trạng thái 'expired' (JobExpiryService).
+    // Idempotent: chỉ chạy nếu constraint hiện tại chưa chứa 'expired'.
+    try
+    {
+        db.Database.ExecuteSqlRaw(@"
+            IF NOT EXISTS (
+                SELECT 1 FROM sys.check_constraints cc
+                JOIN sys.columns col ON cc.parent_object_id = col.object_id AND cc.parent_column_id = col.column_id
+                WHERE cc.parent_object_id = OBJECT_ID('dbo.Jobs') AND col.name = 'Status'
+                  AND cc.definition LIKE '%expired%'
+            )
+            BEGIN
+                DECLARE @cn NVARCHAR(256);
+                SELECT @cn = cc.name FROM sys.check_constraints cc
+                JOIN sys.columns col ON cc.parent_object_id = col.object_id AND cc.parent_column_id = col.column_id
+                WHERE cc.parent_object_id = OBJECT_ID('dbo.Jobs') AND col.name = 'Status';
+                IF @cn IS NOT NULL EXEC('ALTER TABLE dbo.Jobs DROP CONSTRAINT [' + @cn + ']');
+                ALTER TABLE dbo.Jobs ADD CONSTRAINT CK_Jobs_Status
+                    CHECK ([Status] IN ('draft','open','in_progress','completed','cancelled','expired'));
+            END
+        ");
+        Console.WriteLine("[Startup] Jobs.Status constraint allows 'expired'.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[Startup] Jobs.Status constraint check: {ex.Message}");
+    }
 }
 
 app.Run();

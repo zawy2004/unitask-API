@@ -150,7 +150,7 @@ CREATE TABLE [dbo].[Jobs] (
     [Description] NVARCHAR(MAX) NOT NULL,
     [TagsJson] NVARCHAR(MAX),
     [Status] NVARCHAR(50) NOT NULL DEFAULT 'open'
-        CHECK ([Status] IN ('draft', 'open', 'in_progress', 'completed', 'cancelled')),
+        CHECK ([Status] IN ('draft', 'open', 'in_progress', 'completed', 'cancelled', 'expired')),
     [SalaryMin] DECIMAL(15, 2),
     [SalaryMax] DECIMAL(15, 2),
     [Currency] NVARCHAR(10) DEFAULT 'VND',
