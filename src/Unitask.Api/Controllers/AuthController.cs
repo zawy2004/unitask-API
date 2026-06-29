@@ -47,6 +47,32 @@ public class AuthController : ControllerBase
         }
     }
 
+    [HttpPost("verify-email")]
+    public async Task<ActionResult<LoginResponse>> VerifyEmail([FromBody] VerifyEmailRequest request)
+    {
+        try
+        {
+            var result = await _authService.VerifyEmailAsync(request.Email, request.Code);
+            return Ok(MapLoginResponse(result));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("resend-otp")]
+    public async Task<IActionResult> ResendOtp([FromBody] ResendOtpRequest request)
+    {
+        await _authService.ResendOtpAsync(request.Email);
+        // Luôn trả 200 để không tiết lộ email có tồn tại hay không.
+        return Ok(new { message = "Nếu email hợp lệ và chưa xác thực, mã OTP mới đã được gửi." });
+    }
+
     [HttpPost("login")]
     public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request)
     {
@@ -176,7 +202,8 @@ public class AuthController : ControllerBase
             UserType = result.User.UserType,
             Token = result.Token,
             RefreshToken = result.RefreshToken,
-            NeedsApproval = result.NeedsApproval
+            NeedsApproval = result.NeedsApproval,
+            NeedsEmailVerification = result.NeedsEmailVerification
         };
     }
 

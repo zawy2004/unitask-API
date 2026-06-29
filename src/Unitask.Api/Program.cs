@@ -205,6 +205,16 @@ using (var scope = app.Services.CreateScope())
                 FOREIGN KEY (StudentId) REFERENCES StudentProfiles(Id) ON DELETE CASCADE
             );
 
+            IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'EmailVerifications')
+            CREATE TABLE EmailVerifications (
+                Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+                UserId UNIQUEIDENTIFIER NOT NULL,
+                Code NVARCHAR(10) NOT NULL,
+                ExpiresAt DATETIME2 NOT NULL,
+                ConsumedAt DATETIME2 NULL,
+                CreatedAt DATETIME2 DEFAULT GETUTCDATE()
+            );
+
             IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Certifications')
             CREATE TABLE Certifications (
                 Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),

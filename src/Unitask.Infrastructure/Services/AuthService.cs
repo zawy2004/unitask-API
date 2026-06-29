@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -22,12 +23,29 @@ public class AuthService : IAuthService
     private readonly UnitaskDbContext _dbContext;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
     private readonly JwtSettings _jwtSettings;
+    private readonly IEmailService _emailService;
+    private readonly EmailSettings _emailSettings;
 
-    public AuthService(UnitaskDbContext dbContext, IJwtTokenGenerator jwtTokenGenerator, IOptions<JwtSettings> jwtOptions)
+    private const int OtpExpiryMinutes = 10;
+
+    public AuthService(
+        UnitaskDbContext dbContext,
+        IJwtTokenGenerator jwtTokenGenerator,
+        IOptions<JwtSettings> jwtOptions,
+        IEmailService emailService,
+        IOptions<EmailSettings> emailOptions)
     {
         _dbContext = dbContext;
         _jwtTokenGenerator = jwtTokenGenerator;
         _jwtSettings = jwtOptions.Value;
+        _emailService = emailService;
+        _emailSettings = emailOptions.Value;
+    }
+
+    /// <summary>Dòng OTP đọc từ bảng EmailVerifications (raw SQL).</summary>
+    private sealed class OtpRow
+    {
+        public Guid Id { get; set; }
     }
 
     public async Task<AuthResult?> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
@@ -49,6 +67,8 @@ public class AuthService : IAuthService
         {
             if (string.Equals(user.UserType, "business", StringComparison.OrdinalIgnoreCase))
                 throw new UnauthorizedAccessException("Tài khoản doanh nghiệp của bạn đang chờ admin phê duyệt. Vui lòng chờ thông báo.");
+            if (user.IsVerified != true)
+                throw new UnauthorizedAccessException("Tài khoản chưa được xác thực email. Vui lòng nhập mã OTP đã gửi tới email của bạn để kích hoạt.");
             throw new UnauthorizedAccessException("Tài khoản đã bị vô hiệu hóa. Vui lòng liên hệ quản trị viên.");
         }
 
@@ -75,7 +95,8 @@ public class AuthService : IAuthService
             Phone = request.Phone,
             AvatarUrl = request.AvatarUrl,
             Bio = request.Bio,
-            IsActive = !isBusiness,
+            // Doanh nghiệp: chờ admin duyệt. Sinh viên: chờ xác thực email (OTP) → cũng để IsActive=false.
+            IsActive = false,
             IsVerified = false,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
@@ -108,9 +129,81 @@ public class AuthService : IAuthService
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
+        // Sinh viên: gửi OTP xác thực email để kích hoạt tài khoản.
+        if (!isBusiness)
+        {
+            await SendOtpAsync(user, cancellationToken);
+        }
+
         var result = CreateAuthResult(user);
         result.NeedsApproval = isBusiness;
+        result.NeedsEmailVerification = !isBusiness;
         return result;
+    }
+
+    public async Task<AuthResult> VerifyEmailAsync(string email, string code, CancellationToken cancellationToken = default)
+    {
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken)
+            ?? throw new KeyNotFoundException("Không tìm thấy tài khoản với email này.");
+
+        if (user.IsVerified == true && user.IsActive == true)
+            return CreateAuthResult(user); // đã xác thực rồi
+
+        var normalized = (code ?? string.Empty).Trim();
+        var match = await _dbContext.Database
+            .SqlQuery<OtpRow>($@"SELECT TOP 1 Id FROM EmailVerifications
+                WHERE UserId = {user.Id} AND Code = {normalized}
+                  AND ConsumedAt IS NULL AND ExpiresAt > {DateTime.UtcNow}
+                ORDER BY CreatedAt DESC")
+            .ToListAsync(cancellationToken);
+
+        if (match.Count == 0)
+            throw new InvalidOperationException("Mã OTP không đúng hoặc đã hết hạn. Vui lòng thử lại hoặc gửi lại mã.");
+
+        await _dbContext.Database.ExecuteSqlInterpolatedAsync(
+            $"UPDATE EmailVerifications SET ConsumedAt = {DateTime.UtcNow} WHERE Id = {match[0].Id}", cancellationToken);
+
+        user.IsVerified = true;
+        user.IsActive = true;
+        user.UpdatedAt = DateTime.UtcNow;
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return CreateAuthResult(user);
+    }
+
+    public async Task ResendOtpAsync(string email, CancellationToken cancellationToken = default)
+    {
+        var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
+        // Không tiết lộ email có tồn tại hay không. Chỉ gửi nếu là tài khoản chưa xác thực.
+        if (user is null || user.IsVerified == true) return;
+        if (string.Equals(user.UserType, "business", StringComparison.OrdinalIgnoreCase)) return;
+        await SendOtpAsync(user, cancellationToken);
+    }
+
+    /// <summary>Sinh mã OTP 6 chữ số, lưu vào EmailVerifications và gửi email.</summary>
+    private async Task SendOtpAsync(User user, CancellationToken ct)
+    {
+        var code = System.Security.Cryptography.RandomNumberGenerator.GetInt32(0, 1_000_000).ToString("D6");
+        var expires = DateTime.UtcNow.AddMinutes(OtpExpiryMinutes);
+
+        await _dbContext.Database.ExecuteSqlInterpolatedAsync(
+            $@"INSERT INTO EmailVerifications (Id, UserId, Code, ExpiresAt, ConsumedAt, CreatedAt)
+               VALUES ({Guid.NewGuid()}, {user.Id}, {code}, {expires}, NULL, {DateTime.UtcNow})", ct);
+
+        try
+        {
+            await _emailService.SendTemplateAsync(EmailTemplate.EmailVerification, user.Email,
+                new Dictionary<string, string>
+                {
+                    ["userName"] = user.FullName,
+                    ["otpCode"] = code,
+                    ["verifyUrl"] = $"{_emailSettings.FrontendBaseUrl}/verify-email?email={Uri.EscapeDataString(user.Email)}",
+                }, ct);
+        }
+        catch
+        {
+            // Không chặn đăng ký nếu gửi mail lỗi; user có thể bấm "gửi lại".
+        }
     }
 
     public async Task<AuthResult?> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)

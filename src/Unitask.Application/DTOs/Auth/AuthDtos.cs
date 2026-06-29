@@ -37,6 +37,19 @@ public class RegisterResponse
     public string RefreshToken { get; set; } = null!;
 
     public bool NeedsApproval { get; set; }
+
+    public bool NeedsEmailVerification { get; set; }
+}
+
+public class VerifyEmailRequest
+{
+    public string Email { get; set; } = null!;
+    public string Code { get; set; } = null!;
+}
+
+public class ResendOtpRequest
+{
+    public string Email { get; set; } = null!;
 }
 
 public class GoogleLoginRequest
