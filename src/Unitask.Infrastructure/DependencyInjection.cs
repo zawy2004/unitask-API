@@ -1,3 +1,4 @@
+using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,8 +14,12 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<UnitaskDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("UnitaskDb")));
+        services.AddDbContextPool<UnitaskDbContext>(options =>
+            options.UseSqlServer(configuration.GetConnectionString("UnitaskDb"), sqlOptions =>
+                sqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 3,
+                    maxRetryDelay: TimeSpan.FromSeconds(5),
+                    errorNumbersToAdd: null)));
 
         services.AddMemoryCache();
 

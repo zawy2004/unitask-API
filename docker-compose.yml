@@ -11,6 +11,11 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:8080
+    # Giới hạn cứng cho host 1GB RAM (vd t2/t3.micro): container OOM tự restart thay vì
+    # để kernel OOM-killer chọn ngẫu nhiên tiến trình trên host (có thể giết cả sshd).
+    mem_limit: 700m
+    memswap_limit: 700m
+    cpus: 0.9
     healthcheck:
       # App bind trên [::]:8080 (IPv6, cũng nhận IPv4 qua docker-proxy). Healthcheck dùng [::1].
       test: ["CMD", "wget", "-q", "-O-", "http://[::1]:8080/health"]

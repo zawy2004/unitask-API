@@ -30,6 +30,9 @@ public class MessagesController : ControllerBase
         [FromQuery] int page = 1,
         [FromQuery] int limit = 10)
     {
+        page = Math.Max(1, page);
+        limit = Math.Clamp(limit, 1, 100);
+
         var query = _dbContext.Messages.AsNoTracking()
             .Where(m => m.ConversationId == conversationId)
             .Include(m => m.Sender)

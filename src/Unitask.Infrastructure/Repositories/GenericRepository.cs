@@ -20,9 +20,11 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity>
         _dbSet = dbContext.Set<TEntity>();
     }
 
+    private const int MaxRows = 1000;
+
     public async Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return await _dbSet.AsNoTracking().ToListAsync(cancellationToken);
+        return await _dbSet.AsNoTracking().Take(MaxRows).ToListAsync(cancellationToken);
     }
 
     public async Task<TEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)

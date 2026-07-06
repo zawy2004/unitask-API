@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Unitask.Application.DTOs.Faqs;
 using Unitask.Infrastructure.Persistence;
 
@@ -13,15 +15,24 @@ namespace Unitask.Api.Controllers;
 public class FaqsController : ControllerBase
 {
     private readonly UnitaskDbContext _dbContext;
+    private readonly IMemoryCache _cache;
 
-    public FaqsController(UnitaskDbContext dbContext)
+    public FaqsController(UnitaskDbContext dbContext, IMemoryCache cache)
     {
         _dbContext = dbContext;
+        _cache = cache;
     }
 
     [HttpGet]
+    [ResponseCache(Duration = 300)]
     public async Task<ActionResult<IReadOnlyList<FaqResponse>>> GetFaqs([FromQuery] string? category)
     {
+        var cacheKey = $"faqs:list:{category ?? "all"}";
+        if (_cache.TryGetValue(cacheKey, out IReadOnlyList<FaqResponse>? cached) && cached is not null)
+        {
+            return Ok(cached);
+        }
+
         var query = _dbContext.FAQs.AsNoTracking().AsQueryable();
         if (!string.IsNullOrWhiteSpace(category))
         {
@@ -39,6 +50,8 @@ public class FaqsController : ControllerBase
                 ViewCount = f.ViewCount
             })
             .ToListAsync();
+
+        _cache.Set(cacheKey, items, TimeSpan.FromMinutes(5));
 
         return Ok(items);
     }

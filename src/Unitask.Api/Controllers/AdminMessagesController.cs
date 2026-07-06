@@ -30,6 +30,9 @@ public class AdminMessagesController : ControllerBase
         [FromQuery] int page = 1,
         [FromQuery] int limit = 20)
     {
+        page = Math.Max(1, page);
+        limit = Math.Clamp(limit, 1, 100);
+
         var query = _dbContext.Conversations.AsNoTracking()
             .Include(c => c.User1)
             .Include(c => c.User2)
@@ -101,6 +104,9 @@ public class AdminMessagesController : ControllerBase
         [FromQuery] int page = 1,
         [FromQuery] int limit = 50)
     {
+        page = Math.Max(1, page);
+        limit = Math.Clamp(limit, 1, 200);
+
         var query = _dbContext.Messages.AsNoTracking()
             .Where(m => m.ConversationId == conversationId)
             .Include(m => m.Sender)
@@ -144,6 +150,9 @@ public class AdminMessagesController : ControllerBase
         [FromQuery] int page = 1,
         [FromQuery] int limit = 20)
     {
+        page = Math.Max(1, page);
+        limit = Math.Clamp(limit, 1, 100);
+
         var query = _dbContext.MessageFlags.AsNoTracking().AsQueryable();
 
         var total = await query.CountAsync();

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Unitask.Api.Extensions;
 using Unitask.Application.DTOs.Skills;
 using Unitask.Infrastructure.Persistence;
@@ -15,11 +16,15 @@ namespace Unitask.Api.Controllers;
 [Route("api")]
 public class SkillsController : ControllerBase
 {
-    private readonly UnitaskDbContext _dbContext;
+    private const string SkillsCacheKey = "skills:list";
 
-    public SkillsController(UnitaskDbContext dbContext)
+    private readonly UnitaskDbContext _dbContext;
+    private readonly IMemoryCache _cache;
+
+    public SkillsController(UnitaskDbContext dbContext, IMemoryCache cache)
     {
         _dbContext = dbContext;
+        _cache = cache;
     }
 
     [HttpGet("skills")]
@@ -28,6 +33,11 @@ public class SkillsController : ControllerBase
     {
         try
         {
+            if (_cache.TryGetValue(SkillsCacheKey, out IReadOnlyList<SkillResponse>? cached) && cached is not null)
+            {
+                return Ok(cached);
+            }
+
             var skills = await _dbContext.Skills.AsNoTracking()
                 .OrderBy(s => s.Name)
                 .Select(s => new SkillResponse
@@ -38,6 +48,8 @@ public class SkillsController : ControllerBase
                     IconUrl = s.IconUrl
                 })
                 .ToListAsync();
+
+            _cache.Set(SkillsCacheKey, skills, TimeSpan.FromMinutes(5));
 
             return Ok(skills);
         }

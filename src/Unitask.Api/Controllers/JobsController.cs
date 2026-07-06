@@ -36,6 +36,9 @@ public class JobsController : ControllerBase
         [FromQuery] int page = 1,
         [FromQuery] int limit = 10)
     {
+        page = Math.Max(1, page);
+        limit = Math.Clamp(limit, 1, 100);
+
         try
         {
             var jobQuery = _dbContext.Jobs.AsNoTracking()

@@ -1,6 +1,9 @@
 using System.Text;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -10,6 +13,15 @@ using Unitask.Infrastructure;
 using Unitask.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxConcurrentConnections = 1000;
+    options.Limits.MaxConcurrentUpgradedConnections = 1000;
+    options.Limits.MaxRequestBodySize = 20 * 1024 * 1024; // 20MB, đủ cho upload file/ảnh
+    options.Limits.RequestHeadersTimeout = TimeSpan.FromSeconds(30);
+    options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
+});
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
     ?? Array.Empty<string>();
 
@@ -119,6 +131,34 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddResponseCaching();
 
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.Providers.Add<BrotliCompressionProvider>();
+    options.Providers.Add<GzipCompressionProvider>();
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/json" });
+});
+builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
+{
+    options.Level = System.IO.Compression.CompressionLevel.Fastest;
+});
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+    {
+        var partitionKey = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        return RateLimitPartition.GetFixedWindowLimiter(partitionKey, _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 200,
+            Window = TimeSpan.FromSeconds(10),
+            QueueLimit = 0
+        });
+    });
+});
+
 var momoSettings = builder.Configuration.GetSection("MomoAPI").Get<Unitask.Api.Services.MomoSettings>();
 if (momoSettings is not null)
 {
@@ -145,6 +185,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 var app = builder.Build();
 
 app.UseForwardedHeaders();
+app.UseResponseCompression();
 
 if (app.Environment.IsDevelopment())
 {
@@ -155,6 +196,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("Frontend");
 app.UseResponseCaching();
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();

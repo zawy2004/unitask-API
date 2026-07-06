@@ -392,6 +392,7 @@ public class JobApplicationsController : ControllerBase
             .Include(a => a.Job)
             .ThenInclude(j => j.Business)
             .OrderByDescending(a => a.AppliedAt)
+            .Take(300)
             .Select(a => new MyApplicationResponse
             {
                 Id = a.Id,
@@ -431,6 +432,7 @@ public class JobApplicationsController : ControllerBase
         var apps = await _dbContext.JobApplications.AsNoTracking()
             .Where(a => a.Job.BusinessId == business.Id)
             .OrderByDescending(a => a.AppliedAt)
+            .Take(500)
             .Select(a => new
             {
                 a.Id,

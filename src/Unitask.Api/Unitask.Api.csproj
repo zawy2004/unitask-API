@@ -4,6 +4,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Workstation GC thay vì Server GC: Server GC cấp 1 heap segment/lõi với kích thước lớn,
+         rất tốn RAM trên host nhỏ (vd EC2 t2/t3.micro 1GB). Workstation GC tiết kiệm RAM hơn nhiều,
+         đánh đổi bằng throughput GC thấp hơn — hợp lý khi máy chỉ có 1-2 vCPU dùng chung theo credit. -->
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
   </PropertyGroup>
 
   <ItemGroup>
