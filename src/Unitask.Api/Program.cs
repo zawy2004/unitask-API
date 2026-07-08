@@ -311,6 +311,20 @@ using (var scope = app.Services.CreateScope())
     {
         Console.WriteLine($"[Startup] Jobs.Status constraint check: {ex.Message}");
     }
+
+    // Index cho truy vấn danh sách job phổ biến nhất: WHERE Status = 'open' ORDER BY CreatedAt DESC.
+    try
+    {
+        db.Database.ExecuteSqlRaw(@"
+            IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_Jobs_Status_CreatedAt' AND object_id = OBJECT_ID('dbo.Jobs'))
+                CREATE NONCLUSTERED INDEX IX_Jobs_Status_CreatedAt ON dbo.Jobs ([Status], [CreatedAt] DESC);
+        ");
+        Console.WriteLine("[Startup] IX_Jobs_Status_CreatedAt ensured.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[Startup] IX_Jobs_Status_CreatedAt check: {ex.Message}");
+    }
 }
 
 app.Run();

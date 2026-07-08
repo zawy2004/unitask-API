@@ -68,15 +68,17 @@ public class JobsController : ControllerBase
 
         if (!string.IsNullOrWhiteSpace(search))
         {
-            var term = search.Trim().ToLower();
+            // LIKE với collation CI mặc định của SQL Server: cùng ngữ nghĩa với ToLower().Contains
+            // nhưng không ép LOWER() trên từng dòng × từng cột.
+            var pattern = $"%{search.Trim()}%";
             jobQuery = jobQuery.Where(j =>
-                j.Title.ToLower().Contains(term)
-                || (j.Description != null && j.Description.ToLower().Contains(term))
-                || (j.Location != null && j.Location.ToLower().Contains(term))
-                || (j.Category != null && j.Category.Name.ToLower().Contains(term))
-                || j.Business.CompanyName.ToLower().Contains(term)
-                || (j.TagsJson != null && j.TagsJson.ToLower().Contains(term))
-                || (j.RequiredSkillsJson != null && j.RequiredSkillsJson.ToLower().Contains(term)));
+                EF.Functions.Like(j.Title, pattern)
+                || (j.Description != null && EF.Functions.Like(j.Description, pattern))
+                || (j.Location != null && EF.Functions.Like(j.Location, pattern))
+                || (j.Category != null && EF.Functions.Like(j.Category.Name, pattern))
+                || EF.Functions.Like(j.Business.CompanyName, pattern)
+                || (j.TagsJson != null && EF.Functions.Like(j.TagsJson, pattern))
+                || (j.RequiredSkillsJson != null && EF.Functions.Like(j.RequiredSkillsJson, pattern)));
         }
 
             var total = await jobQuery.CountAsync();
@@ -211,12 +213,15 @@ public class JobsController : ControllerBase
     {
         try
         {
+            // AsSplitQuery: include lồng collection (JobApplications→Student→User) gây nhân bản
+            // dòng job theo số ứng viên nếu chạy 1 query JOIN duy nhất.
             var job = await _dbContext.Jobs.AsNoTracking()
                 .Include(j => j.Category)
                 .Include(j => j.Business)
                 .Include(j => j.JobApplications)
                 .ThenInclude(a => a.Student)
                 .ThenInclude(s => s.User)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(j => j.Id == id);
 
             if (job is null)

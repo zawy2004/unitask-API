@@ -40,12 +40,12 @@ public class AdminMessagesController : ControllerBase
 
         if (!string.IsNullOrWhiteSpace(search))
         {
-            var term = search.Trim().ToLower();
+            var pattern = $"%{search.Trim()}%";
             query = query.Where(c =>
-                c.User1.FullName.ToLower().Contains(term)
-                || c.User2.FullName.ToLower().Contains(term)
-                || c.User1.Email.ToLower().Contains(term)
-                || c.User2.Email.ToLower().Contains(term));
+                EF.Functions.Like(c.User1.FullName, pattern)
+                || EF.Functions.Like(c.User2.FullName, pattern)
+                || EF.Functions.Like(c.User1.Email, pattern)
+                || EF.Functions.Like(c.User2.Email, pattern));
         }
 
         if (hasFlagged == true)
