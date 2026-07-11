@@ -20,3 +20,4 @@ appsettings.Development.json
 .supabase-conn.txt
 .env.supabase
 .supabase-pw.txt
+database/.bool-map.json
