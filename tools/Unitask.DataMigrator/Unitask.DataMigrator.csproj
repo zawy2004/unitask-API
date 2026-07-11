@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- Bỏ qua cảnh báo package downgrade transitive; tool chạy độc lập. -->
+    <NoWarn>$(NoWarn);NU1608;NU1605</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- SqlServer để ĐỌC Azure; Npgsql đến qua Infrastructure để GHI Supabase. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.5" />
+    <ProjectReference Include="..\..\src\Unitask.Infrastructure\Unitask.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

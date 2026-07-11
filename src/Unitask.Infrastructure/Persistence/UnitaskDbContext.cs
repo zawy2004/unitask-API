@@ -64,14 +64,16 @@ public partial class UnitaskDbContext : DbContext
 
     public virtual DbSet<Certification> Certifications { get; set; }
 
+    public virtual DbSet<EmailVerification> EmailVerifications { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ActivityLog>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Activity__3214EC072A4CA5A1");
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
 
             entity.HasOne(d => d.User).WithMany(p => p.ActivityLogs)
                 .OnDelete(DeleteBehavior.SetNull)
@@ -82,8 +84,8 @@ public partial class UnitaskDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__AdminRep__3214EC0735BD4C61");
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.Status).HasDefaultValue("pending");
 
             entity.HasOne(d => d.ReportedBy).WithMany(p => p.AdminReportReportedBies)
@@ -101,11 +103,11 @@ public partial class UnitaskDbContext : DbContext
 
             entity.ToTable(tb => tb.HasTrigger("trg_BlogPosts_UpdatedAt"));
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.LikeCount).HasDefaultValue(0);
             entity.Property(e => e.Status).HasDefaultValue("draft");
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.ViewCount).HasDefaultValue(0);
 
             entity.HasOne(d => d.Author).WithMany(p => p.BlogPosts)
@@ -124,17 +126,17 @@ public partial class UnitaskDbContext : DbContext
 
             entity.ToTable(tb => tb.HasTrigger("trg_BusinessProfiles_UpdatedAt"));
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
             entity.Property(e => e.CompanySize).HasDefaultValue("startup");
             entity.Property(e => e.CompletedProjects).HasDefaultValue(0);
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.IsVerified).HasDefaultValue(false);
             entity.Property(e => e.Rating).HasDefaultValue(0m);
             entity.Property(e => e.Balance).HasDefaultValue(0m);
             entity.Property(e => e.TotalSpent).HasDefaultValue(0m);
             entity.Property(e => e.RejectionStrikes).HasDefaultValue(0);
             entity.Property(e => e.IsPostingLocked).HasDefaultValue(false);
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
 
             entity.HasOne(d => d.User).WithOne(p => p.BusinessProfile).HasConstraintName("FK__BusinessP__UserI__5441852A");
         });
@@ -145,9 +147,9 @@ public partial class UnitaskDbContext : DbContext
 
             entity.ToTable(tb => tb.HasTrigger("trg_Conversations_UpdatedAt"));
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
 
             entity.HasOne(d => d.User1).WithMany(p => p.ConversationUser1s)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -164,10 +166,10 @@ public partial class UnitaskDbContext : DbContext
 
             entity.ToTable(tb => tb.HasTrigger("trg_FAQs_UpdatedAt"));
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.HelpfulCount).HasDefaultValue(0);
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.ViewCount).HasDefaultValue(0);
         });
 
@@ -180,8 +182,8 @@ public partial class UnitaskDbContext : DbContext
             entity.HasIndex(e => new { e.Status, e.BusinessId }, "IX_Jobs_Status_BusinessId");
             entity.HasIndex(e => new { e.Status, e.CreatedAt }, "IX_Jobs_Status_CreatedAt");
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.Currency).HasDefaultValue("VND");
             entity.Property(e => e.DurationType).HasDefaultValue("micro");
             entity.Property(e => e.ExperienceLevel).HasDefaultValue("beginner");
@@ -190,7 +192,7 @@ public partial class UnitaskDbContext : DbContext
             entity.Property(e => e.SpotsFilled).HasDefaultValue(0);
             entity.Property(e => e.SpotsTotal).HasDefaultValue(1);
             entity.Property(e => e.Status).HasDefaultValue("open");
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
 
             entity.HasOne(d => d.Business).WithMany(p => p.Jobs).HasConstraintName("FK__Jobs__BusinessId__6A30C649");
 
@@ -206,8 +208,8 @@ public partial class UnitaskDbContext : DbContext
             entity.HasIndex(e => new { e.JobId, e.Status }, "IX_JobApplications_JobId_Status");
             entity.HasIndex(e => new { e.StudentId, e.AppliedAt }, "IX_JobApplications_StudentId_AppliedAt");
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.AppliedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.AppliedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.Status).HasDefaultValue("pending");
 
             entity.HasOne(d => d.Job).WithMany(p => p.JobApplications).HasConstraintName("FK__JobApplic__JobId__0697FACD");
@@ -221,8 +223,8 @@ public partial class UnitaskDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__JobCateg__3214EC07850F645F");
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.JobCount).HasDefaultValue(0);
         });
 
@@ -238,8 +240,8 @@ public partial class UnitaskDbContext : DbContext
             entity.HasIndex(e => new { e.ConversationId, e.CreatedAt }, "IX_Messages_ConversationId_CreatedAt");
             entity.HasIndex(e => new { e.ConversationId, e.IsRead, e.SenderId }, "IX_Messages_Unread");
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.IsRead).HasDefaultValue(false);
 
             entity.HasOne(d => d.Conversation).WithMany(p => p.Messages).HasConstraintName("FK__Messages__Conver__308E3499");
@@ -255,8 +257,8 @@ public partial class UnitaskDbContext : DbContext
 
             entity.HasIndex(e => new { e.UserId, e.IsRead, e.CreatedAt }, "IX_Notifications_UserId_IsRead_CreatedAt");
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.IsRead).HasDefaultValue(false);
 
             entity.HasOne(d => d.RelatedJob).WithMany(p => p.Notifications).HasConstraintName("FK__Notificat__Relat__11D4A34F");
@@ -274,11 +276,11 @@ public partial class UnitaskDbContext : DbContext
 
             entity.ToTable(tb => tb.HasTrigger("trg_Payments_UpdatedAt"));
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.Currency).HasDefaultValue("VND");
             entity.Property(e => e.Status).HasDefaultValue("pending");
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
 
             entity.HasOne(d => d.Business).WithMany(p => p.Payments).HasConstraintName("FK__Payments__Busine__7FB5F314");
 
@@ -299,10 +301,10 @@ public partial class UnitaskDbContext : DbContext
 
             entity.ToTable(tb => tb.HasTrigger("trg_Reviews_UpdatedAt"));
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.IsAnonymous).HasDefaultValue(false);
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
 
             entity.HasOne(d => d.FromUser).WithMany(p => p.ReviewFromUsers)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -325,8 +327,8 @@ public partial class UnitaskDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Skills__3214EC073C6B2BBB");
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
         });
 
         modelBuilder.Entity<StudentDashboardView>(entity =>
@@ -340,12 +342,12 @@ public partial class UnitaskDbContext : DbContext
 
             entity.ToTable(tb => tb.HasTrigger("trg_StudentProfiles_UpdatedAt"));
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
             entity.Property(e => e.CompletedJobs).HasDefaultValue(0);
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.IsVerified).HasDefaultValue(false);
             entity.Property(e => e.TotalEarnings).HasDefaultValue(0m);
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
 
             entity.HasOne(d => d.User).WithOne(p => p.StudentProfile).HasConstraintName("FK__StudentPr__UserI__47DBAE45");
         });
@@ -354,8 +356,8 @@ public partial class UnitaskDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__StudentS__3214EC076E534E1D");
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.AddedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.AddedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.EndorsementCount).HasDefaultValue(0);
             entity.Property(e => e.Proficiency).HasDefaultValue("beginner");
 
@@ -368,11 +370,11 @@ public partial class UnitaskDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__StudentW__3214EC07C3EEA6EB");
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
             entity.Property(e => e.Balance).HasDefaultValue(0m);
             entity.Property(e => e.TotalEarned).HasDefaultValue(0m);
             entity.Property(e => e.TotalWithdrawn).HasDefaultValue(0m);
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
 
             entity.HasOne(d => d.Student).WithOne(p => p.StudentWallet).HasConstraintName("FK__StudentWa__Stude__7B5B524B");
         });
@@ -383,12 +385,12 @@ public partial class UnitaskDbContext : DbContext
 
             entity.ToTable(tb => tb.HasTrigger("trg_Users_UpdatedAt"));
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.IsVerified).HasDefaultValue(false);
             entity.Property(e => e.ReputationScore).HasDefaultValue(100);
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.UserType).HasDefaultValue("student");
         });
 
@@ -396,8 +398,8 @@ public partial class UnitaskDbContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Withdraw__3214EC07A06B1D8F");
 
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.RequestedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.RequestedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.Status).HasDefaultValue("pending");
 
             entity.HasOne(d => d.Student).WithMany(p => p.WithdrawalRequests).HasConstraintName("FK__Withdrawa__Stude__0B91BA14");
@@ -406,9 +408,9 @@ public partial class UnitaskDbContext : DbContext
         modelBuilder.Entity<PortfolioProject>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.IsHighlighted).HasDefaultValue(false);
             entity.Property(e => e.SortOrder).HasDefaultValue(0);
 
@@ -420,9 +422,9 @@ public partial class UnitaskDbContext : DbContext
         modelBuilder.Entity<Education>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.IsCurrent).HasDefaultValue(false);
             entity.Property(e => e.SortOrder).HasDefaultValue(0);
 
@@ -434,15 +436,40 @@ public partial class UnitaskDbContext : DbContext
         modelBuilder.Entity<Certification>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.SortOrder).HasDefaultValue(0);
 
             entity.HasOne(d => d.Student).WithMany(p => p.Certifications)
                 .HasForeignKey(d => d.StudentId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
+
+        modelBuilder.Entity<EmailVerification>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
+            entity.HasIndex(e => new { e.UserId, e.Code });
+        });
+
+        // Chỉ khi chạy trên Npgsql: map mọi DateTime -> "timestamp without time zone"
+        // (SQL Server datetime2 không có múi giờ; tránh lỗi DateTimeKind). Provider SqlServer
+        // dùng ở data-migrator để ĐỌC Azure sẽ bỏ qua nhánh này và giữ datetime2 mặc định.
+        if (Database.IsNpgsql())
+        {
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entityType.GetProperties())
+                {
+                    if (property.ClrType == typeof(DateTime) || property.ClrType == typeof(DateTime?))
+                    {
+                        property.SetColumnType("timestamp without time zone");
+                    }
+                }
+            }
+        }
 
         OnModelCreatingPartial(modelBuilder);
     }

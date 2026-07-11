@@ -42,10 +42,10 @@ public class AdminMessagesController : ControllerBase
         {
             var pattern = $"%{search.Trim()}%";
             query = query.Where(c =>
-                EF.Functions.Like(c.User1.FullName, pattern)
-                || EF.Functions.Like(c.User2.FullName, pattern)
-                || EF.Functions.Like(c.User1.Email, pattern)
-                || EF.Functions.Like(c.User2.Email, pattern));
+                EF.Functions.ILike(c.User1.FullName, pattern)
+                || EF.Functions.ILike(c.User2.FullName, pattern)
+                || EF.Functions.ILike(c.User1.Email, pattern)
+                || EF.Functions.ILike(c.User2.Email, pattern));
         }
 
         if (hasFlagged == true)

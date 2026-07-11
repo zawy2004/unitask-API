@@ -110,36 +110,22 @@ public class MessagesController : ControllerBase
         {
             try
             {
-                await _dbContext.Database.ExecuteSqlRawAsync(
-                    "INSERT INTO MessageFlags (Id, MessageId, ConversationId, SenderId, Content, Reasons, CreatedAt) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6})",
-                    Guid.NewGuid(), msgId, conversationId, userId.Value, request.Content,
-                    string.Join(",", moderation.Reasons), DateTime.UtcNow);
+                // MessageFlags là entity EF chính thức (bảng do schema quản lý) — dùng EF thay raw SQL.
+                _dbContext.MessageFlags.Add(new Unitask.Domain.Entities.MessageFlag
+                {
+                    Id = Guid.NewGuid(),
+                    MessageId = msgId,
+                    ConversationId = conversationId,
+                    SenderId = userId.Value,
+                    Content = request.Content,
+                    Reasons = string.Join(",", moderation.Reasons),
+                    CreatedAt = DateTime.UtcNow,
+                });
+                await _dbContext.SaveChangesAsync();
             }
             catch
             {
-                // Table may not exist yet — create it
-                try
-                {
-                    await _dbContext.Database.ExecuteSqlRawAsync(@"
-                        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'MessageFlags')
-                        CREATE TABLE MessageFlags (
-                            Id UNIQUEIDENTIFIER PRIMARY KEY,
-                            MessageId UNIQUEIDENTIFIER NOT NULL,
-                            ConversationId UNIQUEIDENTIFIER NOT NULL,
-                            SenderId UNIQUEIDENTIFIER NOT NULL,
-                            Content NVARCHAR(MAX) NOT NULL,
-                            Reasons NVARCHAR(500) NOT NULL,
-                            CreatedAt DATETIME2 NOT NULL
-                        )");
-                    await _dbContext.Database.ExecuteSqlRawAsync(
-                        "INSERT INTO MessageFlags (Id, MessageId, ConversationId, SenderId, Content, Reasons, CreatedAt) VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6})",
-                        Guid.NewGuid(), msgId, conversationId, userId.Value, request.Content,
-                        string.Join(",", moderation.Reasons), DateTime.UtcNow);
-                }
-                catch
-                {
-                    // Still fails — moderation data lost but message was sent OK
-                }
+                // Lưu moderation thất bại nhưng tin nhắn đã gửi OK — không chặn luồng.
             }
         }
 

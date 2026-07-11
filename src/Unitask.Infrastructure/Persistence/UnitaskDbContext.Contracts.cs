@@ -26,8 +26,8 @@ public partial class UnitaskDbContext
     {
         modelBuilder.Entity<Contract>(entity =>
         {
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.Status).HasDefaultValue("ACTIVE");
             entity.Property(e => e.FinalPrice).HasDefaultValue(0m);
 
@@ -47,8 +47,8 @@ public partial class UnitaskDbContext
 
         modelBuilder.Entity<Milestone>(entity =>
         {
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.Status).HasDefaultValue("PENDING");
             entity.Property(e => e.Amount).HasDefaultValue(0m);
 
@@ -60,8 +60,8 @@ public partial class UnitaskDbContext
 
         modelBuilder.Entity<Submission>(entity =>
         {
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
 
             entity.HasOne(d => d.Milestone).WithMany(p => p.Submissions)
                 .HasForeignKey(d => d.MilestoneId)
@@ -74,8 +74,8 @@ public partial class UnitaskDbContext
 
         modelBuilder.Entity<Dispute>(entity =>
         {
-            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(now() at time zone 'utc')");
             entity.Property(e => e.Status).HasDefaultValue("NEGOTIATION");
             entity.Property(e => e.StudentPercent).HasDefaultValue(0);
 

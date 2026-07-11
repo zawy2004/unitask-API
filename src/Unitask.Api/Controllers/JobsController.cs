@@ -72,13 +72,13 @@ public class JobsController : ControllerBase
             // nhưng không ép LOWER() trên từng dòng × từng cột.
             var pattern = $"%{search.Trim()}%";
             jobQuery = jobQuery.Where(j =>
-                EF.Functions.Like(j.Title, pattern)
-                || (j.Description != null && EF.Functions.Like(j.Description, pattern))
-                || (j.Location != null && EF.Functions.Like(j.Location, pattern))
-                || (j.Category != null && EF.Functions.Like(j.Category.Name, pattern))
-                || EF.Functions.Like(j.Business.CompanyName, pattern)
-                || (j.TagsJson != null && EF.Functions.Like(j.TagsJson, pattern))
-                || (j.RequiredSkillsJson != null && EF.Functions.Like(j.RequiredSkillsJson, pattern)));
+                EF.Functions.ILike(j.Title, pattern)
+                || (j.Description != null && EF.Functions.ILike(j.Description, pattern))
+                || (j.Location != null && EF.Functions.ILike(j.Location, pattern))
+                || (j.Category != null && EF.Functions.ILike(j.Category.Name, pattern))
+                || EF.Functions.ILike(j.Business.CompanyName, pattern)
+                || (j.TagsJson != null && EF.Functions.ILike(j.TagsJson, pattern))
+                || (j.RequiredSkillsJson != null && EF.Functions.ILike(j.RequiredSkillsJson, pattern)));
         }
 
             var total = await jobQuery.CountAsync();

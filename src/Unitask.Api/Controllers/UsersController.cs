@@ -68,9 +68,9 @@ public class UsersController : ControllerBase
         {
             var term = q.Trim();
             query = query.Where(u =>
-                EF.Functions.Like(u.FullName, $"%{term}%")
-                || EF.Functions.Like(u.Email, $"%{term}%")
-                || (u.Phone != null && EF.Functions.Like(u.Phone, $"%{term}%")));
+                EF.Functions.ILike(u.FullName, $"%{term}%")
+                || EF.Functions.ILike(u.Email, $"%{term}%")
+                || (u.Phone != null && EF.Functions.ILike(u.Phone, $"%{term}%")));
         }
 
         if (!string.IsNullOrWhiteSpace(role) && !string.Equals(role, "all", StringComparison.OrdinalIgnoreCase))
