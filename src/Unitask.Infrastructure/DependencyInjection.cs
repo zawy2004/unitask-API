@@ -15,11 +15,11 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContextPool<UnitaskDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("UnitaskDb"), sqlOptions =>
-                sqlOptions.EnableRetryOnFailure(
+            options.UseNpgsql(configuration.GetConnectionString("UnitaskDb"), npgsqlOptions =>
+                npgsqlOptions.EnableRetryOnFailure(
                     maxRetryCount: 3,
                     maxRetryDelay: TimeSpan.FromSeconds(5),
-                    errorNumbersToAdd: null)));
+                    errorCodesToAdd: null)));
 
         services.AddMemoryCache();
 

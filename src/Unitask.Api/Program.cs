@@ -12,6 +12,10 @@ using Unitask.Application.Common.Settings;
 using Unitask.Infrastructure;
 using Unitask.Api.Extensions;
 
+// Cho phép ghi/đọc DateTime mọi Kind vào Postgres (dữ liệu từ SQL Server có Kind=Unspecified).
+// Phải đặt trước khi Npgsql khởi tạo lần đầu.
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.ConfigureKestrel(options =>
@@ -205,125 +209,29 @@ app.MapGet("/", () => Results.Ok(new { status = "ok", service = "Unitask API" })
 app.MapGet("/health", () => Results.Ok(new { status = "healthy" }));
 app.MapControllers();
 
-// Auto-create portfolio tables if they don't exist
+// Khởi tạo schema PostgreSQL/Supabase khi boot: áp EF migrations (tạo bảng/index/FK),
+// rồi tạo view + trigger UpdatedAt (những thứ EF Migrations không quản lý). Idempotent.
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<Unitask.Infrastructure.Persistence.UnitaskDbContext>();
     try
     {
-        db.Database.ExecuteSqlRaw(@"
-            IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'PortfolioProjects')
-            CREATE TABLE PortfolioProjects (
-                Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-                StudentId UNIQUEIDENTIFIER NOT NULL,
-                Title NVARCHAR(255) NOT NULL,
-                [Description] NVARCHAR(MAX) NULL,
-                ImageUrl NVARCHAR(500) NULL,
-                ProjectUrl NVARCHAR(500) NULL,
-                GithubUrl NVARCHAR(500) NULL,
-                Tags NVARCHAR(1000) NULL,
-                [Role] NVARCHAR(100) NULL,
-                StartDate DATETIME2 NULL,
-                EndDate DATETIME2 NULL,
-                IsHighlighted BIT DEFAULT 0,
-                SortOrder INT DEFAULT 0,
-                CreatedAt DATETIME2 DEFAULT GETUTCDATE(),
-                UpdatedAt DATETIME2 DEFAULT GETUTCDATE(),
-                FOREIGN KEY (StudentId) REFERENCES StudentProfiles(Id) ON DELETE CASCADE
-            );
-
-            IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Educations')
-            CREATE TABLE Educations (
-                Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-                StudentId UNIQUEIDENTIFIER NOT NULL,
-                Institution NVARCHAR(255) NOT NULL,
-                Degree NVARCHAR(255) NULL,
-                FieldOfStudy NVARCHAR(255) NULL,
-                StartYear INT NULL,
-                EndYear INT NULL,
-                Gpa DECIMAL(3,2) NULL,
-                [Description] NVARCHAR(MAX) NULL,
-                IsCurrent BIT DEFAULT 0,
-                SortOrder INT DEFAULT 0,
-                CreatedAt DATETIME2 DEFAULT GETUTCDATE(),
-                UpdatedAt DATETIME2 DEFAULT GETUTCDATE(),
-                FOREIGN KEY (StudentId) REFERENCES StudentProfiles(Id) ON DELETE CASCADE
-            );
-
-            IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'EmailVerifications')
-            CREATE TABLE EmailVerifications (
-                Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-                UserId UNIQUEIDENTIFIER NOT NULL,
-                Code NVARCHAR(10) NOT NULL,
-                ExpiresAt DATETIME2 NOT NULL,
-                ConsumedAt DATETIME2 NULL,
-                CreatedAt DATETIME2 DEFAULT GETUTCDATE()
-            );
-
-            IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Certifications')
-            CREATE TABLE Certifications (
-                Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-                StudentId UNIQUEIDENTIFIER NOT NULL,
-                Name NVARCHAR(255) NOT NULL,
-                IssuingOrganization NVARCHAR(255) NULL,
-                IssueDate DATETIME2 NULL,
-                ExpirationDate DATETIME2 NULL,
-                CredentialUrl NVARCHAR(500) NULL,
-                CredentialId NVARCHAR(100) NULL,
-                ImageUrl NVARCHAR(500) NULL,
-                SortOrder INT DEFAULT 0,
-                CreatedAt DATETIME2 DEFAULT GETUTCDATE(),
-                UpdatedAt DATETIME2 DEFAULT GETUTCDATE(),
-                FOREIGN KEY (StudentId) REFERENCES StudentProfiles(Id) ON DELETE CASCADE
-            );
-        ");
-        Console.WriteLine("[Startup] Portfolio tables ensured.");
+        db.Database.Migrate();
+        Console.WriteLine("[Startup] EF migrations applied.");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"[Startup] Portfolio tables check: {ex.Message}");
+        Console.WriteLine($"[Startup] Migrate: {ex.Message}");
     }
 
-    // Mở rộng CHECK constraint của Jobs.Status để cho phép trạng thái 'expired' (JobExpiryService).
-    // Idempotent: chỉ chạy nếu constraint hiện tại chưa chứa 'expired'.
     try
     {
-        db.Database.ExecuteSqlRaw(@"
-            IF NOT EXISTS (
-                SELECT 1 FROM sys.check_constraints cc
-                JOIN sys.columns col ON cc.parent_object_id = col.object_id AND cc.parent_column_id = col.column_id
-                WHERE cc.parent_object_id = OBJECT_ID('dbo.Jobs') AND col.name = 'Status'
-                  AND cc.definition LIKE '%expired%'
-            )
-            BEGIN
-                DECLARE @cn NVARCHAR(256);
-                SELECT @cn = cc.name FROM sys.check_constraints cc
-                JOIN sys.columns col ON cc.parent_object_id = col.object_id AND cc.parent_column_id = col.column_id
-                WHERE cc.parent_object_id = OBJECT_ID('dbo.Jobs') AND col.name = 'Status';
-                IF @cn IS NOT NULL EXEC('ALTER TABLE dbo.Jobs DROP CONSTRAINT [' + @cn + ']');
-                ALTER TABLE dbo.Jobs ADD CONSTRAINT CK_Jobs_Status
-                    CHECK ([Status] IN ('draft','open','in_progress','completed','cancelled','expired'));
-            END
-        ");
-        Console.WriteLine("[Startup] Jobs.Status constraint allows 'expired'.");
+        db.Database.ExecuteSqlRaw(Unitask.Infrastructure.Persistence.PostgresDbObjects.ViewsAndTriggers);
+        Console.WriteLine("[Startup] Views & UpdatedAt triggers ensured.");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"[Startup] Jobs.Status constraint check: {ex.Message}");
-    }
-
-    // Index cho truy vấn danh sách job phổ biến nhất: WHERE Status = 'open' ORDER BY CreatedAt DESC.
-    try
-    {
-        db.Database.ExecuteSqlRaw(@"
-            IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_Jobs_Status_CreatedAt' AND object_id = OBJECT_ID('dbo.Jobs'))
-                CREATE NONCLUSTERED INDEX IX_Jobs_Status_CreatedAt ON dbo.Jobs ([Status], [CreatedAt] DESC);
-        ");
-        Console.WriteLine("[Startup] IX_Jobs_Status_CreatedAt ensured.");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"[Startup] IX_Jobs_Status_CreatedAt check: {ex.Message}");
+        Console.WriteLine($"[Startup] Views/triggers: {ex.Message}");
     }
 }
 

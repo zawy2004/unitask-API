@@ -50,12 +50,6 @@ public class AuthService : IAuthService
         _exposeOtp = configuration.GetValue<bool>("Sandbox:ExposeOtp");
     }
 
-    /// <summary>Dòng OTP đọc từ bảng EmailVerifications (raw SQL).</summary>
-    private sealed class OtpRow
-    {
-        public Guid Id { get; set; }
-    }
-
     public async Task<AuthResult?> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
     {
         var user = await _dbContext.Users.AsNoTracking()
@@ -163,18 +157,17 @@ public class AuthService : IAuthService
         }
 
         var normalized = (code ?? string.Empty).Trim();
-        var match = await _dbContext.Database
-            .SqlQuery<OtpRow>($@"SELECT TOP 1 Id FROM EmailVerifications
-                WHERE UserId = {user.Id} AND Code = {normalized}
-                  AND ConsumedAt IS NULL AND ExpiresAt > {DateTime.UtcNow}
-                ORDER BY CreatedAt DESC")
-            .ToListAsync(cancellationToken);
+        var now = DateTime.UtcNow;
+        var match = await _dbContext.EmailVerifications
+            .Where(v => v.UserId == user.Id && v.Code == normalized
+                && v.ConsumedAt == null && v.ExpiresAt > now)
+            .OrderByDescending(v => v.CreatedAt)
+            .FirstOrDefaultAsync(cancellationToken);
 
-        if (match.Count == 0)
+        if (match is null)
             throw new InvalidOperationException("Mã OTP không đúng hoặc đã hết hạn. Vui lòng thử lại hoặc gửi lại mã.");
 
-        await _dbContext.Database.ExecuteSqlInterpolatedAsync(
-            $"UPDATE EmailVerifications SET ConsumedAt = {DateTime.UtcNow} WHERE Id = {match[0].Id}", cancellationToken);
+        match.ConsumedAt = DateTime.UtcNow;
 
         user.IsVerified = true;
 
@@ -215,9 +208,16 @@ public class AuthService : IAuthService
         var code = System.Security.Cryptography.RandomNumberGenerator.GetInt32(0, 1_000_000).ToString("D6");
         var expires = DateTime.UtcNow.AddMinutes(OtpExpiryMinutes);
 
-        await _dbContext.Database.ExecuteSqlInterpolatedAsync(
-            $@"INSERT INTO EmailVerifications (Id, UserId, Code, ExpiresAt, ConsumedAt, CreatedAt)
-               VALUES ({Guid.NewGuid()}, {user.Id}, {code}, {expires}, NULL, {DateTime.UtcNow})", ct);
+        _dbContext.EmailVerifications.Add(new EmailVerification
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            Code = code,
+            ExpiresAt = expires,
+            ConsumedAt = null,
+            CreatedAt = DateTime.UtcNow,
+        });
+        await _dbContext.SaveChangesAsync(ct);
 
         try
         {

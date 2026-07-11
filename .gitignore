@@ -17,3 +17,6 @@ appsettings.Development.json
 
 # local run log
 .devrun.log
+.supabase-conn.txt
+.env.supabase
+.supabase-pw.txt
