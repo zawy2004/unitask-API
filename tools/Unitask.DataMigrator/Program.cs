@@ -41,23 +41,19 @@ var total = 0;
 
 async Task Copy<T>(Func<UnitaskDbContext, DbSet<T>> set, string name) where T : class
 {
-    try
+    List<T> rows;
+    try { rows = await set(src).AsNoTracking().ToListAsync(); }
+    catch (Exception ex) { Console.WriteLine($"   {name,-22} ĐỌC LỖI: {(ex.InnerException?.Message ?? ex.Message).Split('\n')[0]}"); return; }
+
+    int ok = 0; string firstErr = null;
+    foreach (var row in rows)
     {
-        var rows = await set(src).AsNoTracking().ToListAsync();
-        if (rows.Count > 0)
-        {
-            set(dst).AddRange(rows);
-            await dst.SaveChangesAsync();
-            dst.ChangeTracker.Clear();
-        }
-        total += rows.Count;
-        Console.WriteLine($"   {name,-22} {rows.Count}");
+        try { set(dst).Add(row); await dst.SaveChangesAsync(); ok++; }
+        catch (Exception ex) { firstErr ??= (ex.InnerException?.Message ?? ex.Message).Split('\n')[0]; }
+        finally { dst.ChangeTracker.Clear(); }
     }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"   {name,-22} LỖI: {ex.Message.Split('\n')[0]}");
-        dst.ChangeTracker.Clear();
-    }
+    total += ok;
+    Console.WriteLine($"   {name,-22} {ok}/{rows.Count}" + (firstErr != null ? $"  (lỗi: {firstErr})" : ""));
 }
 
 // Thứ tự cha-trước (đảm bảo FK kể cả khi không tắt được replica).
