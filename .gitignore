@@ -21,3 +21,8 @@ appsettings.Development.json
 .env.supabase
 .supabase-pw.txt
 database/.bool-map.json
+.azure-pw.txt
+database/backup-*.sql
+*.iam.gserviceaccount.com.json
+*-[0-9a-f]*.json
+angular-lambda-*.json

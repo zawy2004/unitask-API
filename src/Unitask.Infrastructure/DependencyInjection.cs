@@ -30,6 +30,7 @@ public static class DependencyInjection
         services.AddScoped<IInsightsService, InsightsService>();
         services.AddScoped<IMilestoneService, MilestoneService>();
         services.AddScoped<IDisputeService, DisputeService>();
+        services.AddSingleton<IGoogleAnalyticsService, GoogleAnalyticsService>();
 
         // Email (SMTP / Gmail App Password)
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
